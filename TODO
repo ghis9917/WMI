@@ -1,0 +1,45 @@
+Check google api(login per edit pagina e youtube, maps)
+Youtube api(upload video)
+
+
+Vincoli:
+	-No google maps, si openStreetMaps
+	-Usare OpenLocationCode
+	-Usare server node.js
+	-Usare mongoDB come database
+
+Consegne:
+	-Una città sola(Min 50 clip in 20 locations)
+	-Clip:
+		*What -> 15 sec max, def of location
+		*How -> 15-30 sec max, general info(prices, opening hours, etc.)
+		*Why -> I)15 sec max, reasons to visit
+			II)
+			III)
+			.
+			.
+			more infos and curiosities
+
+
+Facoltativo(Browser):
+	-Directions to the place if not already there (10 pt.)
+	-BOH...
+	-Custom directions based on multiple POI with their clips pre loaded (10 pt.)
+	-Ranking for bloggers, clips and routes (10 pt.)
+	-If GPS not available user can navigate giving input of actual position:
+		*Via
+		*Città
+		*Civico
+		*Provincia
+		*Paese 
+		(5 pt.)
+	-Clip filters based on metadata(language, date, length, audience, etc.) (5 pt.)
+	-Turist location filters based on opening hours and type of location (5 pt.)
+	-Option to check location as visited (5 pt.)
+	-Show content of DBPedia of the location and language requested by user and reproduced with speech synthesis (20 pt.)
+	-Ratings of each clip and location with feedback visualisation on map (10 pt.)
+
+Facoltativo (Editor):
+	-Clip editing (resizing of clip, merging of multiple clips, volume modulation, etc.) (20 pt.)
+	-Uploading multiple clips with a single upload on YouTube (the browser must be able to view them separately) (20 pt.)
+	-List of feedback of users on your clip and views statistics (5 pt.)
