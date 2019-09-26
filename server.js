@@ -25,38 +25,50 @@ function errore(res){
   res.end("No Page Found");
 }
 http.createServer(function(req, res){
+    //rihieste GET
     if( req.method == "GET"){
-      if(req.url === "/"){
-          invia(res,"text/html","index.html");
-      }else if(req.url.match("\.css$")){
-          var myFile= (req.url).toString();
-          myFile = myFile.substring(myFile.indexOf('/')+1);
-          if (fs.existsSync(myFile)) {
-            invia(res,"text/css",myFile);
-          }
-      }else if(req.url.match("\.html$")){
-        var myFile= (req.url).toString();
-        myFile = myFile.substring(myFile.indexOf('/')+1);
-        if (fs.existsSync(myFile)) {
-          invia(res,"text/html",myFile);
+
+        if(req.url === "/"){
+            invia(res,"text/html","index.html");
         }
-      }else if(req.url.match("\.js$")){
-        var myFile= (req.url).toString();
-        myFile = myFile.substring(myFile.indexOf('/')+1);
-        if (fs.existsSync(myFile)) {
-            invia(res,"text/js",myFile);
+        //Ritorna tutti file css
+        else if(req.url.match("\.css$")){
+            var myFile = (req.url).toString();
+            myFile = myFile.substring(myFile.indexOf('/')+1);
+            if (fs.existsSync(myFile)) {
+              invia(res,"text/css",myFile);
+            }
         }
-      }
-      else if(req.url.match("getValue")){
-        var val  = req.url;
-        val = val.replace("/getValue?valore=", "");
-        getValue(val);
-        }else{
-          console.log(req.url);
-          errore(res);
+        //Ritorna tutti file html
+        else if(req.url.match("\.html$")){
+            var myFilev= (req.url).toString();
+            myFile = myFile.substring(myFile.indexOf('/')+1);
+            if (fs.existsSync(myFile)) {
+              invia(res,"text/html",myFile);
+            }
+        }
+        //Ritorna tutti file js
+        else if(req.url.match("\.js$")){
+            var myFile= (req.url).toString();
+            myFile = myFile.substring(myFile.indexOf('/')+1);
+            if (fs.existsSync(myFile)) {
+              invia(res,"text/js",myFile);
+            }
+        }
+        //getValue?valore=.. api, ricerca su wikipedia, ritorna json
+        else if(req.url.match("getValue")){
+          var val  = req.url;
+          val = val.replace("/getValue?valore=", "");
+          getValue(val);
+        }
+
+        //404 PAGE NOT FOUND
+        else{
+            console.log(req.url);
+            errore(res);
       }
   }
     // Richiesta POST
     else{
     }
-}).listen(80);
+}).listen(80);  //porta 8000
