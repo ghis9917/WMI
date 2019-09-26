@@ -1,0 +1,21 @@
+<html>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        function chiama(){
+          console.log("we");
+          $.ajax({
+            type:"GET",
+            url : "http://localhost:8000/getSound",
+            success : function(result){
+              var msg = new SpeechSynthesisUtterance(result);
+              window.speechSynthesis.speak(msg);
+            }
+          });
+        }
+    </script>
+  </head>
+  <body>
+    <button onclick="chiama()">Vai</button>
+  </body>
+</html>

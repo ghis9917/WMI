@@ -5,8 +5,6 @@ var mobile = require('is-mobile');
 
 const request = require('request');
 
-var tools = require("./node_files/DBpedia.js");
-tools.mammt();
 
 
 function getValue(val){
@@ -34,7 +32,7 @@ http.createServer(function(req, res){
     if( req.method == "GET"){
 
         if(req.url === "/"){
-            invia(res,"text/html","index.html");
+            invia(res,"text/html","./HTML/index.html");
         }
         //Ritorna tutti file css
         else if(req.url.match("\.css$")){
@@ -46,10 +44,14 @@ http.createServer(function(req, res){
         }
         //Ritorna tutti file html
         else if(req.url.match("\.html$")){
-            var myFilev= (req.url).toString();
+            var myFile= (req.url).toString();
             myFile = myFile.substring(myFile.indexOf('/')+1);
+            myFile = "./HTML/"+myFile;
+
             if (fs.existsSync(myFile)) {
               invia(res,"text/html",myFile);
+            }else{
+              errore(res);
             }
         }
         //Ritorna tutti file js
@@ -65,6 +67,12 @@ http.createServer(function(req, res){
           var val  = req.url;
           val = val.replace("/getValue?valore=", "");
           getValue(val);
+        }
+
+        //getSound api, get Wikipedia description
+        else if(req.url.match("getWikipedia")){
+          var tools = require("./node_files/DBpedia.js");
+          tools.getDBPedia("Milano", "Place",res);
         }
 
         //404 PAGE NOT FOUND

@@ -1,0 +1,20 @@
+<html>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script>
+    $(document).ready(function(){
+      $.ajax({
+        type: "GET",
+        url:"https://www.googleapis.com/youtube/v3/videos",
+
+        data: "id=gatto&key=AIzaSyDHscjp_bOaYOBIj-gxMt0vRvC9gfQvVN4&part=snippet,contentDetails,statistics,status",
+        success:function(result){
+          console.log(result);
+        },
+        error: function(richiesta,stato,errori){
+           $("div#risposta").html("<strong>Chiamata fallita:</strong>"+stato+" "+errori);
+        }
+      });
+    });
+  </script>
+
+</html>
