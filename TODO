@@ -1,15 +1,15 @@
-Check google api(login per edit pagina e youtube, maps)
+Check google api(login/signup to become user/editor and load youtube clips)
 Youtube api(upload video)
 
 
-Vincoli:
-	-No google maps, si openStreetMaps
-	-Usare OpenLocationCode
-	-Usare server node.js
-	-Usare mongoDB come database
+Obligations:
+	-No google maps, instead we must use openStreetMaps (We're gonna use Leaflet library for OSM) (DONE)
+	-Use OpenLocationCode (DONE)
+	-Use server node.js 
+	-Use mongoDB as database 
 
-Consegne:
-	-Una città sola(Min 50 clip in 20 locations)
+Assignements:
+	-1 city(Min 50 clip in 20 locations) 
 	-Clip:
 		*What -> 15 sec max, def of location
 		*How -> 15-30 sec max, general info(prices, opening hours, etc.)
@@ -21,9 +21,9 @@ Consegne:
 			more infos and curiosities
 
 
-Facoltativo(Browser):
-	-Directions to the place if not already there (10 pt.)
-	-BOH...
+Optional Features (Browser):
+	-Directions to the place if not already there (10 pt.) (Leaflet Routing Machine)
+	-BOH... (Send e-mail to prof asking what the hell he was smoking while writing this one)
 	-Custom directions based on multiple POI with their clips pre loaded (10 pt.)
 	-Ranking for bloggers, clips and routes (10 pt.)
 	-If GPS not available user can navigate giving input of actual position:
@@ -32,14 +32,14 @@ Facoltativo(Browser):
 		*Civico
 		*Provincia
 		*Paese 
-		(5 pt.)
+		(5 pt.) (AKA creating form to ask those infos + API to get coordinates from them)
 	-Clip filters based on metadata(language, date, length, audience, etc.) (5 pt.)
 	-Turist location filters based on opening hours and type of location (5 pt.)
-	-Option to check location as visited (5 pt.)
+	-Option to check location as visited (5 pt.) (Probably gonna use a database to save user infos on visited locations)
 	-Show content of DBPedia of the location and language requested by user and reproduced with speech synthesis (20 pt.)
-	-Ratings of each clip and location with feedback visualisation on map (10 pt.)
+	-Ratings of each clip and location with feedback visualisation on map (10 pt.) 
 
-Facoltativo (Editor):
+Optional Features (Editor):
 	-Clip editing (resizing of clip, merging of multiple clips, volume modulation, etc.) (20 pt.)
 	-Uploading multiple clips with a single upload on YouTube (the browser must be able to view them separately) (20 pt.)
-	-List of feedback of users on your clip and views statistics (5 pt.)
+	-List of feedback of users on your clip and views statistics (5 pt.) (Database to save clips infos)
