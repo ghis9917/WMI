@@ -71,4 +71,4 @@ http.createServer(function(req, res){
     // Richiesta POST
     else{
     }
-}).listen(80);  //porta 8000
+}).listen(8000);  //porta 8000
