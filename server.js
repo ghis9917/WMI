@@ -5,6 +5,10 @@ var mobile = require('is-mobile');
 
 const request = require('request');
 
+var tools = require("./node_files/DBpedia.js");
+tools.mammt();
+
+
 function getValue(val){
     request('https://it.wikipedia.org/w/api.php?action=opensearch&search='+val+'&limit=1&format=json', { json: true }, (err, res, body) => {
     if (err) { return console.log(err); }
@@ -12,18 +16,19 @@ function getValue(val){
   });
 }
 
-
-
 function invia(res,type,file){
   fs.readFile(file, "UTF-8", function(err, html){
     res.writeHead(200, {"Content-Type": type});
     res.end(html);
   });
 }
+
 function errore(res){
   res.writeHead(404, {"Content-Type": "text/html"});
   res.end("No Page Found");
 }
+
+
 http.createServer(function(req, res){
     //rihieste GET
     if( req.method == "GET"){
