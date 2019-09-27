@@ -34,6 +34,10 @@ http.createServer(function(req, res){
         if(req.url === "/"){
             invia(res,"text/html","./HTML/index.html");
         }
+        else if(req.url.match("/favicon.ico")){
+          res.writeHead(200, {"Content-Type": "text/html"});
+          res.end()
+        }
         //Ritorna tutti file css
         else if(req.url.match("\.css$")){
             var myFile = (req.url).toString();

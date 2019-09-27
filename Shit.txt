@@ -7,3 +7,9 @@ SELECT ?film ?description ?film_name WHERE {
     ?film rdfs:comment ?description.
     FILTER (LANG(?description)='it' && ?film_name like "%ano"@en)
 } 
+
+
+
+
+
+http://192.168.43.76:9966/?z=18&center=44.493681%2C11.345057&loc=44.493671%2C11.343035&loc=44.482790%2C11.407928&hl=en&alt=0
