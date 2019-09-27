@@ -1,17 +1,16 @@
 <html>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+<script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
   <script>
     $(document).ready(function(){
       $.ajax({
-        type: "GET",
-        url:"https://www.googleapis.com/youtube/v3/videos",
-
-        data: "id=gatto&key=AIzaSyDHscjp_bOaYOBIj-gxMt0vRvC9gfQvVN4&part=snippet,contentDetails,statistics,status",
-        success:function(result){
-          console.log(result);
-        },
-        error: function(richiesta,stato,errori){
-           $("div#risposta").html("<strong>Chiamata fallita:</strong>"+stato+" "+errori);
+        type:"GET",
+        url : "http:localhos:8000/youtube",
+        success : function(){
+          console.log("okkkkk");
         }
       });
     });

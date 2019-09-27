@@ -6,14 +6,6 @@ var mobile = require('is-mobile');
 const request = require('request');
 
 
-
-function getValue(val){
-    request('https://it.wikipedia.org/w/api.php?action=opensearch&search='+val+'&limit=1&format=json', { json: true }, (err, res, body) => {
-    if (err) { return console.log(err); }
-    console.log(body);
-  });
-}
-
 function invia(res,type,file){
   fs.readFile(file, "UTF-8", function(err, html){
     res.writeHead(200, {"Content-Type": type});
@@ -30,7 +22,7 @@ function errore(res){
 http.createServer(function(req, res){
     //rihieste GET
     if( req.method == "GET"){
-
+        console.log(req.url)
         if(req.url === "/"){
             invia(res,"text/html","./HTML/index.html");
         }
@@ -79,6 +71,9 @@ http.createServer(function(req, res){
           tools.getDBPedia("Milano", "Place",res);
         }
 
+        else if(req.url.match("youtube")){
+
+        }
         //404 PAGE NOT FOUND
         else{
             console.log(req.url);
