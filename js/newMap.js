@@ -1,11 +1,38 @@
-var lat, lon, searchControl; 
+var lat, lon, searchControl;
 
 /*Sets up the map are of the html file 
 */
-function newMap(){
+function newMap(data = null){
+  if (data !== null){
+    return reloadMap(data);
+  }else{
+    return createFirstMap();
+  }
+}
+
+/*Reloads the last map to center the 
+  map on the current user position.
+*/
+function reloadMap(data){
+  /*TODO: This function recreates a map
+          exactly like createFirstMap() 
+          would do, but it takes data 
+          which containts all the data
+          it needs to reload all the things 
+          created on the last map.
+  */
+}
+
+/*To be called only in the html file 
+  when the user page is loaded.
+  It creates the first map in the page,
+  when the maps has to be reloaded with JS
+  it must be called the newMap() method with
+  the optional parameter.
+*/
+function createFirstMap(){
   var currentLocation;
   currentLocation = L.marker([0, 0]);
-
   var mymap = L.map('mapid');
   mymap = getLocation(mymap, currentLocation);
 
@@ -13,16 +40,32 @@ function newMap(){
     it sort of delete the Bootstrap Navbar.
     TODO: Find a solution to this issue or another 
           way to let the user get his actual location 
-          again.
+          again.*/
 
-  L.easyButton('<span class=bigodot>&bigodot;</span>', function(btn, map){
-    getLocation(map, currentLocation);
-  }).addTo(mymap);*/
-
+  addButton(mymap, currentLocation);
   addControlListener(mymap, currentLocation);
   addGeoSearch(mymap);
   addLayer(mymap);
   currentLocation.addTo(mymap);
+  return mymap
+}
+
+/*Adds button to relocate user location
+*/
+function addButton(mymap, currentLocation){
+  L.easyButton('<span class="bigodot">&bigodot;</span>', function(btn, map){
+    /*This way the maps gets recreated and the navbar doesn't disappear
+      but whatever is on the map gets deleted, so if the user is following
+      a route and they click on it loses it.
+      Best to menage that issue could be create a JS function with 
+      optional arguments, if there are arguments we proceed to reload 
+      everything there was in the last map. 
+      (Function with optional arguments created but to test once we know which data
+       should be reloaded). 
+    */
+    mymap.remove();
+    mymap = newMap();
+  }).addTo(mymap);
 }
 
 /*Add a control listener to know when someone used the 
