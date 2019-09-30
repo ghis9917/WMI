@@ -1,83 +1,20 @@
-body{
-	background-image: radial-gradient(ellipse at center, rgba(0,0,0,0) 50%, rgba(0,0,0,0.8) 100%), url('https://www.csstextures.com/grunge-T144.jpg'); 
-	background-repeat: repeat;
-	background-color: var(--bg-color);
-	
-}
-
-a {
-    color: #CCFFCC !important;
-    text-decoration: none;
-}
-
-a .navbar {
-    color: #CCFFCC !important;
-}
-
-.navbar-nav > li{
-  border: 2px solid green !important;
-  border-radius:10px;
-  margin-left:30px;
-  margin-right:30px;
-  line-height:0.9;	
-} 
-
-.navbar-nav > li:hover{
-text-shadow:
-    0 0 5px #fff,
-    0 0 10px #fff,
-    0 0 20px #fff,
-    0 0 40px #0ff,
-    0 0 80px #0ff,
-    0 0 90px #0ff,
-    0 0 100px #0ff,
-    0 0 150px #0ff;
-}
-
-
-
-:root {
-    --primary-color: #302AE6;
-    --secondary-color: #536390;
-    --font-color: #424242;
-    --bg-color: #fff;
-    --heading-color: #292922;
-}
-
-[data-theme="dark"] {
-    --primary-color: #9A97F3;
-    --secondary-color: #818cab;
-    --font-color: #e1e1ff;
-    --bg-color: #161625;
-    --heading-color: #818cab;
-}
-
-div.main{
-	background-color: green;
-	border: 3px solid green;
-	border-radius: 20px;
-	margin:10px;
-
-}
-
-.navbar {
-	border-radius: 17px;
-	background-color: var(--bg-color);
-}
-
-nav.navbar.navbar-expand-lg.bgdark.bg-custom{
-	background-color:black;
-}
-
-.navbar-header{
-    color: red;
-    background-color: green;
-}
-
-.navbar-brand{
-	color: #66CC33;
-}
-
-div.collapse.navbar-collapse {
-
-}
+#myNavBar{
+    height: 7.5%;
+    z-index: 1;
+    padding: 0;
+  }
+  #navbarB{
+    padding: 8 16;
+  }
+  #btn{
+    margin: 8 16;
+  }
+  #mapid{
+    height: 92.5%;
+    z-index: 0;
+  }
+  #navbarSupportedContent{
+    background-color: #f8f9fa;
+    width: 100%;
+    padding: 8 16;
+  }
