@@ -25,12 +25,11 @@ http.createServer(function(req, res){
 
       if(path.extname(req.url) != ""){
 
-            console.log("RICHIESTA")
         if(req.url == "/index.html"){
             console.log("index")
             invia(res,"text/html","../HTML/index.html")
         }
-        else{
+        else if(req.url != "/index.html"){
           var myFile = (req.url).toString();
           myFile = myFile.substring(myFile.indexOf('/')+1);
           myFile = "../"+myFile;
@@ -41,8 +40,12 @@ http.createServer(function(req, res){
         }
       }
       else{
+        if(req.url == "/"){
+            console.log("index")
+            invia(res,"text/html","../HTML/index.html")
+        }
         //getValue?valore=.. api, ricerca su wikipedia, ritorna json
-        if(req.url.match("getValue")){
+        else if(req.url.match("getValue")){
           var val  = req.url;
           val = val.replace("/getValue?valore=", "");
           getValue(val);
