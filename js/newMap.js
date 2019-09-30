@@ -1,6 +1,10 @@
-var lat, lon, searchControl;
+var lat, lon;
+var searchControl;
+var waypoints = [];
+var control = null;
+var routingMode = 'foot'
 
-/*Sets up the map are of the html file
+/*Sets up the map are of the html file 
 */
 function newMap(data = null){
   if (data !== null){
@@ -10,20 +14,20 @@ function newMap(data = null){
   }
 }
 
-/*Reloads the last map to center the
+/*Reloads the last map to center the 
   map on the current user position.
 */
 function reloadMap(data){
   /*TODO: This function recreates a map
-          exactly like createFirstMap()
-          would do, but it takes data
+          exactly like createFirstMap() 
+          would do, but it takes data 
           which containts all the data
-          it needs to reload all the things
+          it needs to reload all the things 
           created on the last map.
   */
 }
 
-/*To be called only in the html file
+/*To be called only in the html file 
   when the user page is loaded.
   It creates the first map in the page,
   when the maps has to be reloaded with JS
@@ -31,51 +35,96 @@ function reloadMap(data){
   the optional parameter.
 */
 function createFirstMap(){
-  var currentLocation;
-  currentLocation = L.marker([0, 0]);
-  var mymap = L.map('mapid');
+  var currentLocation = L.marker([0, 0]);
+  var mymap = L.map('mapid', {
+    zoomControl: true
+  });
   mymap = getLocation(mymap, currentLocation);
-
-  /*Adds a button to Leaflet map but when clicked
-    it sort of delete the Bootstrap Navbar.
-    TODO: Find a solution to this issue or another
-          way to let the user get his actual location
-          again.*/
-
   addButton(mymap, currentLocation);
   addControlListener(mymap, currentLocation);
-  addGeoSearch(mymap);
+  //addGeoSearch(mymap);
   addLayer(mymap);
+  onClick(mymap);
   currentLocation.addTo(mymap);
-  L.Routing.control({
-  waypoints: [
-    L.latLng(44.4946,11.3407),
-    L.latLng(44.8057,11.6700)
-  ]
-}).addTo(mymap);
-console.log("map")
   return mymap
+}
+
+function onClick(mymap){
+  mymap.on('click', function(e) {
+    var container = L.DomUtil.create('div'),
+        destBtn = createButton('Go to this location', container); 
+
+    L.DomEvent.on(destBtn, 'click', function() {
+      mymap.closePopup();
+      waypoints.push(L.latLng([0,0]));
+      var newMarker = L.marker(e.latlng).on('click', function(){
+        control.spliceWaypoints(control.getWaypoints().length - 1, 1, null);
+        mymap.removeLayer(this);
+      });
+      newMarker.addTo(mymap);
+      if ((control.getWaypoints())[1].latLng === null){
+        control.spliceWaypoints(control.getWaypoints().length - 1, 1, e.latlng);
+      }else {
+        var route = control.getWaypoints();
+        route.push(e.latlng);
+        console.log(route);
+        control.setWaypoints(route);
+      }
+    });
+    L.popup()
+        .setContent(container)
+        .setLatLng(e.latlng)
+        .openOn(mymap);
+  });  
+}
+
+/*Adds a rounting calculator to the map
+ */
+function addRouting(mymap){
+  control = L.Routing.control({
+    createMarker: function() { return null; },
+    addWaypoints : true,
+    waypoints: [
+      L.latLng(lat, lon)
+    ],
+    router: L.Routing.graphHopper('a0695b22-2381-4b66-8330-9f213b610d8f' , {
+      urlParameters: {
+        vehicle: routingMode
+      }
+    })
+  }).addTo(mymap);
+}
+
+/*Creates button and it adds it to the
+  pop up passed as parameter (container)
+ */
+function createButton(label, container) {
+  var btn = L.DomUtil.create('button', '', container);
+  btn.setAttribute('type', 'button');
+  btn.innerHTML = label;
+  return btn;
 }
 
 /*Adds button to relocate user location
 */
 function addButton(mymap, currentLocation){
   L.easyButton('<span class="bigodot">&bigodot;</span>', function(btn, map){
-    /*This way the maps gets recreated and the navbar doesn't disappear
-      but whatever is on the map gets deleted, so if the user is following
-      a route and they click on it loses it.
-      Best to menage that issue could be create a JS function with
-      optional arguments, if there are arguments we proceed to reload
-      everything there was in the last map.
-      (Function with optional arguments created but to test once we know which data
-       should be reloaded).
+    /*Here now i check the current location:
+      If it is equal to (0,0) the it means that the user
+      blocked the geolocation or it wasn't available at that time.
+      Else it just centers the map on the last current location found.
+      TODO: update the location when the user moves.
     */
-    mymap.remove();
-    mymap = newMap();
+    if (currentLocation.getLatLng().lat !== 0 && currentLocation.getLatLng().lng !== 0){
+      mymap.fitBounds(L.latLngBounds([currentLocation.getLatLng()]));
+    }else {
+      mymap = getLocation(mymap, currentLocation);
+    }
+    
   }).addTo(mymap);
 }
 
-/*Add a control listener to know when someone used the
+/*Add a control listener to know when someone used the 
   GeoSearch to get the coords of an address
 */
 function addControlListener(mymap, currentLocation){
@@ -91,14 +140,22 @@ function addControlListener(mymap, currentLocation){
 /*Returns the coords of the user current location
 */
 function getLocation(mymap, currentLocation){
-  return mymap.locate({setView: true, watch: false})
+  return mymap.locate({setView: true, watch: true, locateOptions:{ enableHighAccuracy: true}})
         .on('locationfound', function(e){
             lat = e.latitude;
             lon = e.longitude;
             currentLocation.setLatLng([lat, lon]);
+            if (control === null){
+              addRouting(mymap);
+            }
         })
        .on('locationerror', function(e){
-            //askPosition(mymap, currentLocation);
+          /*Add a handler:
+            we should be able to get the user address 
+            and search it, maybe suggesting the results
+            while they're typing.
+          */
+          console.log(e);
         });
 }
 
@@ -113,11 +170,12 @@ function addLayer(mymap){
   }).addTo(mymap);
 }
 
-/*Creates the Control object which let
-  the user to search his position by
+/*Creates the Control object which let 
+  the user to search his position by 
   typing the address in the search bar
 */
-function addGeoSearch(mymap){
+
+function addGeoSearch(popup){
   var GeoSearchControl = window.GeoSearch.GeoSearchControl;
   var OpenStreetMapProvider = window.GeoSearch.OpenStreetMapProvider;
   var provider = new OpenStreetMapProvider();
@@ -127,5 +185,5 @@ function addGeoSearch(mymap){
     retainZoomLevel: false,
     animateZoom: true
   });
-  mymap.addControl(searchControl);
+  return searchControl;
 }
