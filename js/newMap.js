@@ -58,7 +58,10 @@ function onClick(mymap){
       mymap.closePopup();
       waypoints.push(L.latLng([0,0]));
       var newMarker = L.marker(e.latlng).on('click', function(){
-        control.spliceWaypoints(control.getWaypoints().length - 1, 1, null);
+        var route = control.getWaypoints();
+        route.pop();
+        console.log(route);
+        control.setWaypoints(route);
         mymap.removeLayer(this);
       });
       newMarker.addTo(mymap);
