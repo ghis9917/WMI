@@ -3,18 +3,18 @@
     z-index: 1;
     padding: 0;
   }
-  #navbarB{
+  #elA{
     padding: 8 16;
   }
-  #btn{
-    margin: 8 16;
+  #elB{
+    margin: 8 16 0 16;
   }
   #mapid{
     height: 92.5%;
     z-index: 0;
   }
   #navbarSupportedContent{
-    background-color: #f8f9fa;
+    background-color: var(--light);
     width: 100%;
     padding: 8 16;
   }
