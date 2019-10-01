@@ -44,6 +44,7 @@
     <script type="text/javascript" src="../JS/OpenLocationCode.js"></script>
     <script type="text/javascript" src="../JS/speechSynthesis.js"></script>
     <script type="text/javascript" src="../JS/newMap.js"></script>
+    <script type="text/javascript" src="../JS/changeTheme.js"></script>
     <link   type = "text/css"      rel = "stylesheet" href = "../CSS/style.css"/>
     <script src="../JS/lrm-graphhopper.js"></script>
 
@@ -54,14 +55,21 @@
     </script>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-fixed-top navbar-light bg-light" id="myNavBar">
-      <a id ="navbarB" class="navbar-brand" href="#">Where Am I?</a>
-      <button  id="btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <nav class="navbar navbar-collapse-lg navbar-fixed-top navbar-light bg-light" id="myNavBar">
+      <a id ="elA" class="navbar-brand" href="#">Where Am I?</a>
+      <div class="custom-control custom-switch">
+        <input type="checkbox" class="custom-control-input" id="themeSwitch" onclick="changeTheme()">
+        <label class="custom-control-label" for="themeSwitch">Light/Dark</label>
+      </div>
+      <button  id="elB" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
     
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <hr/>
+          </li>
           <li class="nav-item active">
             <a class="nav-link" href="#">User Mode<span class="sr-only">(current)</span></a>
           </li>
