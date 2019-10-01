@@ -7,24 +7,24 @@ const request = require('request');
 
 
 function invia(res,type,file){
-   fs.readFile(file, "UTF-8", function(err, html){
-    res.writeHead(200, {"Content-Type": type});
-    res.end(html);
+  var s = fs.createReadStream(file);
+  s.on('open', function () {
+      res.setHeader('Content-Type', type);
+      s.pipe(res);
   });
 }
 
 function errore(res){
-  res.writeHead(404, {"Content-Type": "text/html"});
-  res.end("No Page Found");
+  fs.readFile("../HTML/404.html", "UTF-8", function(err, html){
+    res.writeHead(404, {"Content-Type": "text/html"});
+    res.end(html);
+  });
 }
-
 
 http.createServer(function(req, res){
     //rihieste GET
     if( req.method == "GET"){
-
       if(path.extname(req.url) != ""){
-
         if(req.url == "/index.html"){
             console.log("index")
             invia(res,"text/html","../HTML/index.html")
@@ -32,10 +32,15 @@ http.createServer(function(req, res){
         else if(req.url != "/index.html"){
           var myFile = (req.url).toString();
           myFile = myFile.substring(myFile.indexOf('/')+1);
-          myFile = "../"+myFile;
-          console.log(myFile);
+          if(mime.lookup(myFile) == "text/html" ){
+            myFile = "../HTML/"+myFile;
+          }else{
+            myFile = "../"+myFile;
+          }
           if (fs.existsSync(myFile)) {
-            invia(res,path.extname(req.url),myFile);
+            invia(res,mime.lookup(myFile),myFile);
+          }else{
+              errore(res);
           }
         }
       }
@@ -50,19 +55,14 @@ http.createServer(function(req, res){
           val = val.replace("/getValue?valore=", "");
           getValue(val);
         }
-
         //getSound api, get Wikipedia description
         else if(req.url.match("getWikipedia")){
           var tools = require("./node_files/DBpedia.js");
           tools.getDBPedia("Milano", "Place",res);
         }
-
+        else if(req.url.match("getLuoghi")){
+        }
       }
-        //404 PAGE NOT FOUND
-        /*{
-            console.log(req.url);
-            errore(res);
-      }*/
   }
     // Richiesta POST
     else{
