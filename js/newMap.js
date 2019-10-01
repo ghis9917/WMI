@@ -46,6 +46,9 @@ function createFirstMap(){
   addLayer(mymap);
   onClick(mymap);
   currentLocation.addTo(mymap);
+  window.setInterval(function(){
+    mymap = getLocation(mymap, currentLocation);
+  }, 5000);
   return mymap
 }
 
@@ -59,7 +62,11 @@ function onClick(mymap){
       waypoints.push(L.latLng([0,0]));
       var newMarker = L.marker(e.latlng).on('click', function(){
         var route = control.getWaypoints();
-        route.pop();
+        for (var i = 0; i < route.length; i++) {
+          if (route[i].latLng === e.latlng){
+            route.splice(i, 1);
+          }
+        }
         console.log(route);
         control.setWaypoints(route);
         mymap.removeLayer(this);
@@ -143,7 +150,7 @@ function addControlListener(mymap, currentLocation){
 /*Returns the coords of the user current location
 */
 function getLocation(mymap, currentLocation){
-  return mymap.locate({setView: true, watch: true, locateOptions:{ enableHighAccuracy: true}})
+  return mymap.locate({setView: true, watch: false, locateOptions:{ enableHighAccuracy: true}})
         .on('locationfound', function(e){
             lat = e.latitude;
             lon = e.longitude;
