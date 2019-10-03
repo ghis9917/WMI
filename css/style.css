@@ -1,20 +1,58 @@
+/*Now CSS works well, still we have to figure out how to 
+ *make the map a little less thin and it should be ok.
+ *Link to the example from which i took the CSS:
+ *http://jsfiddle.net/agorshkov23/5osbcpyc/
+ */
+
+
+nav {
+  position: fixed;
+  height: 50px;
+  margin-bottom: 1em;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1;
+}
+
+body{
+  background: var(--light);
+}
+
+body > div.container {
+  position: fixed;
+  top: calc(50px + 1em);
+  bottom: 1em;
+  width: 100%;
+  right: 0;
+  left: 0;
+  vertical-align: top;
+}
+
+#mapid{
+  height: 100%;
+  width: 100%;
+}
+
+#switchLabel{
+  color: #343a40;
+}
+
+#navbarSupportedContent{
+  background-color: var(--light);
+  padding-left: 8;
+  padding-right: 8;
+  padding-bottom: 16;
+}
+
 #myNavBar{
-    height: 7.5%;
-    z-index: 1;
-    padding: 0;
-  }
-  #elA{
-    padding: 8 16;
-  }
-  #elB{
-    margin: 8 16 0 16;
-  }
-  #mapid{
-    height: 92.5%;
-    z-index: 0;
-  }
-  #navbarSupportedContent{
-    background-color: var(--light);
-    width: 100%;
-    padding: 8 16;
-  }
+  padding-left: 0;
+  padding-right: 0;
+}
+#elA{
+  margin-left: 8;
+}
+#elB{
+  margin-right: 8;
+}
+
