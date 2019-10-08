@@ -10,7 +10,7 @@ app.get('/index.html', (req, res) => {
   res.sendFile(path.join(__dirname,'../HTML/index.html'));
 });
 app.get('/map.html', (req, res) => {
-  res.sendFile(path.join(__dirname,'../HTML/index.html'));
+  res.sendFile(path.join(__dirname,'../HTML/map.html'));
 });
 
 app.get('/yt.html', (req, res) => {
@@ -46,6 +46,20 @@ app.get('/lrm-graphhopper.js', (req, res) => {
   res.contentType("text/javascript");
   res.sendFile(path.join(__dirname,'../JS/lrm-graphhopper.js'));
 });
+app.get('/jquery.slim.min.js', (req, res) => {
+  res.contentType("text/javascript");
+  res.sendFile(path.join(__dirname,'../JS/jquery.slim.min.js'));
+});
+
+app.get('/bootstrap.bundle.min.js', (req, res) => {
+  res.contentType("text/javascript");
+  res.sendFile(path.join(__dirname,'../JS/bootstrap.bundle.min.js'));
+});
+
+
+
+
+
 app.get('/favicon.ico', (req, res) => {
   res.status(204).json({nope: true});
 });
@@ -53,4 +67,14 @@ app.get('/style.css', (req, res) => {
     res.contentType("text/css");
     res.sendFile(path.join(__dirname,'../CSS/style.css'));
 });
+app.get('/index.css', (req, res) => {
+    res.contentType("text/css");
+    res.sendFile(path.join(__dirname,'../CSS/index.css'));
+});
+
+app.get('/bootstrap.min.css', (req, res) => {
+    res.contentType("text/css");
+    res.sendFile(path.join(__dirname,'../CSS/bootstrap.min.css'));
+});
+
 app.listen(8000, () => console.log('Gator app listening on port 3000!'))
