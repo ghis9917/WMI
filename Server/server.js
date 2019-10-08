@@ -9,6 +9,9 @@ app.get('/', (req, res) => {
 app.get('/index.html', (req, res) => {
   res.sendFile(path.join(__dirname,'../HTML/index.html'));
 });
+app.get('/map.html', (req, res) => {
+  res.sendFile(path.join(__dirname,'../HTML/index.html'));
+});
 
 app.get('/yt.html', (req, res) => {
   const mongoose = require('mongoose');
@@ -44,7 +47,7 @@ app.get('/lrm-graphhopper.js', (req, res) => {
   res.sendFile(path.join(__dirname,'../JS/lrm-graphhopper.js'));
 });
 app.get('/favicon.ico', (req, res) => {
-  console.log("jj")
+  res.status(204).json({nope: true});
 });
 app.get('/style.css', (req, res) => {
     res.contentType("text/css");
