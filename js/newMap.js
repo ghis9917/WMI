@@ -34,8 +34,17 @@ function reloadMap(data){
   it must be called the newMap() method with
   the optional parameter.
 */
-function createFirstMap(){
-  var currentLocation = L.marker([0, 0]);
+const createFirstMap = () => {
+  var currentLocation = L.marker([0, 0]).on('click', function(e){
+    if ((control !== null)&&(control.getWaypoints().length > 1)) {
+      var destBtn = createButton('Da implementare'); 
+
+      L.DomEvent.on(destBtn, 'click', function() {
+        
+      });
+      currentLocation.bindPopup(destBtn, setPopupColor());
+    }
+  });
   var mymap = L.map('mapid', {
     zoomControl: true
   });
@@ -46,31 +55,48 @@ function createFirstMap(){
   addLayer(mymap);
   onClick(mymap);
   currentLocation.addTo(mymap);
-  window.setInterval(function(){
+  /*window.setInterval(function(){
     mymap = getLocation(mymap, currentLocation);
-  }, 5000);
+  }, 5000);*/
   return mymap
 }
 
-function onClick(mymap){
-  mymap.on('click', function(e) {
-    var container = L.DomUtil.create('div'),
-        destBtn = createButton('Go to this location', container); 
 
-    L.DomEvent.on(destBtn, 'click', function() {
+const onClickMarker = (mymap, mark) => {
+  mark.on('click', function(e){
+    var removeBtn = createButton('Remove Waypoint');
+    
+    L.DomEvent.on(removeBtn, 'click', function() {
       mymap.closePopup();
-      waypoints.push(L.latLng([0,0]));
-      var newMarker = L.marker(e.latlng).on('click', function(){
-        var route = control.getWaypoints();
+      var route = control.getWaypoints();
         for (var i = 0; i < route.length; i++) {
-          if (route[i].latLng === e.latlng){
-            route.splice(i, 1);
+          if ((route[i].latLng === mark.getLatLng()) && (i != 0)){
+           route.splice(i, 1);
           }
         }
         console.log(route);
         control.setWaypoints(route);
-        mymap.removeLayer(this);
-      });
+        mymap.removeLayer(mark);
+    });
+    mark.bindPopup(removeBtn, setPopupColor());
+    /*L.popup()
+        .setContent(container)
+        .setLatLng(mark.getLatLng())
+        .openOn(mymap);*/
+  });
+}
+
+
+
+const onClick = (mymap) => {
+  mymap.on('click', function(e) {
+    var addBtn = createButton('Add Waypoint');
+
+    L.DomEvent.on(addBtn, 'click', function() {
+      mymap.closePopup();
+      waypoints.push(L.latLng([0,0]));
+      var newMarker = L.marker(e.latlng);
+      onClickMarker(mymap, newMarker);
       newMarker.addTo(mymap);
       if ((control.getWaypoints())[1].latLng === null){
         control.spliceWaypoints(control.getWaypoints().length - 1, 1, e.latlng);
@@ -81,8 +107,8 @@ function onClick(mymap){
         control.setWaypoints(route);
       }
     });
-    L.popup()
-        .setContent(container)
+    L.popup(setPopupColor())
+        .setContent(addBtn)
         .setLatLng(e.latlng)
         .openOn(mymap);
   });  
@@ -91,7 +117,7 @@ function onClick(mymap){
 /*Adds a rounting calculator to the map
  */
 function addRouting(mymap){
-  control = L.Routing.control({
+  control = L.routing.control({
     createMarker: function() { return null; },
     addWaypoints : true,
     waypoints: [
@@ -108,8 +134,8 @@ function addRouting(mymap){
 /*Creates button and it adds it to the
   pop up passed as parameter (container)
  */
-function createButton(label, container) {
-  var btn = L.DomUtil.create('button', '', container);
+function createButton(label) {
+  var btn = L.DomUtil.create('button', setOutlineBtn());
   btn.setAttribute('type', 'button');
   btn.innerHTML = label;
   return btn;
