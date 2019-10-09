@@ -1,42 +1,100 @@
 <html>
-  <head>
-    <script type="text/javascript" src="jquery.slim.min.js"></script>
-    <script type="text/javascript" src="bootstrap.bundle.min.js"></script>
-    <link type="text/css" rel="stylesheet" href="bootstrap.min.css" />
-    <link type="text/css" rel="stylesheet" href="index.css" />
-  </head>
-  <body>
-    <header>
-      <div class="overlay"></div>
-      <video playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
-        <source src="https://storage.googleapis.com/coverr-main/mp4/Mt_Baker.mp4" type="video/mp4">
-      </video>
-      <div class="container h-100">
-        <div class="d-flex h-100 text-center align-items-center">
-          <div class="w-100 text-white">
-            <h1 class="display-3">Video Header</h1>
-            <p class="lead mb-0">With HTML5 Video and Bootstrap 4</p>
-          </div>
-        </div>
-      </div>
-    </header>
 
-    <section class="my-5">
-      <div class="container">
+<head>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <!-- Bootstrap 4 -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+
+  <meta name="google-signin-scope" content="profile email">
+  <meta name="google-signin-client_id"
+    content="96653811721-8489smrotsfejm2b9ji2jq2okq83n2bq.apps.googleusercontent.com">
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
+
+  <script type="text/javascript" src="jquery.slim.min.js"></script>
+  <script type="text/javascript" src="bootstrap.bundle.min.js"></script>
+  <link type="text/css" rel="stylesheet" href="bootstrap.min.css" />
+  <link type="text/css" rel="stylesheet" href="all.css" />
+  <link type="text/css" rel="stylesheet" href="index.css" />
+  <script type="text/javascript" src="googleSignIn.js"></script>
+
+
+</head>
+
+<body>
+  <nav class="navbar navbar-collapse-lg navbar-fixed-top navbar-light bg-light" id="myNavBar">
+    <a id="elA" class="navbar-brand" href="#">Where Am I?</a>
+    <div class="custom-control custom-switch">
+      <input type="checkbox" class="custom-control-input" id="themeSwitch" onclick="changeTheme()">
+      <label class="custom-control-label" for="themeSwitch" id="switchLabel">Light/Dark</label>
+    </div>
+    <button id="elB" class="navbar-toggler" type="button" data-toggle="modal" data-target="#myModal"
+      aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <!--button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button-->
+  </nav>
+  <div class="container">
+    <section class="pricing py-5">
+      <div class="intern">
         <div class="row">
-          <div class="col-md-8 mx-auto">
-            <p>The HTML5 video element uses an mp4 video as a source. Change the source video to add in your own background! The header text is vertically centered using flex utilities that are build into Bootstrap 4.</p>
-            <p>The overlay color can be changed by changing the <code>background-color</code> of the <code>.overlay</code> class in the CSS.</p>
-            <p>Set the mobile fallback image in the CSS by changing the background image of the header element within the media query at the bottom of the CSS snippet.</p>
-            <p class="mb-0">
-              Created by <a href="https://startbootstrap.com">Start Bootstrap</a>
-            </p>
+          <!-- Free Tier -->
+          <div class="col-lg-6">
+            <div class="card mb-5 mb-lg-0">
+              <div class="card-body">
+                <h5 class="card-title text-muted text-uppercase text-center">User Mode</h5>
+                <hr>
+                <p class="description">User Mode, you can check POI on cities etc..</p>
+                <a href="#" class="btn btn-block btn-dark text-uppercase">Visit a new city!</a>
+              </div>
+            </div>
+          </div>
+          <!-- Plus Tier -->
+          <div class="col-lg-6">
+            <div class="card mb-5 mb-lg-0">
+              <div class="card-body">
+                <h5 class="card-title text-muted text-uppercase text-center">Editor Mode</h5>
+                <hr>
+                <p class="description">Editor Mode, you can add POI on cities etc..</p>
+                <a href="#" class="btn btn-block btn-dark text-uppercase">Start to Edit the map!</a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </section>
-    </body>
-=======
-  
->>>>>>> Stashed changes
+  </div>
+  <!-- Modal -->
+  <div class="modal" tabindex="-1" role="dialog" id="myModal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Profile</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+              <div class="container">
+                  <div class="row">
+                    <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+                      <div class="card card-signin my-5">
+                        <div class="card-body">
+                          <h5 class="card-title text-center">Sign In!</h5>
+                          <!--button class="btn btn-lg btn-google btn-block text-uppercase" type="submit"> Sign in with Google</button-->
+                          <div class="g-signin2" data-onsuccess="onSignIn">Sign In with Google</div>
+                          <a href="#" onclick="signOut();">Sign out</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</body>
+
 </html>

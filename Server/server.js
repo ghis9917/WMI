@@ -55,7 +55,14 @@ app.get('/bootstrap.bundle.min.js', (req, res) => {
   res.contentType("text/javascript");
   res.sendFile(path.join(__dirname,'../JS/bootstrap.bundle.min.js'));
 });
-
+app.get('/googleSignIn.js', (req, res) => {
+  res.contentType("text/javascript");
+  res.sendFile(path.join(__dirname,'../JS/googleSignIn.js'));
+});
+app.get('/parallax.gif', (req, res) => {
+  res.contentType("text/javascript");
+  res.sendFile(path.join(__dirname,'../img/parallax.gif'));
+});
 
 
 
@@ -75,6 +82,11 @@ app.get('/index.css', (req, res) => {
 app.get('/bootstrap.min.css', (req, res) => {
     res.contentType("text/css");
     res.sendFile(path.join(__dirname,'../CSS/bootstrap.min.css'));
+});
+
+app.get('/all.css', (req, res) => {
+  res.contentType("text/css");
+  res.sendFile(path.join(__dirname,'../CSS/all.css'));
 });
 
 app.listen(8000, () => console.log('Gator app listening on port 3000!'))
