@@ -1,4 +1,4 @@
-/*Now CSS works well, still we have to figure out how to 
+/*Now CSS works well, still we have to figure out how to
  *make the map a little less thin and it should be ok.
  *Link to the example from which i took the CSS:
  *http://jsfiddle.net/agorshkov23/5osbcpyc/
@@ -77,4 +77,24 @@ body > div.mapContainer {
 }
 .light > .leaflet-popup-tip-container > .leaflet-popup-tip{
   background-color: var(--light);
+}
+
+.modal-header {
+  text-align: center;
+}
+
+.modal-title{
+  width: 100%;
+}
+
+.modal-body {
+  text-align: center;
+}
+
+.modal-body > label {
+  padding-right: 2%;
+}
+#btn-close-modal{
+  margin: 0px;
+  padding: 0px;
 }

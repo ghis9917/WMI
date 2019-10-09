@@ -4,8 +4,21 @@ var waypoints = [];
 var control = null;
 var routingMode = 'foot'
 
-/*Sets up the map are of the html file 
+/*Sets up the map are of the html file
 */
+
+function getLatLng(){
+  if($("#search-nogps").val() != ""){
+  $.ajax({
+    url: "https://api.opencagedata.com/geocode/v1/json?q="+$("#search-nogps").val()+"&key=4e6db93d236944d68db1551367316df5&language=it&pretty=1",
+    success: function(result){
+      console.log(result.results[0].geometry.lat);
+        console.log(result.results[0].geometry.lng);
+    }});
+  }
+}
+
+
 function newMap(data = null){
   if (data !== null){
     return reloadMap(data);
@@ -14,20 +27,20 @@ function newMap(data = null){
   }
 }
 
-/*Reloads the last map to center the 
+/*Reloads the last map to center the
   map on the current user position.
 */
 function reloadMap(data){
   /*TODO: This function recreates a map
-          exactly like createFirstMap() 
-          would do, but it takes data 
+          exactly like createFirstMap()
+          would do, but it takes data
           which containts all the data
-          it needs to reload all the things 
+          it needs to reload all the things
           created on the last map.
   */
 }
 
-/*To be called only in the html file 
+/*To be called only in the html file
   when the user page is loaded.
   It creates the first map in the page,
   when the maps has to be reloaded with JS
@@ -37,10 +50,10 @@ function reloadMap(data){
 const createFirstMap = () => {
   var currentLocation = L.marker([0, 0]).on('click', function(e){
     if ((control !== null)&&(control.getWaypoints().length > 1)) {
-      var destBtn = createButton('Da implementare'); 
+      var destBtn = createButton('Da implementare');
 
       L.DomEvent.on(destBtn, 'click', function() {
-        
+
       });
       currentLocation.bindPopup(destBtn, setPopupColor());
     }
@@ -51,7 +64,8 @@ const createFirstMap = () => {
   mymap = getLocation(mymap, currentLocation);
   addButton(mymap, currentLocation);
   addControlListener(mymap, currentLocation);
-  //addGeoSearch(mymap);
+  var obj = ("#search-nogps");
+  addGeoSearch(mymap);
   addLayer(mymap);
   onClick(mymap);
   currentLocation.addTo(mymap);
@@ -65,7 +79,7 @@ const createFirstMap = () => {
 const onClickMarker = (mymap, mark) => {
   mark.on('click', function(e){
     var removeBtn = createButton('Remove Waypoint');
-    
+
     L.DomEvent.on(removeBtn, 'click', function() {
       mymap.closePopup();
       var route = control.getWaypoints();
@@ -111,7 +125,7 @@ const onClick = (mymap) => {
         .setContent(addBtn)
         .setLatLng(e.latlng)
         .openOn(mymap);
-  });  
+  });
 }
 
 /*Adds a rounting calculator to the map
@@ -156,11 +170,11 @@ function addButton(mymap, currentLocation){
     }else {
       mymap = getLocation(mymap, currentLocation);
     }
-    
+
   }).addTo(mymap);
 }
 
-/*Add a control listener to know when someone used the 
+/*Add a control listener to know when someone used the
   GeoSearch to get the coords of an address
 */
 function addControlListener(mymap, currentLocation){
@@ -187,10 +201,11 @@ function getLocation(mymap, currentLocation){
         })
        .on('locationerror', function(e){
           /*Add a handler:
-            we should be able to get the user address 
+            we should be able to get the user address
             and search it, maybe suggesting the results
             while they're typing.
           */
+          $("#exampleModal").modal()
           console.log(e);
         });
 }
@@ -206,14 +221,15 @@ function addLayer(mymap){
   }).addTo(mymap);
 }
 
-/*Creates the Control object which let 
-  the user to search his position by 
+/*Creates the Control object which let
+  the user to search his position by
   typing the address in the search bar
 */
 
-function addGeoSearch(popup){
-  var GeoSearchControl = window.GeoSearch.GeoSearchControl;
+function addGeoSearch(mymap){
+/*  var GeoSearchControl = window.GeoSearch.GeoSearchControl;
   var OpenStreetMapProvider = window.GeoSearch.OpenStreetMapProvider;
+  console.log(GeoSearchControl);
   var provider = new OpenStreetMapProvider();
   searchControl = new GeoSearchControl({
     provider: provider,
@@ -221,5 +237,11 @@ function addGeoSearch(popup){
     retainZoomLevel: false,
     animateZoom: true
   });
-  return searchControl;
+  return searchControl;*/
+
+
+  var search = BootstrapGeocoder.search({
+       inputTag: 'address',
+       placeholder: 'ex. LAX'
+     }).addTo(mymap);
 }

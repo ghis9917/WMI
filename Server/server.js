@@ -59,12 +59,14 @@ app.get('/googleSignIn.js', (req, res) => {
   res.contentType("text/javascript");
   res.sendFile(path.join(__dirname,'../JS/googleSignIn.js'));
 });
-app.get('/parallax.gif', (req, res) => {
+app.get('/GeosearchInput.js', (req, res) => {
   res.contentType("text/javascript");
-  res.sendFile(path.join(__dirname,'../img/parallax.gif'));
+  res.sendFile(path.join(__dirname,'../JS/GeosearchInput.js'));
 });
-
-
+app.get('/bootstrap-geocoder.js', (req, res) => {
+  res.contentType("text/javascript");
+  res.sendFile(path.join(__dirname,'../JS/bootstrap-geocoder.js'));
+});
 
 
 app.get('/favicon.ico', (req, res) => {
@@ -89,4 +91,13 @@ app.get('/all.css', (req, res) => {
   res.sendFile(path.join(__dirname,'../CSS/all.css'));
 });
 
-app.listen(8000, () => console.log('Gator app listening on port 3000!'))
+
+app.get('/parallax.gif', (req, res) => {
+  res.contentType("text/javascript");
+  res.sendFile(path.join(__dirname,'../img/parallax.gif'));
+});
+
+
+
+
+app.listen(8000, () => console.log('Gator app listening on port 8000!'))

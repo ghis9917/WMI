@@ -49,23 +49,25 @@
   <script type="text/javascript" src="speechSynthesis.js"></script>
   <script type="text/javascript" src="newMap.js"></script>
   <script type="text/javascript" src="changeTheme.js"></script>
+  <script type="text/javascript" src="bootstrap-geocoder.js"></script>
   <link type="text/css" rel="stylesheet" href="style.css" />
   <script src="lrm-graphhopper.js"></script>
 
   <script>
+
     $(document).ready(function () {
       newMap();
+      $('#search-nogps').bind('input propertychange', function() {
+
+      });
     });
   </script>
 </head>
 
 <body>
-  <nav class="navbar navbar-collapse-lg navbar-fixed-top navbar-light bg-light" id="myNavBar">
+  <nav class="navbar navbar-expand-lg navbar-fixed-top navbar-light bg-light" id="myNavBar">
     <a id="elA" class="navbar-brand" href="#">Where Am I?</a>
-    <div class="custom-control custom-switch">
-      <input type="checkbox" class="custom-control-input" id="themeSwitch" onclick="changeTheme()">
-      <label class="custom-control-label" for="themeSwitch" id="switchLabel">Light/Dark</label>
-    </div>
+
     <button id="elB" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
       aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -97,6 +99,12 @@
         <li class="nav-item">
           <a class="nav-link disabled" href="#">TODO</a>
         </li>
+        <li>
+          <div class="custom-control custom-switch">
+            <input type="checkbox" class="custom-control-input" id="themeSwitch" onclick="changeTheme()">
+            <label class="custom-control-label" for="themeSwitch" id="switchLabel">Light/Dark</label>
+          </div>
+        </li>
       </ul>
       <form class="form-inline my-2 my-lg-0">
         <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
@@ -107,6 +115,34 @@
   <div class="mapContainer">
     <div id="mapid"></div>
   </div>
+
+
+  <!-- Modal get Address -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Inserisci</h5>
+          <button id="btn-close-modal" type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <label>Inserisci:</label>
+          <input class="form-control"
+         type="text"
+         id="address"
+         autocomplete="off"
+         autofocus/>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" onclick="getLatLng()">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </body>
 
 </html>
