@@ -1,3 +1,6 @@
+
+
+
 class Map {
     constructor() {
       this.lat = 0;
@@ -38,10 +41,10 @@ class Map {
 
     getLocation(){
       this.mymap.locate({setView: true, watch: false, locateOptions:{ enableHighAccuracy: true}})
-           .on('locationfound', function(e){
+           .on('locationfound', (e)=>{
                this.lat = e.latitude;
                this.lng = e.longitude;
-               addMarker();
+               this.addMarker();
            })
           .on('locationerror', function(e){
              /*Add a handler:
@@ -84,6 +87,9 @@ class Map {
       }else {
         this.currentLocation = L.marker([this.lat, this.lng]);
         this.currentLocation.addTo(this.mymap);
+        this.mymap.setView(this.currentLocation.getLatLng(), 16);
+
+        //console.log(this.mymap.fitBounds(L.latLngBounds([this.currentLocation.getLatLng()])));
       }
     }
     errore(){

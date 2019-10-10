@@ -95,10 +95,11 @@ app.get('/all.css', (req, res) => {
 });
 
 
-app.get('/parallax.gif', (req, res) => {
-  res.contentType("text/javascript");
-  res.sendFile(path.join(__dirname,'../img/parallax.gif'));
+app.get('/getBlobDuration', (req, res) => {
+  res.send("diocane");
 });
+
+
 
 
 
