@@ -61,7 +61,17 @@
     $(document).ready(function () {
         initApy();
         newMap();
-    
+        $("#address").click(function(){
+              $('.ap-input').css({'backgroundColor':'white'});
+        });
+        $(document).click(function(e) {
+              if (!$(e.target).closest('.modal-dialog').length) {
+                  var valore = $("#address");
+                  if(valore.text() == ""){
+                    $('.ap-input').css({'backgroundColor':'red'});
+                  }
+              }
+          });
     });
   </script>
 </head>
@@ -117,9 +127,8 @@
   <div class="mapContainer">
     <div id="mapid"></div>
   </div>
-
   <!-- Modal get Address -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
