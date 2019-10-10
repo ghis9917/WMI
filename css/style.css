@@ -87,9 +87,6 @@ body > div.mapContainer {
   width: 100%;
 }
 
-.modal-body {
-  text-align: center;
-}
 
 .modal-body > label {
   padding-right: 2%;
@@ -97,4 +94,8 @@ body > div.mapContainer {
 #btn-close-modal{
   margin: 0px;
   padding: 0px;
+}
+
+.ap-dataset-places {
+  color: red;
 }

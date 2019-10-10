@@ -3,21 +3,31 @@ var searchControl;
 var waypoints = [];
 var control = null;
 var routingMode = 'foot'
-
+var mymap;
 /*Sets up the map are of the html file
 */
+var currentLocation;
 
 function getLatLng(){
-  if($("#search-nogps").val() != ""){
+  if($("#address").val() != ""){
   $.ajax({
-    url: "https://api.opencagedata.com/geocode/v1/json?q="+$("#search-nogps").val()+"&key=4e6db93d236944d68db1551367316df5&language=it&pretty=1",
+    url: "https://api.opencagedata.com/geocode/v1/json?q="+$("#address").val()+"&key=4e6db93d236944d68db1551367316df5&language=it&pretty=1",
     success: function(result){
-      console.log(result.results[0].geometry.lat);
-        console.log(result.results[0].geometry.lng);
+        currentLocation.setLatLng([result.results[0].geometry.lat, result.results[0].geometry.lng]);
+        if (control === null){
+          addRouting(mymap);
+        }
     }});
   }
 }
 
+function initApy(){
+  var placesAutocomplete = places({
+    appId: 'plTCO8O9NAP7',
+    apiKey: 'a5c7d70d42023f9e0afdfa6bac7a2634',
+    container: document.querySelector('#address')
+  });
+}
 
 function newMap(data = null){
   if (data !== null){
@@ -48,7 +58,7 @@ function reloadMap(data){
   the optional parameter.
 */
 const createFirstMap = () => {
-  var currentLocation = L.marker([0, 0]).on('click', function(e){
+   currentLocation = L.marker([0,0]).on('click', function(e){
     if ((control !== null)&&(control.getWaypoints().length > 1)) {
       var destBtn = createButton('Da implementare');
 
@@ -58,14 +68,16 @@ const createFirstMap = () => {
       currentLocation.bindPopup(destBtn, setPopupColor());
     }
   });
-  var mymap = L.map('mapid', {
+
+   mymap = L.map('mapid', {
     zoomControl: true
   });
+
   mymap = getLocation(mymap, currentLocation);
   addButton(mymap, currentLocation);
   addControlListener(mymap, currentLocation);
   var obj = ("#search-nogps");
-  addGeoSearch(mymap);
+  //addGeoSearch(mymap);
   addLayer(mymap);
   onClick(mymap);
   currentLocation.addTo(mymap);
@@ -198,6 +210,7 @@ function getLocation(mymap, currentLocation){
             if (control === null){
               addRouting(mymap);
             }
+
         })
        .on('locationerror', function(e){
           /*Add a handler:
@@ -205,8 +218,8 @@ function getLocation(mymap, currentLocation){
             and search it, maybe suggesting the results
             while they're typing.
           */
-          $("#exampleModal").modal()
-          console.log(e);
+          $("#exampleModal").modal();
+
         });
 }
 
@@ -238,7 +251,6 @@ function addGeoSearch(mymap){
     animateZoom: true
   });
   return searchControl;*/
-
 
   var search = BootstrapGeocoder.search({
        inputTag: 'address',

@@ -53,13 +53,15 @@
   <link type="text/css" rel="stylesheet" href="style.css" />
   <script src="lrm-graphhopper.js"></script>
 
+
+<script src="https://cdn.jsdelivr.net/npm/places.js@1.16.6"></script>
+
   <script>
 
     $(document).ready(function () {
-      newMap();
-      $('#search-nogps').bind('input propertychange', function() {
-
-      });
+        initApy();
+        newMap();
+    
     });
   </script>
 </head>
@@ -116,7 +118,6 @@
     <div id="mapid"></div>
   </div>
 
-
   <!-- Modal get Address -->
   <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -129,15 +130,11 @@
         </div>
         <div class="modal-body">
           <label>Inserisci:</label>
-          <input class="form-control"
-         type="text"
-         id="address"
-         autocomplete="off"
-         autofocus/>
+          <input type="search" id="address" class="form-control" placeholder="Where are we going?" />
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" onclick="getLatLng()">Save changes</button>
+          <button type="button" class="btn btn-primary" onclick="getLatLng()" data-dismiss="modal">Save changes</button>
         </div>
       </div>
     </div>
