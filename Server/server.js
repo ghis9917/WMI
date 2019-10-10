@@ -67,7 +67,10 @@ app.get('/bootstrap-geocoder.js', (req, res) => {
   res.contentType("text/javascript");
   res.sendFile(path.join(__dirname,'../JS/bootstrap-geocoder.js'));
 });
-
+app.get('/mapclass.js', (req, res) => {
+  res.contentType("text/javascript");
+  res.sendFile(path.join(__dirname,'../JS/mapclass.js'));
+});
 
 app.get('/favicon.ico', (req, res) => {
   res.status(204).json({nope: true});

@@ -8,26 +8,6 @@ var mymap;
 */
 var currentLocation;
 
-function getLatLng(){
-  if($("#address").val() != ""){
-  $.ajax({
-    url: "https://api.opencagedata.com/geocode/v1/json?q="+$("#address").val()+"&key=4e6db93d236944d68db1551367316df5&language=it&pretty=1",
-    success: function(result){
-        currentLocation.setLatLng([result.results[0].geometry.lat, result.results[0].geometry.lng]);
-        if (control === null){
-          addRouting(mymap);
-        }
-    }});
-  }
-}
-
-function initApy(){
-  var placesAutocomplete = places({
-    appId: 'plTCO8O9NAP7',
-    apiKey: 'a5c7d70d42023f9e0afdfa6bac7a2634',
-    container: document.querySelector('#address')
-  });
-}
 
 function newMap(data = null){
   if (data !== null){

@@ -50,6 +50,7 @@
   <script type="text/javascript" src="newMap.js"></script>
   <script type="text/javascript" src="changeTheme.js"></script>
   <script type="text/javascript" src="bootstrap-geocoder.js"></script>
+  <script type="text/javascript" src="mapclass.js"></script>
   <link type="text/css" rel="stylesheet" href="style.css" />
   <script src="lrm-graphhopper.js"></script>
 
@@ -57,18 +58,27 @@
 <script src="https://cdn.jsdelivr.net/npm/places.js@1.16.6"></script>
 
   <script>
-
+    function errore(){
+      $('.ap-input').css({'backgroundColor':'red'});
+    }
     $(document).ready(function () {
-        initApy();
-        newMap();
+        const map = new Map();
+        map.initApy();
+        map.setMap();
+        $("#btn-load").click(function(){
+            map.getLatLng();
+        });
+
         $("#address").click(function(){
               $('.ap-input').css({'backgroundColor':'white'});
+              $('.ap-input').val("");
         });
+
         $(document).click(function(e) {
               if (!$(e.target).closest('.modal-dialog').length) {
                   var valore = $("#address");
                   if(valore.text() == ""){
-                    $('.ap-input').css({'backgroundColor':'red'});
+                      map.errore();
                   }
               }
           });
@@ -143,7 +153,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" onclick="getLatLng()" data-dismiss="modal">Save changes</button>
+          <button type="button" class="btn btn-primary" id="btn-load">Save changes</button>
         </div>
       </div>
     </div>
