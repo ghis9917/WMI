@@ -62,7 +62,7 @@
       $('.ap-input').css({'backgroundColor':'red'});
     }
     $(document).ready(function () {
-      
+
         const map = new Map();
         map.initApy();
         map.setMap();
@@ -77,7 +77,6 @@
               $('.ap-input').css({'backgroundColor':'white'});
               $('.ap-input').val("");
         });
-
         $(document).click(function(e) {
               if (!$(e.target).closest('.modal-dialog').length) {
                   var valore = $("#address");
@@ -86,6 +85,7 @@
                   }
               }
           });
+          map.getCorner();
     });
   </script>
 </head>

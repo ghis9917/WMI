@@ -4,4 +4,4 @@
 function getOLC(latitude, longitude) {
                 val = OpenLocationCode.encode(latitude, longitude, OpenLocationCode.CODE_PRECISION_NORMAL)
                 return val
-            }
+}

@@ -95,4 +95,7 @@ class Map {
     errore(){
           $('.ap-input').css({'backgroundColor':'red'});
     }
+    getCorner(){
+      console.log((this.mymap));
+    }
 }
