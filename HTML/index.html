@@ -1,13 +1,13 @@
 <html>
 
 <head>
-
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://apis.google.com/js/api.js"></script>
   <!-- Bootstrap 4 -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
-
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
   <meta name="google-signin-scope" content="profile email">
   <meta name="google-signin-client_id"
     content="96653811721-8489smrotsfejm2b9ji2jq2okq83n2bq.apps.googleusercontent.com">
@@ -20,7 +20,24 @@
   <link type="text/css" rel="stylesheet" href="all.css" />
   <link type="text/css" rel="stylesheet" href="index.css" />
   <script type="text/javascript" src="googleSignIn.js"></script>
-  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://apis.google.com/js/api.js"></script>
+  <script>
+    function storeInfo(){
+      var profile = getDataLogin();
+      console.log(profile);
+      $.ajax({
+        type: "POST",
+        url: "http://localhost:8000/insert?email="+profile.getEmail()+"&name="+profile.getName()+"&urlimage="+profile.getImageUrl()+"&id="+profile.getId(),
+         success: function(result){
+           console.log(result);
+         },
+         error : function(){
+           alert ("non va");
+         }
+       });
+    }
+  </script>
 </head>
 
 <body>
@@ -96,6 +113,9 @@
       </div>
     </div>
 
+<button onclick="storeInfo()">
+  click
+</button>
 
 </body>
 </html>

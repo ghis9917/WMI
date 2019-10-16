@@ -1,3 +1,5 @@
+var p;
+
 function onSignIn(googleUser) {
     console.log("In the function");
     var profile = googleUser.getBasicProfile();
@@ -5,6 +7,7 @@ function onSignIn(googleUser) {
     console.log('Name: ' + profile.getName());
     console.log('Image URL: ' + profile.getImageUrl());
     console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+  p = profile;
 }
 
 function signOut() {
@@ -12,4 +15,9 @@ function signOut() {
     auth2.signOut().then(function () {
       console.log('User signed out.');
     });
+}
+
+
+function getDataLogin(){
+  return p;
 }
