@@ -10,7 +10,7 @@
 <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
   <meta name="google-signin-scope" content="profile email">
   <meta name="google-signin-client_id"
-    content="96653811721-8489smrotsfejm2b9ji2jq2okq83n2bq.apps.googleusercontent.com">
+    content="96653811721-8oobhsk5dh915ctggai3amn5n6nb2sm5.apps.googleusercontent.com">
   <script src="https://apis.google.com/js/platform.js" async defer></script>
 
   <script type="text/javascript" src="jquery.slim.min.js"></script>
@@ -20,22 +20,12 @@
   <link type="text/css" rel="stylesheet" href="all.css" />
   <link type="text/css" rel="stylesheet" href="index.css" />
   <script type="text/javascript" src="googleSignIn.js"></script>
+  <script type="text/javascript" src="mongoDB.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://apis.google.com/js/api.js"></script>
+  <script src="https://apis.google.com/js/api.js"></script>
   <script>
     function storeInfo(){
-      var profile = getDataLogin();
-      console.log(profile);
-      $.ajax({
-        type: "POST",
-        url: "http://localhost:8000/insert?email="+profile.getEmail()+"&name="+profile.getName()+"&urlimage="+profile.getImageUrl()+"&id="+profile.getId(),
-         success: function(result){
-           console.log(result);
-         },
-         error : function(){
-           alert ("non va");
-         }
-       });
+      sendDataLogin();
     }
   </script>
 </head>

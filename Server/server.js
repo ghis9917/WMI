@@ -1,6 +1,19 @@
 const express = require('express');
 const app = express();
 const path = require('path');
+var client = require('mongodb').MongoClient;
+client.connect("mongodb://localhost:27017/",
+  function(error, db) {
+    if(! error) {
+        var mydb = db.db("WMIdb");
+        mydb.collection("Login").findOne({}, function(err, result) {
+    if (err) throw err;
+    console.log(result);
+    db.close();
+  });
+      }
+    }
+);
 
 
 app.get('/', (req, res) => {
@@ -72,6 +85,12 @@ app.get('/mapclass.js', (req, res) => {
   res.sendFile(path.join(__dirname,'../JS/mapclass.js'));
 });
 
+app.get('/mongoDB.js', (req, res) => {
+  res.contentType("text/javascript");
+  res.sendFile(path.join(__dirname,'../JS/mongoDB.js'));
+});
+
+
 app.get('/favicon.ico', (req, res) => {
   res.status(204).json({nope: true});
 });
@@ -99,7 +118,9 @@ app.get('/getBlobDuration', (req, res) => {
   res.send("diocane");
 });
 
-
+app.post('/insert', (req, res) => {
+  console.log(mydb);
+});
 
 
 
