@@ -119,7 +119,7 @@ app.get('/getBlobDuration', (req, res) => {
 });
 
 app.post('/insert', (req, res) => {
-  console.log(mydb);
+
 });
 
 
