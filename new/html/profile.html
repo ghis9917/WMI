@@ -24,6 +24,10 @@
     <link rel="stylesheet" href="  css/styles.css">
 
 
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
@@ -32,6 +36,21 @@
         <script src="https://apis.google.com/js/api.js"></script>
         <script src="https://apis.google.com/js/platform.js" async defer></script>
         <script type="text/javascript" src="js/googleSignIn.js"></script>
+        <script>
+        $(document).ready(function(){
+          getLog();
+        });
+        </script>
+        <style>
+        #spinner{
+          height: 100%;
+        }
+        .spinner-border{
+          position: absolute;
+          top:50%;
+          bottom:50%;
+        }
+        </style>
 </head>
 
 <body style="width: 100%;height: 100%;">
@@ -47,14 +66,51 @@
             </div>
         </div>
     </nav>
-    <section class="d-flex flex-column" style="height: 90%;">
+
+<div class="container">
+
+  <!-- The Modal -->
+  <div class="modal" id="myModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Modal Heading</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+          <h5 class="card-title text-center">Sign In!</h5>
+          <!--button class="btn btn-lg btn-google btn-block text-uppercase" type="submit"> Sign in with Google</button-->
+          <div class="g-signin2" data-onsuccess="onSignIn"></div>
+          <a href="#" onclick="signOut();">Sign out</a>
+        </div>
+
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div id="spinner"class="d-flex justify-content-center">
+      <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+      <div id="display" style="display:none">
+    <section  class="d-flex flex-column" style="height: 90%;">
         <div class="text-center profile-card" style="margin:15px;background-color:#ffffff;">
             <div class="profile-card-img" style="height: 100px;background-size: cover;"></div>
-            <div><img class="rounded-circle" style="margin-top: -70px;background-image: url(&quot;  img/antique-camera-classic-269820.jpg&quot;);" src="  img/avatar-dhg.png" height="150px">
-                <h3>Nome Cognome</h3>
+            <div><img class="rounded-circle" style="margin-top: -70px;" src="" height="150px">
+                <h3></h3>
                 <div class="text-center d-flex justify-content-center align-items-center">
-                    <p style="padding: 20px;padding-bottom: 0;padding-top: 5px;font-size: 28px;">Mail:</p>
-                    <p id ="mail" style="padding: 0px;padding-bottom: 0;padding-top: 5px;font-size: 20px;">qualcosa@mail.com</p>
+                    <p style="padding: 20px;padding-bottom: 0;padding-top: 5px;font-size: 28px;"></p>
+                    <p id ="mail" style="padding: 0px;padding-bottom: 0;padding-top: 5px;font-size: 20px;"></p>
                 </div>
             </div>
             <div class="row" style="padding: 0;padding-bottom: 0;padding-top: 0;margin: 0;">
@@ -63,12 +119,11 @@
                     <p class="text-center"><i class="fa fa-star" style="font-size: 30px;"></i><i class="fa fa-star" style="font-size: 30px;"></i><i class="fa fa-star" style="font-size: 30px;"></i><i class="fa fa-star" style="font-size: 30px;"></i><i class="fa fa-star" style="font-size: 30px;"></i></p>
                 </div>
             </div>
-        </div>
-
-        <h5 class="card-title text-center">Sign In!</h5>
-        <!--button class="btn btn-lg btn-google btn-block text-uppercase" type="submit"> Sign in with Google</button-->
-        <div class="g-signin2" data-onsuccess="onSignIn">Sign In with Google</div>
-        <a href="#" onclick="signOut();">Sign out</a>
+          </div>
+          <h5 class="card-title text-center">Sign In!</h5>
+          <!--button class="btn btn-lg btn-google btn-block text-uppercase" type="submit"> Sign in with Google</button-->
+          <div class="g-signin2" data-onsuccess="onSignIn"></div>
+          <a href="#" onclick="signOut();">Sign out</a>
         <div class="text-truncate rightContainer" style="width: 100%;">
             <div class="POIcontainer">
                 <div class="shadow" id="POI" style="margin-right: 1em;margin-left: 1em;padding: 0.5em;margin-top: 1em;" data-target="#myModal" data-toggle="modal">
@@ -347,6 +402,7 @@
             </div>
         </div>
     </section>
+  </div>
     <script src="  js/jquery.min.js"></script>
     <script src="  bootstrap/js/bootstrap.min.js"></script>
     <script src="  js/bs-animation.js"></script>
