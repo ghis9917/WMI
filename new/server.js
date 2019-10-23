@@ -6,35 +6,44 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname,'./html/index.html'));
 });
 
+function send(res,file){
+  res.sendFile(file, function(err) {
+    if(err) {
+        res.sendFile(path.join(__dirname,'./html/404.html'))
+    }
+  });
+}
+
+
 app.get('*', (req, res) => {
   switch (path.extname(req.url)) {
     case ".css":{
-      res.sendFile(path.join(__dirname,'./'+req.url));
+      send(res,path.join(__dirname,'./'+req.url));
     }break;
     case ".html":{
-      res.sendFile(path.join(__dirname,'./html/'+req.url));
+        send(res,path.join(__dirname,'./html/'+req.url));
     }break;
     case ".js":{
-      res.sendFile(path.join(__dirname,'./'+req.url));
+      send(res,path.join(__dirname,'./'+req.url));
     }break;
     case ".jpg":{
-      res.sendFile(path.join(__dirname,'./'+req.url));
+      send(res,path.join(__dirname,'./'+req.url));
     }break;
     case ".png":{
-      res.sendFile(path.join(__dirname,'./'+req.url));
+      send(res,path.join(__dirname,'./'+req.url));
     }break;
     case ".woff2":{
-      res.sendFile(path.join(__dirname,'./'+req.url));
+      send(res,path.join(__dirname,'./'+req.url));
     }break;
     case ".woff":{
-      res.sendFile(path.join(__dirname,'./'+req.url));
+      send(res,path.join(__dirname,'./'+req.url));
     }break;
     case ".ico":{
         res.status(204).json({nope: true});
     }break;
 
     default:
-      //TODO
+      res.status(404).json({nope: true});
   }
 });
 

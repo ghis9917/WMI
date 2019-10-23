@@ -4,9 +4,7 @@ function onSignIn(googleUser) {
     profile = googleUser.getBasicProfile();
       window.localStorage.removeItem('check');
       window.localStorage.setItem('check', true);
-      console.log("ma vabbe");
-     if("http://localhost:8000/profile.html" == window. location. href){
-       console.log("ma vabbe2");
+     if("http://localhost:8000/profile.html" == window. location. href || "http://localhost:8000/profile.html#" == window. location. href){
        $('#loginModal').modal('hide');
        $("h3").html("");
        $("h3").html(profile.getName());
