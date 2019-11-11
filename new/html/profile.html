@@ -26,6 +26,7 @@
     <link rel="stylesheet" href="css/Navigation-with-Button.css">
     <link rel="stylesheet" href="css/Profile-Card.css">
     <link rel="stylesheet" href="css/styles.css">
+
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <meta name="google-signin-scope" content="profile email">
     <meta name="google-signin-client_id" content="96653811721-8oobhsk5dh915ctggai3amn5n6nb2sm5.apps.googleusercontent.com">
@@ -52,8 +53,7 @@
 <body style="width: 100%;height: 100%;">
     <nav class="navbar navbar-light navbar-expand-md text-uppercase shadow navigation-clean">
         <div class="container-fluid"><a class="navbar-brand" href="index.html">Where Am I?</a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
-            <div class="collapse navbar-collapse"
-                id="navcol-1">
+            <div class="collapse navbar-collapse" id="navcol-1">
                 <ul class="nav navbar-nav ml-auto">
                     <li class="nav-item" role="presentation"><a class="nav-link" href="/userMode.html">User Mode</a></li>
                     <li class="nav-item" role="presentation"><a class="nav-link" href="/editorMode.html">Editor Mode</a></li>
@@ -67,10 +67,10 @@
         <span class="sr-only">Loading...</span>
       </div>
     </div>
-    <section class="d-flex flex-column" style="height: 90%;">
+    <section class="d-flex flex-column" style="height: 90%; display:None;">
         <div id="upper" class="text-center profile-card" style="margin:15px;background-color:#ffffff;">
             <div class="profile-card-img" style="height: 100px;background-size: cover;"></div>
-            <div id="imageContainer"><img class="rounded-circle" id="imageProfile" style="margin-top: -70px;background-image: url(&quot;img/antique-camera-classic-269820.jpg&quot;);" src="img/avatar-dhg.png" height="150px">
+            <div id="imageContainer"><img class="rounded-circle" id="imageProfile" style="margin-top: -70px;background-image: url(&quot;img/antique-camera-classic-269820.jpg&quot;);"  height="150px">
                 <div class="text-center d-flex flex-column justify-content-between align-items-center"
                     id="nameMailContainer">
                     <h3 class="d-md-flex" id="nameContainer">Nome Cognome</h3>

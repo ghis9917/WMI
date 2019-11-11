@@ -2,18 +2,78 @@ const express = require('express');
 const app = express();
 const path = require('path');
 var client = require('mongodb').MongoClient;
-client.connect("mongodb://localhost:27017/",
-  function(error, db) {
-    if(! error) {
-        var mydb = db.db("WMIdb");
-        mydb.collection("Login").findOne({}, function(err, result) {
-    if (err) throw err;
-    console.log(result);
-    db.close();
-  });
+
+app.get('/getDescription', (req, res) => {
+  client.connect("mongodb://localhost:27017/",
+    function(error, db) {
+      if(! error) {
+          var mydb = db.db("WMIdb");
+          mydb.collection("Descrizioni").find({nome : req.query.val}).toArray(function(err, result) {
+              if (err) throw err;
+              if(result.length !== 0){
+                  res.send(result);
+              }else{
+                  //TODO DBPEDIA
+                  res.send("niente");
+              }
+              db.close();
+            });
+        }
       }
-    }
-);
+  );
+});
+
+app.get('/insertDescription', (req, res) => {
+  client.connect("mongodb://localhost:27017/",
+    function(error, db) {
+      if(! error) {
+          var mydb = db.db("WMIdb");
+          var myobj = { nome: req.query.nome, descrizione: req.query.des };
+          mydb.collection("Descrizioni").insertOne(myobj, function(err, res) {
+            if (err) throw err;
+            console.log("1 document inserted");
+            db.close();
+          });
+        }
+      }
+  );
+});
+
+app.get('/insertRating', (req, res) => {
+  client.connect("mongodb://localhost:27017/",
+    function(error, db) {
+      if(! error) {
+          var mydb = db.db("WMIdb");
+          var myobj = { nome: req.query.nome, luogo: req.query.luogo,  commento: req.query.com, punteggio:req.query.punteggio};
+          mydb.collection("Commento").insertOne(myobj, function(err, res) {
+            if (err) throw err;
+            console.log("1 document inserted");
+            db.close();
+          });
+        }
+      }
+  );
+});
+
+app.get('/getRating', (req, res) => {
+  client.connect("mongodb://localhost:27017/",
+    function(error, db) {
+      if(! error) {
+          var mydb = db.db("WMIdb");
+          mydb.collection("Commento").find({luogo : req.query.val}).toArray(function(err, result) {
+              if (err) throw err;
+              if(result.length !== 0){
+                  res.send(result);
+              }else{
+                  //TODO DBPEDIA
+                  res.send("niente");
+              }
+              db.close();
+            });
+        }
+      }
+  );
+});
 
 
 app.get('/', (req, res) => {
@@ -114,9 +174,6 @@ app.get('/all.css', (req, res) => {
 });
 
 
-app.get('/getBlobDuration', (req, res) => {
-  res.send("diocane");
-});
 
 app.post('/insert', (req, res) => {
 

@@ -22,27 +22,45 @@
     <link rel="stylesheet" href="css/Navigation-with-Button.css">
     <link rel="stylesheet" href="css/Profile-Card.css">
     <link rel="stylesheet" href="css/styles.css">
-
-
-
-
-
-
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <meta name="google-signin-scope" content="profile email">
+    <meta name="google-signin-client_id" content="96653811721-8oobhsk5dh915ctggai3amn5n6nb2sm5.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script type="text/javascript" src="js/googleSignIn.js"></script>
+    <script>
+    $(document).ready(function(){
+      $("#userMode").click(function(){
+        window.location.href = '/userMode.html';
+      });
+      $("#editorMode").click(function(){
+        window.location.href = '/editorMode.html';
+      });
+    });
+    </script>
 </head>
 
 <body style="/*height: 100vh;*/">
     <section class="d-flex flex-column justify-content-between" id="page" style="height: 100vh;">
         <div>
-            <nav class="navbar navbar-light navbar-expand-md text-uppercase shadow navigation-clean-button">
-                <div class="container-fluid"><a class="navbar-brand" href="index.html">Where Am i?</a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
-                    <div
-                        class="collapse navbar-collapse text-right d-md-flex justify-content-md-end" id="navcol-1"><button class="btn btn-link" type="button" data-toggle="modal" data-target="#signInModal"><label class="text-uppercase ml-auto" style="margin: 0px 0px 0px;font-size: 20px;margin-right: 8px;color: #222222;" for="googleIcon"><strong>Log In with</strong></label><i class="fa fa-google border-warning" id="googleIcon" style="font-size: 20px;color: rgb(0,0,0);"></i></button></div>
-        </div>
-        </nav>
+            <nav class="navbar navbar-light navbar-expand-md text-uppercase shadow navigation-clean">
+                <div class="container-fluid"><a class="navbar-brand" href="index.html">Where Am I?</a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+                    <div class="collapse navbar-collapse" id="navcol-1">
+                        <ul class="nav navbar-nav ml-auto">
+                            <li class="nav-item" role="presentation"><button id="logbtn"class="btn btn-link" type="button" data-toggle="modal" data-target="#signInModal">
+                              <label class="text-uppercase ml-auto" style="margin: 0px 0px 0px;font-size: 20px;margin-right: 8px;color: #222222;" for="googleIcon">
+                                <strong>Log In with</strong></label><i class="fa fa-google border-warning" id="googleIcon" style="font-size: 20px;color: rgb(0,0,0);"></i>
+                              </button></li>
+                            <li style="display: none;" id="profile" class="nav-item" role="presentation"><a class="nav-link" href="/profile.html">Profile</a></li>
+                            <li style="display: none;" id="logout" class="nav-item" role="presentation"><a class="nav-link" onclick="signOut();" style="cursor: pointer;">LOGOUT</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
         </div>
         <div class="d-flex justify-content-center align-items-center" id="page-middle" style="height: 100%;">
             <div class="row space-rows" style="margin: 0;height: 90%;width: 90%;">
-                <div class="col" style="padding: 1em;padding-bottom: 20px;">
+                <div id="userMode" class="col" style="padding: 1em;padding-bottom: 20px;">
                     <div class="card cards-shadown cards-hover" data-aos="flip-left" data-aos-duration="950" style="height: 100%;">
                         <div class="card-header text-center d-flex d-lg-flex justify-content-center align-items-center justify-content-lg-center align-items-lg-center" style="background-image: url(&quot; img/antique-camera-classic-269820.jpg&quot;);background-size: cover;opacity: 0.80;height: 100%;background-position: center;background-repeat: no-repeat;"
                             href="window.location.href='userMode.html'">
@@ -52,7 +70,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col" style="padding: 1em;padding-bottom: 20px;">
+                <div id="editorMode" class="col" style="padding: 1em;padding-bottom: 20px;">
                     <div class="card cards-shadown cards-hover" data-aos="flip-left" data-aos-duration="950" style="height: 100%;">
                         <div class="card-header text-center d-flex d-lg-flex justify-content-center align-items-center justify-content-lg-center align-items-lg-center" style="background-image: url(&quot; img/antique-blank-camera-163182.jpg&quot;);background-size: cover;opacity: 0.80;height: 100%;background-position: center;background-repeat: no-repeat;">
                             <div class="cardheader-text"><span class="space"><a href="#"><i class="fas fa-edit" id="download-icon" style="font-size: 40px;opacity: 1;"></i></a></span>
@@ -83,7 +101,10 @@
                     <div class="modal-header">
                         <h4 class="modal-title">Sign In with Google</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
                     <div class="modal-body">
-                        <div></div>
+                        <div>
+                              <p>Click the button to log in with your google account</p>
+                              <div class="g-signin2" data-onsuccess="onSignIn"></div>
+                        </div>
                     </div>
                     <div class="modal-footer"><button class="btn btn-light" type="button" data-dismiss="modal">Close</button></div>
                 </div>
@@ -94,9 +115,7 @@
     <script src=" bootstrap/js/bootstrap.min.js"></script>
     <script src=" js/bs-animation.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.1.1/aos.js"></script>
-    <script src="https://apis.google.com/js/platform.js"></script>
     <script src="https://unpkg.com/@bootstrapstudio/bootstrap-better-nav/dist/bootstrap-better-nav.min.js"></script>
-    <script src=" js/newMap.js"></script>
 </body>
 
 </html>

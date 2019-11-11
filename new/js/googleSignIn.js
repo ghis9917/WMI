@@ -8,13 +8,21 @@ function onSignIn(googleUser) {
        $('#loginModal').modal('hide');
        $("h3").html("");
        $("h3").html(profile.getName());
-       $("#mail").html("");
-       $("#mail").html(profile.getEmail());
-       $(".rounded-circle").attr("src",profile.getImageUrl());
+       $("#email").html("");
+       $("#email").html("Email: "+profile.getEmail());
        $(".spinner-border").remove();
        $("#spinner").remove();
        $("#display").show();
+       $(".rounded-circle").attr("src",profile.getImageUrl());
      }
+     if("http://localhost:8000/" == window. location. href || "http://localhost:8000/index.html" == window. location. href){
+       $('#signInModal').modal('hide');
+       $('#profile').show();
+       $('#logout').show();
+       $('#logbtn').hide();
+       $('.close').click();
+     }
+
 }
 
 function signOut() {

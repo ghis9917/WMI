@@ -5,6 +5,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>WMI</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
     <link rel="stylesheet" href=" bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:300,400,600">
     <link rel="stylesheet" href=" fonts/fontawesome-all.min.css">
@@ -22,6 +24,15 @@
     <link rel="stylesheet" href=" css/Navigation-with-Button.css">
     <link rel="stylesheet" href=" css/Profile-Card.css">
     <link rel="stylesheet" href=" css/styles.css">
+
+    <script src="js/map.js"></script>
+    <script>
+      $(document).ready(function (){
+        getLocation();
+        getMap();
+      });
+    </script>
+
 </head>
 
 <body class="d-flex flex-column justify-content-between">
@@ -44,7 +55,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.1.1/aos.js"></script>
     <script src="https://apis.google.com/js/platform.js"></script>
     <script src="https://unpkg.com/@bootstrapstudio/bootstrap-better-nav/dist/bootstrap-better-nav.min.js"></script>
-    <script src=" js/newMap.js"></script>
 </body>
 
 </html>

@@ -69,7 +69,7 @@
         $("#btn-load").click(function(){
             map.getLatLng();
         });
-        $('#exampleModal').keypress(function(e){
+        $('#noGeo').keypress(function(e){
               if(e.keyCode==13)
               $('#btn-load').click();
             });
@@ -142,7 +142,7 @@
     <div id="mapid"></div>
   </div>
   <!-- Modal get Address -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+  <div class="modal fade" id="noGeo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">

@@ -55,7 +55,7 @@ class Map {
                      $('.ap-input').css({'backgroundColor':'white'});
                      $('.ap-input').val("");
                });
-             $("#exampleModal").modal();
+             $("#noGeo").modal();
            });
     }
     getLatLng(){
@@ -66,8 +66,8 @@ class Map {
               if(result.results.length != 0){
                 this.lat = result.results[0].geometry.lat;
                 this.lng = result.results[0].geometry.lng;
-                this.addMarker();
-                $('#exampleModal').modal('toggle');
+
+                $('#noGeo').modal('toggle');
               }else{
                 this.errore();
               }
