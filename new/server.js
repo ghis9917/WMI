@@ -4,9 +4,10 @@ const multer  = require('multer');
 var toWav = require('audiobuffer-to-wav')
 const app = express();
 const path = require('path');
+const youtubeSearch = require('youtube-search');
+
 
 app.use(express.static('public')); // for serving the HTML file
-
 
 const storage = multer.diskStorage({
   destination: './public/uploads',
@@ -14,18 +15,33 @@ const storage = multer.diskStorage({
       cb(null, Date.now() + '-' + file.originalname )
   }
 })
-var upload = multer({ 
+var upload = multer({
   destination: storage
 });
 var type = upload.single('upl');
+
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname,'./index.html'));
 });
 
+app.get('/getPOIs', (req, res) => {
+  console.log("coglionazzo");
+  var opts =  youtubeSearch.YouTubeSearchOptions = {
+    maxResults: 20,
+    key: "AIzaSyBEpETjNZc18OP9L603YkzOvotslkQiBGI"
+  };
+
+  youtubeSearch("8FPH0000", opts, (err, results) => {
+    if(err) return console.log(err);
+    res.send(results);
+  });
+});
+
 app.get('/poi', (req, res) => {
   res.sendFile(path.join(__dirname,'./poi.json'));
 });
+
 
 app.get('/getRoutes', (req, res) => {
   console.log(req.query);

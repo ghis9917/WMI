@@ -1,0 +1,1 @@
+Updating old libraries, adding example to fetch detailed videos from a channel.
