@@ -1,11 +1,13 @@
 var lat, lon;
 var searchControl;
+var waypoints = [];
 var control = null;
 var distanceRouting = null;
 var routingMode = 'foot'
 var mymap;
 var POIs = {}
 var Desc = {}
+var dsts,ret;
 /*Sets up the map are of the html file
 */
 var currentLocation;
@@ -13,6 +15,18 @@ var currentLocation;
 $(document).ready(function () {
   newMap();
 });
+
+$("#stop").click(function(){
+
+  document.getElementById('dad').hidden = true;
+  try{
+    document.getElementById('iframe').stop();
+  }
+  catch{
+
+  }
+
+})
 
 function newMap(data = null) {
   if (data !== null) {
@@ -107,20 +121,37 @@ const createFirstMap = () => {
 // }
 
 const onClickMarker = (mymap, mark) => {
+  console.log("mark.i")
+  console.log(mark["i"])
   mark.on('click', function (e) {
-    // var Description = createButton('Description');
-    // var removeBtn = createButton('Description');
-    L.DomEvent.on(removeBtn, 'click', function () {
-      control.spliceWaypoints(control.getWaypoints().length - 1, 1, e.latlng);
-      // alert(Desc[mark.getLatLng()]);
-    });
-    mark.bindPopup(removeBtn, "#ffffff");
-
+    var description;
+    if(ret < 10) {
+      mark.bindPopup(description, "#ffffff");
+      showInfo();
+      return;
+    }
+    else{
+      description = createButton('Description');
+      L.DomEvent.on(description, 'click', function () {
+        var div = document.getElementById('dad');
+        var text = document.getElementById('text');
+        var button = document.getElementById('route');
+        button.hidden = false;
+        $("#route").click(function(){
+          control.spliceWaypoints(control.getWaypoints().length - 1, 1, e.latlng);
+          button.hidden = true;
+        });
+        console.log(text)
+        text.innerHTML = Desc[e.latlng];
+        div.hidden = false;
+      });
+    }
+    mark.bindPopup(description, "#ffffff");
+  });
     /*L.popup()
         .setContent(container)
         .setLatLng(mark.getLatLng())
         .openOn(mymap);*/
-  });
 }
 
 const onClick = (mymap) => {
@@ -130,6 +161,7 @@ const onClick = (mymap) => {
 
     L.DomEvent.on(addBtn, 'click', function () {
       mymap.closePopup();
+      waypoints.push(L.latLng([0, 0]));
       var newMarker = L.marker(e.latlng);
       onClickMarker(mymap, newMarker);
       newMarker.addTo(mymap);
@@ -189,15 +221,16 @@ function validator(d){
   }
 }
 
-function ajax1(q, API_KEY){
+function ajax1(q){
+  var API_KEY = "AIzaSyBEpETjNZc18OP9L603YkzOvotslkQiBGI";
   return $.ajax({
     url: "https://www.googleapis.com/youtube/v3/search?part=snippet&q=" + q + "&key=" + API_KEY+"&maxResults=50",
     success: function (data) {
       $.each(data.items, (key, item) => {
-        console.log(item);
+        // console.log(item);
         if ((prova = validator(item.snippet.description)) !== false){
           POIs[item.snippet.title] = prova
-          POIs[item.snippet.title].videoId = item.id.videoId
+          POIs[item.snippet.title].videoId = item.id.videoId;
         }
       });
     },
@@ -248,53 +281,91 @@ function ajax2(search,ll){
 // });
 // }
 
-function askDst(val) {
-  var API_KEY = "AIzaSyBEpETjNZc18OP9L603YkzOvotslkQiBGI";
-  var q = "", vid;
 
+function showInfo(){
+  var div = document.getElementById('dad');
+    audio_streams = {},
+    audio_tag = document.getElementById('iframe');
+    fetch("https://"+dsts.poi.videoId+"-focus-opensocial.googleusercontent.com/gadgets/proxy?container=none&url=https%3A%2F%2Fwww.youtube.com%2Fget_video_info%3Fvideo_id%3D" + dsts.poi.videoId).then(response => {
+      if (response.ok) {
+        response.text().then(data => {
+          var data = parse_str(data),
+          streams = (data.url_encoded_fmt_stream_map + ',' + data.adaptive_fmts).split(',');
+          streams.forEach(function(s, n) {
+            var stream = parse_str(s),
+            itag = stream.itag * 1,
+            quality = false;
+            console.log(stream);
+            switch (itag) {
+              case 139:
+                quality = "48kbps";
+                break;
+                case 140:
+                quality = "128kbps";
+                break;
+                case 141:
+                quality = "256kbps";
+                break;
+            }
+            if (quality) audio_streams[quality] = stream.url;
+          });
+          console.log(audio_streams);
+          audio_tag.src = audio_streams['128kbps'];
+          audio_tag.controls = true;
+          div.hidden = false;
+          audio_tag.play();
+        })
+      }
+    });
+}
+
+function parse_str(str) {
+    return str.split('&').reduce(function(params, param) {
+        var paramSplit = param.split('=').map(function(value) {
+            return decodeURIComponent(value.replace('+', ' '));
+        });
+        params[paramSplit[0]] = paramSplit[1];
+        return params;
+    }, {});
+}
+
+function askDst(val = null  ) {
+  var q = "", vid;
   // else if(val == 3) //controlla distanza per avviare audio o farlo in automatico
   if(val == 2){ //Primo caso, trova il punto piu vicino
     q += OpenLocationCode.encode(lat, lon, 4);
-    $.when(ajax1(q, API_KEY)).done(function(){           //inserisce i marker trovati su youtube, da fare solo una volta (?)
-      var dsts = distFromUser(POIs);
+    $.when(ajax1(q)).done(function(){           //inserisce i marker trovati su youtube, da fare solo una volta (?)
+       console.log("POI")
+       console.log(POIs)
+
+      dsts = distFromUser(POIs);
+      var latlng;
       $.each(POIs, (key, item) => {
-        var latlng = L.latLng(item.latitudeCenter, item.longitudeCenter);
+        waypoints.push(L.latLng([0, 0]));
+        latlng = L.latLng(item.latitudeCenter, item.longitudeCenter);
         var newMarker = L.marker(latlng);
-        $.when(ajax2(key,latlng)).done(function(){
-          console.log("KEY SEARCHED IS: " + key)
-        });
+        Desc[latlng] = key;
         onClickMarker(mymap, newMarker);
         newMarker.addTo(mymap);
-        // if ((control.getWaypoints())[1].latLng === null) {
-        //   // control.spliceWaypoints(control.getWaypoints().length - 1, 1, latlng);
-        // } else {
-        //
-        //   // control.setWaypoints(route);
-        //
-        // }
-        // var marker = L.marker([item.latitudeCenter, item.longitudeCenter]).addTo(mymap);
       });
       control.spliceWaypoints(control.getWaypoints().length - 1, 1,L.latLng([dsts.poi.latitudeCenter,dsts.poi.longitudeCenter]));
       var route = control.getWaypoints();
       route.push(latlng);
-      // the code here will be executed when all four ajax requests resolve.
-      // a1, a2, a3 and a4 are lists of length 3 containing the response text,
     });
   }
   else{
     //aggiornata posizione controllare se e' a meno di 10metri
-    var dist = distFromUser(dsts);
-    if(dist.distance < 10){
-      console.log("ARRIVATO")
+    var url = "https://graphhopper.com/api/1/matrix?from_point=" + lat + "," + lon;
+    url += "&to_point=" + dsts.poi.latitudeCenter + "," + dsts.poi.longitudeCenter;
+    url += "&type=json&vehicle=foot&debug=true&out_array=weights&out_array=times&out_array=distances&key=653995f0-72fe-4af8-b598-60e50479a0c2";
+    $.when(ajax3(url)).done(function(data){
+       ret = data.distances[0][0];
+    });
+    console.log(ret);
+    if(ret < 10){
+      showInfo();
     }
-
   }
-
-    // for (Object.keys(POIs)){
-  //   console.log(key)
-  //   console.log(POIs[key]["latitudeLo"])
-  // }
-
 }
 
 /*function askDst(d = null) {
@@ -319,22 +390,17 @@ function askDst(val) {
   });
 }*/
 function ajax3(url){
-  try{
   return   $.ajax({
       type: "get",
       async: false,
       url: url
     });
-  }
-  catch{
-    console.log("CATCH ERROR")
-  }
 }
 
 function distFromUser(list) {
   var ret,it;
   var min = 40075000;
-  console.log(list)
+
   $.each(list, function (i, item) {
     var url = "https://graphhopper.com/api/1/matrix?from_point=" + lat + "," + lon;
     url += "&to_point=" + list[i].latitudeCenter + "," + list[i].longitudeCenter;
@@ -348,15 +414,12 @@ function distFromUser(list) {
             it = item;
           }
         });
-
       });
     });
     ret = {
       distance: min,
       poi: it
     };
-
-
   return ret;
 }
 
