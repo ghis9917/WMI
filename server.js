@@ -5,9 +5,8 @@ var toWav = require('audiobuffer-to-wav')
 const app = express();
 const path = require('path');
 const youtubeSearch = require('youtube-search');
-const OpenLocationCode = require('open-location-code').OpenLocationCode;
-const openLocationCode = new OpenLocationCode();
-
+const f = require('./functions.js');
+var client = require('mongodb').MongoClient;
 
 app.use(express.static('public')); // for serving the HTML file
 
@@ -27,22 +26,13 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname,'./index.html'));
 });
 
-function validator(d){
-  var list = d.split(":")
-  try{
-    return openLocationCode.decode(list[2]);
-  }catch{
-    return false
-  }
-}
-
 app.get('/getPOIs', (req, res) => {
   var opts =  youtubeSearch.YouTubeSearchOptions = {
     maxResults: 20,
     key: "AIzaSyBFXSS4CBQKDc8yJtAdEruvXgAEHNwg8ko"
   };
 
-  youtubeSearch(req.query.searchQuery, opts, (err, results) => {
+  youtubeSearch(req.query.searchQuery, opts, async (err, results) => {
     if (err) {
       return console.log(err);
     }
@@ -50,9 +40,12 @@ app.get('/getPOIs', (req, res) => {
       var POIs = {};
       for (var key in results) {
         var item = results[key];
-        if ((olcArea = validator(item.description)) !== false){
+        if ((olcArea = f.validator(item.description)) !== false){
           POIs[item.title] = olcArea;
           POIs[item.title].videoId = item.id;
+          console.log("prima di sta cazzata");
+          await f.getDescription(item.title, POIs);
+          console.log(POIs[item.title].description);
         }
       }
       res.send(POIs);
@@ -78,6 +71,22 @@ app.get('*', (req, res) => {
   } else {
     //TODO
   }
+});
+
+app.get('/insertDescription', (req, res) => {
+  client.connect("mongodb://localhost:27017/",
+    function(error, db) {
+      if(! error) {
+          var mydb = db.db("WMIdb");
+          var myobj = { nome: req.query.nome, descrizione: req.query.des };
+          mydb.collection("Descrizioni").insertOne(myobj, function(err, res) {
+            if (err) throw err;
+            console.log("1 document inserted");
+            db.close();
+          });
+        }
+      }
+  );
 });
 
 app.post('/api/test', type, function (req, res) {

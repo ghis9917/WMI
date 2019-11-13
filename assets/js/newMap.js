@@ -12,6 +12,10 @@ var dsts,ret;
 */
 var currentLocation;
 
+$(document).ready(function(){
+  createMap();
+  loadMarker();
+});
 
 $("#stop").click(function(){
   document.getElementById('dad').hidden = true;
@@ -21,80 +25,33 @@ $("#stop").click(function(){
   catch{}
 });
 
-function newMap(data = null) {
-  if (data !== null) {
-    return reloadMap(data);
-  } else {
-     return createFirstMap();
-  }
-}
-function createFirstMap() {
-  currentLocation = L.marker([0, 0]).on('click', function (e) {
-    if ((control !== null) && (control.getWaypoints().length > 1)) {
-      var destBtn = createButton('Da implementare');
-
-      L.DomEvent.on(destBtn, 'click', function () {
-
-      });
-      currentLocation.bindPopup(destBtn, "#ffffff");
-    }
-  });
+function createMap() {
+  currentLocation
 
   var bounds = new L.LatLngBounds(new L.LatLng(-90, -180), new L.LatLng(90, 180));
   mymap = L.map('mapid', {
     zoomControl: true,
     maxBounds: bounds,
     maxBoundsViscosity: 1.0,
-    fadeAnimation: true,
-    zoomAnimation: true
   });
-  var layer = addLayer();
-  layer.addTo(mymap);
-  //var latlngs = L.rectangle(bounds).getLatLngs();
-  //L.polyline(latlngs[0].concat(latlngs[0][0])).addTo(mymap);
 
-  mymap = getLocation(mymap, currentLocation);
-
-  /*addButton(mymap, currentLocation);
-  addControlListener(mymap, currentLocation);
-  var obj = ("#search-nogps");
-  //addGeoSearch(mymap);
-
-  onClick(mymap);
-  currentLocation.addTo(mymap);
-  /*window.setInterval(function(){
-    mymap = getLocation(mymap, currentLocation);
-  }, 5000);*/
-
-  currentLocation.addTo(mymap);
-  return mymap
-}
-
-function getLocation(mymap, currentLocation) {
-  return mymap.locate({ setView: false, watch: true, locateOptions: { enableHighAccuracy: true } })
-    .on('locationfound', function (e) {
-      lat = e.latitude;
-      lon = e.longitude;
-      currentLocation.setLatLng([lat, lon]);
-
-      if (control === null) {
-
-      } else {
-        control.spliceWaypoints(0, 1, L.latLng(lat, lon));
-      }
-    })
-    .on('locationerror', function (e) {
-    });
-}
-
-function addLayer() {
-  return L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+  L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiZnJhbno5OTE3IiwiYSI6ImNrMml5c2FmZDAwZ3YzaG5vODVvdmVxZXUifQ.Dm-BwkGmch8JSsJ9tTpo5w', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 18,
     minZoom: 3,
-    id: 'mapbox.streets',
-    accessToken: 'pk.eyJ1IjoiZnJhbno5OTE3IiwiYSI6ImNrMml5c2FmZDAwZ3YzaG5vODVvdmVxZXUifQ.Dm-BwkGmch8JSsJ9tTpo5w'
+    id: 'mapbox.streets'
+  }).addTo(mymap);
+
+  mymap.on('locationfound', function (e) {
+      lat = e.latitude;
+      lon = e.longitude;
+      currentLocation = L.marker([lat, lon]).addTo(mymap);
+      mymap.setView(currentLocation.getLatLng(), 15);
   })
+
+  mymap.on('locationerror', function (e) {});
+
+  mymap.locate({ setView: false, watch: true, maxZoom: 18 });
 }
 
 function getPOIs(q){
@@ -114,27 +71,29 @@ function sleep(ms) {
 
 function loadMarker(){
     if(typeof lat !== "undefined"){
+      console.log(lat);
       var q = OpenLocationCode.encode(lat, lon, 4);
       q = q.replace("+","");
-      $.when(getPOIs(q)).done(async function(){           //inserisce i marker trovati su youtube, da fare solo una volta (?)
-        mymap.setView(currentLocation.getLatLng(),12);
+      $.when(getPOIs(q)).done(async function(){
+        console.log(POIs);
+        mymap.setView(currentLocation.getLatLng(),15);
         for (var key in POIs){
+          var popup = "<p class=\"text-center\" style=\"margin: 1em;background-color: #ff0000;\">"+"Prova!"+"</p>";
+          var customOptions = {
+            'maxWidth': '500',
+            'maxHeight' : '250',
+            'className' : 'custom'
+          };
           var m = L.marker([POIs[key].latitudeCenter, POIs[key].longitudeCenter], {
             bounceOnAdd: true,
             bounceOnAddOptions: {duration: 750, height: 150, loop: 2},
-            bounceOnAddCallback: function() {
-              //funzione che viene triggerata quando è stato completato il bouncing
-            }
-          }).addTo(mymap);
+            bounceOnAddCallback: function() {}
+          }).bindPopup(popup, customOptions).addTo(mymap);
           await sleep(250);
         }
       });
     }
     else{
-        setTimeout(loadMarker, 250);
+        setTimeout(loadMarker, 1000);
     }
 }
-
-newMap();
-
-loadMarker();
