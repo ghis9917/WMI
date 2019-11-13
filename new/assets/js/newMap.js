@@ -44,7 +44,9 @@ function createFirstMap() {
   mymap = L.map('mapid', {
     zoomControl: true,
     maxBounds: bounds,
-    maxBoundsViscosity: 1.0
+    maxBoundsViscosity: 1.0,
+    fadeAnimation: true,
+    zoomAnimation: true
   });
   var layer = addLayer();
   layer.addTo(mymap);
@@ -69,13 +71,12 @@ function createFirstMap() {
 }
 
 function getLocation(mymap, currentLocation) {
-  return mymap.locate({ setView: true, watch: true, locateOptions: { enableHighAccuracy: true } })
+  return mymap.locate({ setView: false, watch: true, locateOptions: { enableHighAccuracy: true } })
     .on('locationfound', function (e) {
       lat = e.latitude;
       lon = e.longitude;
-      console.log(lat);
-
       currentLocation.setLatLng([lat, lon]);
+
       if (control === null) {
 
       } else {
@@ -96,39 +97,37 @@ function addLayer() {
   })
 }
 
-function validator(d){
-  var list = d.split(":")
-  try{
-    // console.log(OpenLocationCode.decode(list[2]))
-    return OpenLocationCode.decode(list[2])
-  }catch{
-    return false
-  }
-}
-
-function ajax1(q){
+function getPOIs(q){
   return $.ajax({
         type: "get",
         url: "/getPOIs?searchQuery="+q,
         success: function(data){
-          $.each(data, (key, item) => {
-              if ((prova = validator(item.description)) !== false){
-                POIs[item.title] = prova;
-                POIs[item.title].videoId = item.id;
-              }
-          });
+          POIs = data;
         }
       }
     );
 }
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 function loadMarker(){
     if(typeof lat !== "undefined"){
       var q = OpenLocationCode.encode(lat, lon, 4);
-q = q.replace("+","");
-      $.when(ajax1(q)).done(function(){           //inserisce i marker trovati su youtube, da fare solo una volta (?)
-        //TODO ADD MARKER TO MAP
+      q = q.replace("+","");
+      $.when(getPOIs(q)).done(async function(){           //inserisce i marker trovati su youtube, da fare solo una volta (?)
+        mymap.setView(currentLocation.getLatLng(),12);
+        for (var key in POIs){
+          var m = L.marker([POIs[key].latitudeCenter, POIs[key].longitudeCenter], {
+            bounceOnAdd: true,
+            bounceOnAddOptions: {duration: 750, height: 150, loop: 2},
+            bounceOnAddCallback: function() {
+              //funzione che viene triggerata quando è stato completato il bouncing
+            }
+          }).addTo(mymap);
+          await sleep(250);
+        }
       });
     }
     else{

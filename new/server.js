@@ -5,6 +5,8 @@ var toWav = require('audiobuffer-to-wav')
 const app = express();
 const path = require('path');
 const youtubeSearch = require('youtube-search');
+const OpenLocationCode = require('open-location-code').OpenLocationCode;
+const openLocationCode = new OpenLocationCode();
 
 
 app.use(express.static('public')); // for serving the HTML file
@@ -25,16 +27,36 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname,'./index.html'));
 });
 
+function validator(d){
+  var list = d.split(":")
+  try{
+    return openLocationCode.decode(list[2]);
+  }catch{
+    return false
+  }
+}
+
 app.get('/getPOIs', (req, res) => {
-  console.log("coglionazzo");
   var opts =  youtubeSearch.YouTubeSearchOptions = {
     maxResults: 20,
-    key: "AIzaSyBEpETjNZc18OP9L603YkzOvotslkQiBGI"
+    key: "AIzaSyBFXSS4CBQKDc8yJtAdEruvXgAEHNwg8ko"
   };
 
-  youtubeSearch("8FPH0000", opts, (err, results) => {
-    if(err) return console.log(err);
-    res.send(results);
+  youtubeSearch(req.query.searchQuery, opts, (err, results) => {
+    if (err) {
+      return console.log(err);
+    }
+    else {
+      var POIs = {};
+      for (var key in results) {
+        var item = results[key];
+        if ((olcArea = validator(item.description)) !== false){
+          POIs[item.title] = olcArea;
+          POIs[item.title].videoId = item.id;
+        }
+      }
+      res.send(POIs);
+    }
   });
 });
 
@@ -43,59 +65,18 @@ app.get('/poi', (req, res) => {
 });
 
 
-app.get('/getRoutes', (req, res) => {
-  console.log(req.query);
-  res.send();
-});
-
 app.get('/audio.wav', (req, res) => {
   res.sendFile(path.join(__dirname,'./audio.wav'));
 });
 
 app.get('*', (req, res) => {
-  switch (path.extname(req.url)) {
-    case ".css":{
-      res.sendFile(path.join(__dirname,'./'+req.url));
-    }break;
-    case ".html":{
-      res.sendFile(path.join(__dirname,'./'+req.url));
-    }break;
-    case ".js":{
-      res.sendFile(path.join(__dirname,'./'+req.url));
-    }break;
-    case ".jpg":{
-      res.sendFile(path.join(__dirname,'./'+req.url));
-    }break;
-    case ".png":{
-      res.sendFile(path.join(__dirname,'./'+req.url));
-    }break;
-    case ".woff2":{
-      res.sendFile(path.join(__dirname,'./'+req.url));
-    }break;
-    case ".woff":{
-      res.sendFile(path.join(__dirname,'./'+req.url));
-    }break;
-    case ".ttf":{
-      res.sendFile(path.join(__dirname,'./'+req.url));
-    }break;
-    case ".woff":{
-      res.sendFile(path.join(__dirname,'./'+req.url));
-    }break;
-    case ".woff2":{
-      res.sendFile(path.join(__dirname,'./'+req.url));
-    }break;
-    case ".svg":{
-      res.sendFile(path.join(__dirname,'./'+req.url));
-    }break;
-    case ".eot":{
-      res.sendFile(path.join(__dirname,'./'+req.url));
-    }break;
-    case ".ico":{
-        res.status(204).json({nope: true});
-    }break;
-
-    default:
-      //TODO
+  var ext = path.extname(req.url);
+  if (ext === ".css" || ext === ".html" || ext === ".js" || ext === ".jpg" || ext === ".png" || ext === ".woff" || ext === ".woff2" || ext === ".ttf" || ext === ".svg" || ext === ".eot"){
+    res.sendFile(path.join(__dirname,'./'+req.url));
+  } else if (ext === ".ico") {
+    res.status(204).json({nope: true});
+  } else {
+    //TODO
   }
 });
 
