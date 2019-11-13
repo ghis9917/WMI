@@ -7,6 +7,8 @@ const path = require('path');
 const youtubeSearch = require('youtube-search');
 const f = require('./functions.js');
 var client = require('mongodb').MongoClient;
+const rickyKey = "AIzaSyBEpETjNZc18OP9L603YkzOvotslkQiBGI"
+const guiKey = "AIzaSyBFXSS4CBQKDc8yJtAdEruvXgAEHNwg8ko"
 
 app.use(express.static('public')); // for serving the HTML file
 
@@ -29,7 +31,7 @@ app.get('/', (req, res) => {
 app.get('/getPOIs', (req, res) => {
   var opts =  youtubeSearch.YouTubeSearchOptions = {
     maxResults: 20,
-    key: "AIzaSyBFXSS4CBQKDc8yJtAdEruvXgAEHNwg8ko"
+    key: 
   };
 
   youtubeSearch(req.query.searchQuery, opts, (err, results) => {
