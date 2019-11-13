@@ -13,8 +13,8 @@ module.exports = {
     }
   },
   getDescription: function getDescription(name, POIs) {
-    console.log("qui entra");
-    client.connect('mongodb://site181947:27017/', { useUnifiedTopology: true }, function (error, db) {
+    POIs[name].description = "Descrizione";
+    /*client.connect('mongodb://site181947:27017/', { useUnifiedTopology: true }, function (error, db) {
       if (!error) {
         console.log(db);
         var mydb = db.db("WMIdb");
@@ -28,9 +28,11 @@ module.exports = {
             POIs[name].description = "notFound";
           }
         });
+      }else{
+        console.log(error);
       }
       db.close();
       return;
-    });
+    });*/
   }
 }

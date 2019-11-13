@@ -31,7 +31,7 @@ app.get('/', (req, res) => {
 app.get('/getPOIs', (req, res) => {
   var opts =  youtubeSearch.YouTubeSearchOptions = {
     maxResults: 20,
-    key: 
+    key: rickyKey
   };
 
   youtubeSearch(req.query.searchQuery, opts, (err, results) => {
@@ -46,7 +46,7 @@ app.get('/getPOIs', (req, res) => {
           POIs[item.title] = olcArea;
           POIs[item.title].videoId = item.id;
           //console.log("prima di sta cazzata");
-          //await f.getDescription(item.title, POIs);
+          f.getDescription(item.title, POIs);
           //console.log(POIs[item.title].description);
         }
       }

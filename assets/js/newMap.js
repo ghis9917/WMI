@@ -51,7 +51,7 @@ function createMap() {
       console.log("firstTime");
     }
     currentLocation = L.marker([lat, lon]).addTo(mymap);
-    mymap.setView(currentLocation.getLatLng(), 15);
+    mymap.setView(currentLocation.getLatLng(), 12);
   })
 
   mymap.on('locationerror', function (e) { });
@@ -76,14 +76,12 @@ function sleep(ms) {
 
 function loadMarker() {
   if (typeof lat !== "undefined") {
-    console.log(lat);
     var q = OpenLocationCode.encode(lat, lon, 4);
     q = q.replace("+", "");
     $.when(getPOIs(q)).done(async function () {
       console.log(POIs);
-      mymap.setView(currentLocation.getLatLng(), 15);
       for (var key in POIs) {
-        var popup = "<p class=\"text-center\" style=\"margin: 1em;background-color: #ff0000;\">" + "Prova!" + "</p>";
+        var popup = "<p class=\"text-center\" style=\"margin: 1em;background-color: #ff0000;\">" + POIs[key].description + "</p>";
         var customOptions = {
           'maxWidth': '500',
           'maxHeight': '250',
