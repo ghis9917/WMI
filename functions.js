@@ -16,7 +16,6 @@ module.exports = {
     POIs[name].description = "Descrizione";
     /*client.connect('mongodb://site181947:27017/', { useUnifiedTopology: true }, function (error, db) {
       if (!error) {
-        console.log(db);
         var mydb = db.db("WMIdb");
         mydb.collection("Descrizioni").find({ nome: name }).toArray(function (err, result) {
           if (err) {//console.log("Errrr");

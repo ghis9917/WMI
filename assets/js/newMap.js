@@ -42,6 +42,7 @@ function createMap() {
   }).addTo(mymap);
 
   mymap.on('locationfound', function (e) {
+    var popup = "<p class=\"text-center\" style=\"margin: 1em;\">Sei qui!</p>";
     lat = e.latitude;
     lon = e.longitude;
     try{
@@ -50,7 +51,7 @@ function createMap() {
     } catch {
       console.log("firstTime");
     }
-    currentLocation = L.marker([lat, lon]).addTo(mymap);
+    currentLocation = L.marker([lat, lon]).bindPopup(popup).addTo(mymap);
     mymap.setView(currentLocation.getLatLng(), 12);
   })
 
@@ -81,17 +82,17 @@ function loadMarker() {
     $.when(getPOIs(q)).done(async function () {
       console.log(POIs);
       for (var key in POIs) {
-        var popup = "<p class=\"text-center\" style=\"margin: 1em;background-color: #ff0000;\">" + POIs[key].description + "</p>";
+        var popup = "<h1 class=\"text-center\" style=\"margin: 1em;background-color: #ff0000;\">" + key + "</h1>";
+        popup += "<p class=\"text-center\" style=\"margin: 1em;background-color: #ff0000;\">" + POIs[key].description + "</p>";
         var customOptions = {
-          'maxWidth': '500',
-          'maxHeight': '250',
+          'minWidth': '250',
           'className': 'custom'
         };
         var m = L.marker([POIs[key].latitudeCenter, POIs[key].longitudeCenter], {
           bounceOnAdd: true,
           bounceOnAddOptions: { duration: 750, height: 150, loop: 2 },
           bounceOnAddCallback: function () { }
-        }).bindPopup(popup, customOptions).addTo(mymap);
+        }).on('click', function(e){mymap.setView(m.getLatLng(), 12)}).bindPopup(popup, customOptions).addTo(mymap);
         await sleep(250);
       }
     });
