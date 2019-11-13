@@ -4,32 +4,33 @@ const client = require('mongodb').MongoClient;
 var Promise = require('rsvp').Promise;
 
 module.exports = {
-  validator: function validator(d){
+  validator: function validator(d) {
     var list = d.split(":")
-    try{
+    try {
       return openLocationCode.decode(list[2]);
-    }catch{
+    } catch{
       return false
     }
   },
-  getDescription: function getDescription(name, POIs){
+  getDescription: function getDescription(name, POIs) {
     console.log("qui entra");
-      client.connect('mongodb://localhost:27017/db1', { useUnifiedTopology : true }, function(error, db) {
-        if(! error) {
-            var mydb = db.db("WMIdb");
-            console.log(mydb);
-            mydb.collection("Descrizioni").find({nome : name}).toArray(function(err, result) {
-                if (err) {console.log("Errrr");};
-                if (result.length !== 0){
-                  console.log(result);
-                } else {
-                  console.log("non trovato");
-                  POIs[name].description = "notFound";
-                }
-            });
+    client.connect('mongodb://site181947:27017/', { useUnifiedTopology: true }, function (error, db) {
+      if (!error) {
+        console.log(db);
+        var mydb = db.db("WMIdb");
+        mydb.collection("Descrizioni").find({ nome: name }).toArray(function (err, result) {
+          if (err) {//console.log("Errrr");
+          };
+          if (result.length !== 0) {
+            //console.log(result);
+          } else {
+            //console.log("non trovato");
+            POIs[name].description = "notFound";
           }
-          db.close();
-          return;
         });
+      }
+      db.close();
+      return;
+    });
   }
 }

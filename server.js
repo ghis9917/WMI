@@ -32,7 +32,7 @@ app.get('/getPOIs', (req, res) => {
     key: "AIzaSyBFXSS4CBQKDc8yJtAdEruvXgAEHNwg8ko"
   };
 
-  youtubeSearch(req.query.searchQuery, opts, async (err, results) => {
+  youtubeSearch(req.query.searchQuery, opts, (err, results) => {
     if (err) {
       return console.log(err);
     }
@@ -43,9 +43,9 @@ app.get('/getPOIs', (req, res) => {
         if ((olcArea = f.validator(item.description)) !== false){
           POIs[item.title] = olcArea;
           POIs[item.title].videoId = item.id;
-          console.log("prima di sta cazzata");
-          await f.getDescription(item.title, POIs);
-          console.log(POIs[item.title].description);
+          //console.log("prima di sta cazzata");
+          //await f.getDescription(item.title, POIs);
+          //console.log(POIs[item.title].description);
         }
       }
       res.send(POIs);
