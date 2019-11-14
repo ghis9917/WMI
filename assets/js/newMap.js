@@ -26,7 +26,6 @@ $("#stop").click(function () {
 });
 
 function createMap() {
-
   var bounds = new L.LatLngBounds(new L.LatLng(-90, -180), new L.LatLng(90, 180));
   mymap = L.map('mapid', {
     zoomControl: true,
@@ -56,7 +55,7 @@ function createMap() {
   })
 
   mymap.on('locationerror', function (e) { });
-
+  mymap.setView([0,0], 3);
   mymap.locate({ setView: false, watch: true, maxZoom: 18 });
 }
 
@@ -82,17 +81,13 @@ function loadMarker() {
     $.when(getPOIs(q)).done(async function () {
       console.log(POIs);
       for (var key in POIs) {
-        var popup = "<h1 class=\"text-center\" style=\"margin: 1em;background-color: #ff0000;\">" + key + "</h1>";
-        popup += "<p class=\"text-center\" style=\"margin: 1em;background-color: #ff0000;\">" + POIs[key].description + "</p>";
-        var customOptions = {
-          'minWidth': '250',
-          'className': 'custom'
-        };
+        var popup = "<h1 class=\"text-center\" style=\"margin: 1em;background-color: #000000;color: #ffffff\">" + key + "</h1>";
+        popup += "<p class=\"text-center\" style=\"margin: 1em;background-color: #000000;color: #ffffff\">" + POIs[key].description + "</p>";
         var m = L.marker([POIs[key].latitudeCenter, POIs[key].longitudeCenter], {
           bounceOnAdd: true,
           bounceOnAddOptions: { duration: 750, height: 150, loop: 2 },
           bounceOnAddCallback: function () { }
-        }).on('click', function(e){mymap.setView(m.getLatLng(), 12)}).bindPopup(popup, customOptions).addTo(mymap);
+        }).on('click', function(e){mymap.setView(m.getLatLng(), 12)}).bindPopup(popup).addTo(mymap);
         await sleep(250);
       }
     });

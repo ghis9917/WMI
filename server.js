@@ -1,6 +1,6 @@
 const express = require('express');
 const fs = require('fs');
-const multer  = require('multer');
+const multer = require('multer');
 var toWav = require('audiobuffer-to-wav')
 const app = express();
 const path = require('path');
@@ -15,7 +15,7 @@ app.use(express.static('public')); // for serving the HTML file
 const storage = multer.diskStorage({
   destination: './public/uploads',
   filename: function (req, file, cb) {
-      cb(null, Date.now() + '-' + file.originalname )
+    cb(null, Date.now() + '-' + file.originalname)
   }
 })
 var upload = multer({
@@ -25,16 +25,40 @@ var type = upload.single('upl');
 
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname,'./index.html'));
+  res.sendFile(path.join(__dirname, './index.html'));
+});
+
+app.get('/getDescription', (req, res) => {
+  client.connect("mongodb://localhost:27017/",
+    function (error, db) {
+      if (!error) {
+        var mydb = db.db("WMIdb");
+        console.log(req.query.val);
+        mydb.collection("Descrizioni").find({ nome: req.query.val }).toArray(function (err, result) {
+          if (err) throw err;
+          if (result.length !== 0) {
+            res.send({val:result[0].descrizione});
+          } else {
+            //TODO DBPEDIA
+            res.send({val:"niente"});
+          }
+          db.close();
+        });
+      }
+      else{
+        console.log(error);
+      }
+    }
+  );
 });
 
 app.get('/getPOIs', (req, res) => {
-  var opts =  youtubeSearch.YouTubeSearchOptions = {
+  var opts = youtubeSearch.YouTubeSearchOptions = {
     maxResults: 20,
-    key: rickyKey
+    key: guiKey
   };
 
-  youtubeSearch(req.query.searchQuery, opts, (err, results) => {
+  youtubeSearch(req.query.searchQuery, opts, async (err, results) => {
     if (err) {
       return console.log(err);
     }
@@ -42,12 +66,14 @@ app.get('/getPOIs', (req, res) => {
       var POIs = {};
       for (var key in results) {
         var item = results[key];
-        if ((olcArea = f.validator(item.description)) !== false){
+        if ((olcArea = f.validator(item.description)) !== false) {
           POIs[item.title] = olcArea;
           POIs[item.title].videoId = item.id;
-          //console.log("prima di sta cazzata");
-          f.getDescription(item.title, POIs);
-          //console.log(POIs[item.title].description);
+          var search = 'http://localhost:8000/getDescription?val='+item.title;
+          console.log(search);
+          var d = await f.get(search);
+          console.log(d);
+          POIs[item.title].description = d.data.val;
         }
       }
       res.send(POIs);
@@ -56,38 +82,27 @@ app.get('/getPOIs', (req, res) => {
 });
 
 app.get('/poi', (req, res) => {
-  res.sendFile(path.join(__dirname,'./poi.json'));
+  res.sendFile(path.join(__dirname, './poi.json'));
 });
 
 
 app.get('/audio.wav', (req, res) => {
-  res.sendFile(path.join(__dirname,'./audio.wav'));
-});
-
-app.get('*', (req, res) => {
-  var ext = path.extname(req.url);
-  if (ext === ".css" || ext === ".html" || ext === ".js" || ext === ".jpg" || ext === ".png" || ext === ".woff" || ext === ".woff2" || ext === ".ttf" || ext === ".svg" || ext === ".eot"){
-    res.sendFile(path.join(__dirname,'./'+req.url));
-  } else if (ext === ".ico") {
-    res.status(204).json({nope: true});
-  } else {
-    //TODO
-  }
+  res.sendFile(path.join(__dirname, './audio.wav'));
 });
 
 app.get('/insertDescription', (req, res) => {
   client.connect("mongodb://localhost:27017/",
-    function(error, db) {
-      if(! error) {
-          var mydb = db.db("WMIdb");
-          var myobj = { nome: req.query.nome, descrizione: req.query.des };
-          mydb.collection("Descrizioni").insertOne(myobj, function(err, res) {
-            if (err) throw err;
-            console.log("1 document inserted");
-            db.close();
-          });
-        }
+    function (error, db) {
+      if (!error) {
+        var mydb = db.db("WMIdb");
+        var myobj = { nome: req.query.nome, descrizione: req.query.des };
+        mydb.collection("Descrizioni").insertOne(myobj, function (err, res) {
+          if (err) throw err;
+          console.log("1 document inserted");
+          db.close();
+        });
       }
+    }
   );
 });
 
@@ -96,9 +111,20 @@ app.post('/api/test', type, function (req, res) {
   console.log(req.file);
   var f = req.file;
   console.log(f.buffer);
-  fs.writeFile('sample.mp3', f.buffer, function(err) {
+  fs.writeFile('sample.mp3', f.buffer, function (err) {
     res.sendStatus(err ? 500 : 200);
   });
+});
+
+app.get('*', (req, res) => {
+  var ext = path.extname(req.url);
+  if (ext === ".css" || ext === ".html" || ext === ".js" || ext === ".jpg" || ext === ".png" || ext === ".woff" || ext === ".woff2" || ext === ".ttf" || ext === ".svg" || ext === ".eot") {
+    res.sendFile(path.join(__dirname, './' + req.url));
+  } else if (ext === ".ico") {
+    res.status(204).json({ nope: true });
+  } else {
+    //TODO
+  }
 });
 
 app.listen(8000, () => console.log('Gator app listening on port 8000!'))
