@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>WMI</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:300,400,600">
+    <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
+    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/fonts/fontawesome5-overrides.min.css">
+    <link rel="stylesheet" href="assets/css/Animation-Cards-1.css">
+    <link rel="stylesheet" href="assets/css/Animation-Cards.css">
+    <link rel="stylesheet" href="assets/css/Footer-Basic.css">
+    <link rel="stylesheet" href="assets/css/Footer-Clean.css">
+    <link rel="stylesheet" href="assets/css/Footer-Dark.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/Google-Style-Login.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-geosearch@latest/assets/css/leaflet.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css">
+    <link rel="stylesheet" href="assets/css/Map-Clean.css">
+    <link rel="stylesheet" href="assets/css/Navigation-Clean.css">
+    <link rel="stylesheet" href="assets/css/Navigation-with-Button.css">
+    <link rel="stylesheet" href="assets/css/Profile-Card.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/@bootstrapstudio/bootstrap-better-nav/dist/bootstrap-better-nav.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.1.1/aos.css">
+</head>
+
+<body class="d-flex flex-column justify-content-between">
+    <nav class="navbar navbar-light navbar-expand-md text-uppercase shadow navigation-clean">
+        <div class="container-fluid"><a class="navbar-brand" href="#">Where Am I?</a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse"
+                id="navcol-1">
+                <ul class="nav navbar-nav ml-auto">
+                    <li class="nav-item" role="presentation"><a class="nav-link active" href="#">User Mode</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" href="#">Editor Mode</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" href="#">Profile</a></li>
+                    <!-- onclick="document.getElementById('dad').hidden = false;" -->
+                    <li class="nav-item" role="presentation"><a class="nav-link" href="#" onclick="showInfo()" >Open Modal</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div id="mapid" style="height: 100%;">
+      <div id="dad" hidden role="dialog" tabindex="-1" class="modal fade show" style="display: block;">
+        <div class="modal-dialog" role="document" align="center  ">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h4 class="modal-title">Modal Title</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" id="stop">×</span></button>
+              </div>
+              <audio id="iframe" class="modal-body">
+              </audio>
+              <button hidden id="route">Route me here.
+              </button>
+              <label id="text">
+              </label>
+              <div class="modal-footer">
+                <!-- Draw other clips of that POI -->
+              </div>
+          </div>
+    </div>
+  </div>
+</div>
+    <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/redirect.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/bs-animation.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.1.1/aos.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://apis.google.com/js/platform.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/openlocationcode/1.0.3/openlocationcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/@bootstrapstudio/bootstrap-better-nav/dist/bootstrap-better-nav.min.js"></script>
+    <script src="https://unpkg.com/leaflet-geosearch@latest/dist/bundle.min.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
+    <script src="http://maximeh.github.io/leaflet.bouncemarker/bouncemarker.js"></script>
+    <script src="assets/js/lrm-graphhopper.js"></script>
+    <script src="assets/js/newMap.js"></script>
+</body>
+
+</html>

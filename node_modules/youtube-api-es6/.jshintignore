@@ -1,0 +1,6 @@
+node_modules/**
+newrelic.js
+src/gen-nodejs/*
+test-*.js
+test/**
+**/dummy/strategy.js
