@@ -6,7 +6,7 @@ module.exports = {
   validator: function validator(d) {
     var list = d.split(":")
     try {
-      return openLocationCode.decode(list[2]);
+      return {coords : openLocationCode.decode(list[2]), plusCode: list[2]};
     } catch{
       return false
     }

@@ -46,7 +46,6 @@ function createMap() {
 }
 
 function onLocationFound(position) {
-  console.log("entra");
   var popup = "<p class=\"text-center\" style=\"margin: 1em;\">Sei qui!</p>";
   lat = position.coords.latitude;
   lon = position.coords.longitude;

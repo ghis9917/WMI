@@ -33,7 +33,6 @@ app.get('/getDescription', (req, res) => {
     function (error, db) {
       if (!error) {
         var mydb = db.db("WMIdb");
-        console.log(req.query.val);
         mydb.collection("Descrizioni").find({ nome: req.query.val }).toArray(function (err, result) {
           if (err) throw err;
           if (result.length !== 0) {
@@ -52,6 +51,22 @@ app.get('/getDescription', (req, res) => {
   );
 });
 
+function check(results){
+  for(var x in results){
+    for(var i in results){
+      var b = f.validator(results[x].description);
+      var d = f.validator(results[x].description);
+      if( x != i ){
+        if(d == b){
+          console.log(results[x].title);
+          console.log(results[i].title);
+        }
+      }
+    }
+  }
+  return results;
+}
+
 app.get('/getPOIs', (req, res) => {
   var opts = youtubeSearch.YouTubeSearchOptions = {
     maxResults: 20,
@@ -63,17 +78,23 @@ app.get('/getPOIs', (req, res) => {
       return console.log(err);
     }
     else {
+      console.log(results);
+      //results = check(results);
       var POIs = {};
+      var list = [];
       for (var key in results) {
         var item = results[key];
-        if ((olcArea = f.validator(item.description)) !== false) {
-          POIs[item.title] = olcArea;
-          POIs[item.title].videoId = item.id;
-          var search = 'http://localhost:8000/getDescription?val='+item.title;
-          console.log(search);
-          var d = await f.get(search);
-          console.log(d);
-          POIs[item.title].description = d.data.val;
+        if ((val = f.validator(item.description)) !== false) {
+          console.log(val.plusCode);
+          if (list.indexOf(val.plusCode) > -1){
+            console.log("");
+            list.push(val.plusCode);
+            POIs[item.title] = val.coords;
+            POIs[item.title].videoId = item.id;
+            var search = 'http://localhost:8000/getDescription?val='+item.title;
+            var d = await f.get(search);
+            POIs[item.title].description = d.data.val;
+          }
         }
       }
       res.send(POIs);
