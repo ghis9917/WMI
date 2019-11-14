@@ -40,23 +40,27 @@ function createMap() {
     id: 'mapbox.streets'
   }).addTo(mymap);
 
-  mymap.on('locationfound', function (e) {
-    var popup = "<p class=\"text-center\" style=\"margin: 1em;\">Sei qui!</p>";
-    lat = e.latitude;
-    lon = e.longitude;
-    try{
-      console.log("otherTimes");
-      mymap.removeLayer(currentLocation);
-    } catch {
-      console.log("firstTime");
-    }
-    currentLocation = L.marker([lat, lon]).bindPopup(popup).addTo(mymap);
-    mymap.setView(currentLocation.getLatLng(), 12);
-  })
-
   mymap.on('locationerror', function (e) { });
-  mymap.setView([0,0], 3);
-  mymap.locate({ setView: false, watch: true, maxZoom: 18 });
+  mymap.setView([44.49394,11.3426944], 12);
+  navigator.geolocation.watchPosition(onLocationFound, onError, { enableHighAccuracy: true, maximumAge: 0 });
+}
+
+function onLocationFound(position) {
+  console.log("entra");
+  var popup = "<p class=\"text-center\" style=\"margin: 1em;\">Sei qui!</p>";
+  lat = position.coords.latitude;
+  lon = position.coords.longitude;
+  try{
+    console.log("otherTimes");
+    mymap.removeLayer(currentLocation);
+  } catch {
+    console.log("firstTime");
+  }
+  currentLocation = L.marker([lat, lon]).bindPopup(popup).addTo(mymap);
+}
+
+function onError(err){
+  console.warn(`ERROR(${err.code}): ${err.message}`);
 }
 
 function getPOIs(q) {
