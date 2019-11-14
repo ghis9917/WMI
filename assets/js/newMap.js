@@ -88,7 +88,7 @@ function loadMarker() {
         popup += "<p class=\"text-center\" style=\"margin: 1em;background-color: #000000;color: #ffffff\">" + POIs[key].description + "</p>";
         var m = L.marker([POIs[key].latitudeCenter, POIs[key].longitudeCenter], {
           bounceOnAdd: true,
-          bounceOnAddOptions: { duration: 750, height: 150, loop: 2 },
+          bounceOnAddOptions: { },
           bounceOnAddCallback: function () { }
         }).on('click', function(e){mymap.setView(m.getLatLng(), 12)}).bindPopup(popup).addTo(mymap);
         await sleep(250);

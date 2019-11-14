@@ -69,13 +69,13 @@ function check(results){
 
 app.get('/getPOIs', (req, res) => {
   var opts = youtubeSearch.YouTubeSearchOptions = {
-    maxResults: 20,
-    key: guiKey
+    maxResults: 50,
+    key: rickyKey
   };
 
   youtubeSearch(req.query.searchQuery, opts, async (err, results) => {
     if (err) {
-      return console.log(err);
+      res.send({val : "niente"});
     }
     else {
       console.log(results);
@@ -85,14 +85,11 @@ app.get('/getPOIs', (req, res) => {
       for (var key in results) {
         var item = results[key];
         if ((val = f.validator(item.description)) !== false) {
-          console.log(val.plusCode);
-          if (list.indexOf(val.plusCode) > -1){
-            console.log("");
+          if (list.indexOf(val.plusCode) === -1){
             list.push(val.plusCode);
             POIs[item.title] = val.coords;
             POIs[item.title].videoId = item.id;
-            var search = 'http://localhost:8000/getDescription?val='+item.title;
-            var d = await f.get(search);
+            var d = await f.get('http://localhost:8000/getDescription?val='+item.title);
             POIs[item.title].description = d.data.val;
           }
         }
