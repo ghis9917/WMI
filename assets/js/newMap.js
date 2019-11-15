@@ -16,7 +16,6 @@ var currentLocation;
 $(document).ready(function () {
   createMap();
   loadMarker();
-  console.log("CIAO SONO DOPO LOAD MARKER");
 });
 
 $("#stop").click(function () {
@@ -52,7 +51,6 @@ function onLocationFound(position) {
   var popup = "<p class=\"text-center\" style=\"margin: 1em;\">Sei qui!</p>";
   lat = position.coords.latitude;
   lon = position.coords.longitude;
-  console.log(lat)
   try{
     console.log("otherTimes");
     mymap.removeLayer(currentLocation);
@@ -90,17 +88,15 @@ function checkDistance(mymap,mark){
   // if (d === null){
     text = $("h3").text().split(",")[0];
     if(text.indexOf(" km") >= 0){
-      console.log(text)
       console.log(text.replace(" km",""))
       distance = parseFloat(text.replace(" km",""));
       distance = distance * 1000;
     }
     else{
-      console.log(text)
       distance = parseFloat(text);
     }
   // }
-  console.log(distance)
+  // console.log(distance)
   if(distance <= 20){
     var la = POIs[nearest].latitudeCenter;
     var lo = POIs[nearest].longitudeCenter;
@@ -108,7 +104,7 @@ function checkDistance(mymap,mark){
     popup += "<p class=\"text-center\" style=\"margin: 1em;background-color: #000000;color: #ffffff\">" + POIs[nearest].description.en + "</p>";
     var x = new L.LatLng(la,lo)
     onClickMarker(mymap,mark,popup,distance);
-    console.log("arrivati")
+    // console.log("arrivati")
   }
 }
 
@@ -118,7 +114,6 @@ function getPOIs(q) {
     url: "/getPOIs?searchQuery=" + q+"&Slat="+ lat + "&Slon="+lon,
     success: function (data) {
       POIs = data;
-      console.log(POIs)
     }
   }
   );
@@ -133,7 +128,7 @@ function loadMarker() {
     var q = OpenLocationCode.encode(lat, lon, 4);
     q = q.replace("+", "");
     $.when(getPOIs(q)).done(async function () {
-      console.log(POIs);
+      // console.log(POIs);
       var min = 40075000;
       var id;
       for (var key in POIs) {
@@ -152,8 +147,6 @@ function loadMarker() {
 
       }
       nearest = id;
-      console.log("nearest")
-      console.log(nearest)
       var la = POIs[id].latitudeCenter;
       var lo = POIs[id].longitudeCenter;
       var x = new L.LatLng(la,lo)
@@ -163,9 +156,6 @@ function loadMarker() {
           bounceOnAddCallback: function () { }
         })
         control.spliceWaypoints(control.getWaypoints().length - 1, 1,x);
-        console.log(control.getWaypoints())
-        console.log("MARKKK")
-        console.log(m)
         checkDistance(mymap,mark);
     });
   }
@@ -181,7 +171,7 @@ const onClick = (mymap) => {
 
     L.DomEvent.on(fakeBtn, 'click', function () {
       mymap.closePopup();
-      console.log(e);
+      // console.log(e);
       lat = e.latlng.lat;
       lon = e.latlng.lng;
       currentLocation.setLatLng(e.latlng);

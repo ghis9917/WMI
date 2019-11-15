@@ -45,8 +45,6 @@ app.get('/askDBPedia', (req, res) => {
   dps.client().query(q).timeout(15000).asJson().then((r) => {
     res.send(r);
   }).catch((e) => {
-    console.log("QUESTA E ERROR")
-    console.log(e)
     res.send(e);
   });
 });
@@ -78,8 +76,6 @@ app.get('/getDescription', (req, res) => {
           catch{
             var json = {};
             json["en"] = "NOT FOUND";
-            console.log("PERLAMADONNA")
-            console.log(req.query.val)
             res.send({val : json});
           }
           }
@@ -120,14 +116,6 @@ app.get('/getPOIs', (req, res) => {
             var d = await f.get('http://localhost:8000/getDescription?val=' + item.title);
             await f.dist(POIs[item.title],req.query.Slat,req.query.Slon);
             POIs[item.title].description = d.data.val;
-            console.log(item.title)
-            console.log(d.data.val)
-            console.log(d.data.val.length)
-            if(POIs[item.title].description === undefined ){
-              console.log("VUOTOOT")
-              POIs[item.title].description = "NOT FOUND" ;
-            }
-
           }
         }
       }
