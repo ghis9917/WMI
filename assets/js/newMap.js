@@ -85,7 +85,8 @@ function loadMarker() {
       console.log(POIs);
       for (var key in POIs) {
         var popup = "<h1 class=\"text-center\" style=\"margin: 1em;background-color: #000000;color: #ffffff\">" + key + "</h1>";
-        popup += "<p class=\"text-center\" style=\"margin: 1em;background-color: #000000;color: #ffffff\">" + POIs[key].description + "</p>";
+        popup += "<img src=" + POIs[key].img + " ></img>";
+        popup += "<p class=\"text-center\" style=\"margin: 1em;background-color: #000000;color: #ffffff\">" + POIs[key].description.it + "</p>";
         var m = L.marker([POIs[key].latitudeCenter, POIs[key].longitudeCenter], {
           bounceOnAdd: true,
           bounceOnAddOptions: { },

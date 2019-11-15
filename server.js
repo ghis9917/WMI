@@ -55,13 +55,14 @@ app.get('/getDescription', (req, res) => {
             var e = await f.get(d.data.results.bindings[0].c1.value.replace("resource", "data")+".rdf");
             parseString(e.data, function (err, result) {
               var list = result["rdf:RDF"]["rdf:Description"][0]['rdfs:comment'];
+              var img = result["rdf:RDF"]["rdf:Description"][0]["dbo:thumbnail"][0]["$"]["rdf:resource"];
               var json = {};
               for (var key in list) {
                 var chiave = list[key]["$"]["xml:lang"];
                 var valore = list[key]["_"];
                 json[chiave] = valore;
               }
-              res.send({val : json});
+              res.send({val : json, img: img});
             });
           }
           db.close();
@@ -77,7 +78,7 @@ app.get('/getDescription', (req, res) => {
 app.get('/getPOIs', (req, res) => {
   var opts = youtubeSearch.YouTubeSearchOptions = {
     maxResults: 50,
-    key: maxKey
+    key: guiKey
   };
 
   youtubeSearch(req.query.searchQuery, opts, async (err, results) => {
@@ -99,6 +100,7 @@ app.get('/getPOIs', (req, res) => {
             POIs[item.title].videoId = item.id;
             var d = await f.get('http://localhost:8000/getDescription?val=' + item.title);
             POIs[item.title].description = d.data.val;
+            POIs[item.title].img = d.data.img;
           }
         }
       }
