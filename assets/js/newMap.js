@@ -7,73 +7,34 @@ var routingMode = 'foot'
 var mymap;
 var POIs = {}
 var Desc = {}
-var dsts,ret;
+var dsts, ret;
+var nearest;
 /*Sets up the map are of the html file
 */
 var currentLocation;
 
-$(document).ready(async function(){
+$(document).ready(function () {
   createMap();
-  await loadMarker();
-
+  loadMarker();
+  console.log("CIAO SONO DOPO LOAD MARKER");
 });
 
-$("#stop").click(function(){
+$("#stop").click(function () {
   document.getElementById('dad').hidden = true;
-  try{
+  try {
     document.getElementById('iframe').stop();
   }
-  catch{}
+  catch{ }
 });
-//
-// const onClick = (mymap) => {
-//   mymap.on('click', function (e) {
-//     var addBtn = createButton('Add Waypoint');
-//     var fakeBtn = createButton("fakePos");
-//
-//     L.DomEvent.on(addBtn, 'click', function () {
-//       mymap.closePopup();
-//       waypoints.push(L.latLng([0, 0]));
-//       var newMarker = L.marker(e.latlng);
-//       onClickMarker(mymap, newMarker);
-//       newMarker.addTo(mymap);
-//       if ((control.getWaypoints())[1].latLng === null) {
-//         control.spliceWaypoints(control.getWaypoints().length - 1, 1, e.latlng);
-//       } else {
-//         var route = control.getWaypoints();
-//         route.push(e.latlng);
-//         console.log(route);
-//         control.setWaypoints(route);
-//       }
-//     });
-//     L.DomEvent.on(fakeBtn, 'click', function () {
-//       mymap.closePopup();
-//       console.log(e);
-//       lat = e.latlng.lat;
-//       lon = e.latlng.lng;
-//       currentLocation.setLatLng(e.latlng);
-//       control.spliceWaypoints(0, 1, e.latlng);
-//       askDst(1);
-//     });
-//     var div = L.DomUtil.create("div", "");
-//     div.appendChild(addBtn);
-//     div.appendChild(fakeBtn);
-//     L.popup("#ffffff")
-//       .setContent(div)
-//       .setLatLng(e.latlng)
-//       .openOn(mymap);
-//   });
-// }
 
 function createMap() {
-  // currentLoc1ation
-
   var bounds = new L.LatLngBounds(new L.LatLng(-90, -180), new L.LatLng(90, 180));
   mymap = L.map('mapid', {
     zoomControl: true,
     maxBounds: bounds,
-    maxBoundsViscosity: 1.0,
+    maxBoundsViscosity: 1.0
   });
+  onClick(mymap);
 
   L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoic21vZzk4IiwiYSI6ImNrMnh2c2s5ZDAxbW0zY2x2dWMybnQ4cHEifQ.QiPAgRSCZxhtoLHwEsegGw', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -82,98 +43,181 @@ function createMap() {
     id: 'mapbox.streets'
   }).addTo(mymap);
 
-  mymap.locate({ setView: false, watch: true, maxZoom: 18 });
-
-  mymap.on('locationfound', function (e) {
-    console.log("posizione trovata")
-      lat = e.latitude;
-      lon = e.longitude;
-      if (currentLocation === undefined) currentLocation = L.marker([lat, lon]).addTo(mymap);
-      else {
-        currentLocation.setLatLng([lat, lon]);
-      }
-      mymap.setView(currentLocation.getLatLng(), 15);
-  })
-
-  mymap.on('locationerror', function (e) {console.log("posizione non trovata")});
+  mymap.on('locationerror', function (e) { });
+  mymap.setView([44.49394,11.3426944], 12);
+  navigator.geolocation.watchPosition(onLocationFound, onError, { enableHighAccuracy: true, maximumAge: 0 });
 }
 
-function getPOIs(q){
-  return $.ajax({
-        type: "get",
-        url: "/getPOIs?searchQuery="+q,
-        success: function(data){
-          POIs = data;
-        }
-      }
-    );
-}
-
-function findDescription(q){
-  var vector = q.split(" ");
-  for(string in vector){
-    vector[string] = "%27" + vector[string] + "%27";
-    vector[string] = vector[string].toUpperCase();
+function onLocationFound(position) {
+  var popup = "<p class=\"text-center\" style=\"margin: 1em;\">Sei qui!</p>";
+  lat = position.coords.latitude;
+  lon = position.coords.longitude;
+  console.log(lat)
+  try{
+    console.log("otherTimes");
+    mymap.removeLayer(currentLocation);
+  } catch {
+    console.log("firstTime");
   }
+  currentLocation = L.marker([lat, lon]).bindPopup(popup).addTo(mymap);
+  addRouting(mymap);
 
-
-  var progress=20;
-  return $.ajax({
-    type: 'get',
-    url: "/getMammt?data="+vector+"&que="+q  ,
-    success: function(data) {
-    },
-    error: function(e) {
-        console.log(e);
-    }
-  });
 }
 
-function findFinalDescription(desc){
-  return $.ajax({
-    type: 'get',
-    url: desc,
-    success: function(data) {
-    },
-    error: function(e) {
-        console.log(e);
-    }
-  });
+function onError(err){
+  console.warn(`ERROR(${err.code}): ${err.message}`);
 }
 
+function addRouting(mymap) {
+  if (control  !== null) return;
+  control = L.routing.control({
+    createMarker: function () { return null; },
+    addWaypoints: false,
+    waypoints: [
+      L.latLng(lat, lon)
+    ],
+    router: L.Routing.graphHopper('a0695b22-2381-4b66-8330-9f213b610d8f', {
+      urlParameters: {
+        vehicle: routingMode
+      }
+    })
+  }).addTo(mymap);
+  control.spliceWaypoints(0, 1, L.latLng(lat, lon));
+}
+
+function checkDistance(mymap,mark){
+  var text,distance;
+  // if (d === null){
+    text = $("h3").text().split(",")[0];
+    if(text.indexOf(" km") >= 0){
+      console.log(text)
+      console.log(text.replace(" km",""))
+      distance = parseFloat(text.replace(" km",""));
+      distance = distance * 1000;
+    }
+    else{
+      console.log(text)
+      distance = parseFloat(text);
+    }
+  // }
+  console.log(distance)
+  if(distance <= 20){
+    var la = POIs[nearest].latitudeCenter;
+    var lo = POIs[nearest].longitudeCenter;
+    var popup = "<h1 class=\"text-center\" style=\"margin: 1em;background-color: #000000;color: #ffffff\">" + nearest + "</h1>";
+    popup += "<p class=\"text-center\" style=\"margin: 1em;background-color: #000000;color: #ffffff\">" + POIs[nearest].description.en + "</p>";
+    var x = new L.LatLng(la,lo)
+    onClickMarker(mymap,mark,popup,distance);
+    console.log("arrivati")
+  }
+}
+
+function getPOIs(q) {
+  return $.ajax({
+    type: "get",
+    url: "/getPOIs?searchQuery=" + q+"&Slat="+ lat + "&Slon="+lon,
+    success: function (data) {
+      POIs = data;
+      console.log(POIs)
+    }
+  }
+  );
+}
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function loadMarker(){
-    if(typeof lat !== "undefined"){
-      var q = OpenLocationCode.encode(lat, lon, 4);
-      q = q.replace("+","");
-      $.when(getPOIs(q)).done(async function(){
-        for(key in POIs){
-            $.when(findDescription(key)).done(function(desc){
-                if(desc != "Not Found"){
-                  $.when(findFinalDescription(desc)).done(function(data){
-                      for(k in data){
-                          var mm = data[k];
-                          if(typeof mm["http://www.w3.org/2000/01/rdf-schema#comment"] !== "undefined"){
+function loadMarker() {
+  if (typeof lat !== "undefined") {
+    var q = OpenLocationCode.encode(lat, lon, 4);
+    q = q.replace("+", "");
+    $.when(getPOIs(q)).done(async function () {
+      console.log(POIs);
+      var min = 40075000;
+      var id;
+      for (var key in POIs) {
+        if(POIs[key].distance < min){
+          min = POIs[key].distance;
+          id = key;
+        }
+        var popup = "<h1 class=\"text-center\" style=\"margin: 1em;background-color: #000000;color: #ffffff\">" + key + "</h1>";
+        popup += "<p class=\"text-center\" style=\"margin: 1em;background-color: #000000;color: #ffffff\">" + POIs[key].description.en + "</p>";
+        var m = L.marker([POIs[key].latitudeCenter, POIs[key].longitudeCenter], {
+          bounceOnAdd: true,
+          bounceOnAddOptions: { },
+          bounceOnAddCallback: function () { }
+        }).on('click', function(e){mymap.setView(m.getLatLng(), 12)}).bindPopup(popup).addTo(mymap);
+        await sleep(250);
 
-                            console.log(mm["http://www.w3.org/2000/01/rdf-schema#comment"][0].lang)
-                            console.log(mm["http://www.w3.org/2000/01/rdf-schema#comment"][0].value)
-                          }
-                          //console.log(val);
-                      }
-                      return;
-                  });
-                }
-            });
-          }
+      }
+      nearest = id;
+      console.log("nearest")
+      console.log(nearest)
+      var la = POIs[id].latitudeCenter;
+      var lo = POIs[id].longitudeCenter;
+      var x = new L.LatLng(la,lo)
+      var mark = L.marker([la,lo], {
+          bounceOnAdd: true,
+          bounceOnAddOptions: { },
+          bounceOnAddCallback: function () { }
+        })
+        control.spliceWaypoints(control.getWaypoints().length - 1, 1,x);
+        console.log(control.getWaypoints())
+        console.log("MARKKK")
+        console.log(m)
+        checkDistance(mymap,mark);
+    });
+  }
+  else {
+    setTimeout(loadMarker, 1000);
+  }
+}
 
-        mymap.setView(currentLocation.getLatLng(),15);
-      });
-    }
-    else{
-        setTimeout(loadMarker, 1000);
-    }
+
+const onClick = (mymap) => {
+  mymap.on('click', function (e) {
+    var fakeBtn = createButton("fakePos");
+
+    L.DomEvent.on(fakeBtn, 'click', function () {
+      mymap.closePopup();
+      console.log(e);
+      lat = e.latlng.lat;
+      lon = e.latlng.lng;
+      currentLocation.setLatLng(e.latlng);
+      control.spliceWaypoints(0,1,e.latlng);
+      var m = L.marker([POIs[nearest].latitudeCenter, POIs[nearest].longitudeCenter], {
+        bounceOnAdd: true,
+        bounceOnAddOptions: { },
+        bounceOnAddCallback: function () { }
+      })
+      checkDistance(mymap,m);
+    });
+    // var div = L.DomUtil.create("div", "");
+    // div.appendChild(addBtn);
+    // div.appendChild(fakeBtn);
+    L.popup("#ffffff")
+      .setContent(fakeBtn)
+      .setLatLng(e.latlng)
+      .openOn(mymap);
+  });
+}
+
+
+function onClickMarker (mymap, mark,popup,distance = null)  {
+
+  console.log("Arrived time to play description")
+  mark.bindPopup(popup).addTo(mymap);
+  // console.log(POIs[nearest].description);
+  var msg = new SpeechSynthesisUtterance(POIs[nearest].description.en);
+  window.speechSynthesis.speak(msg);
+  mark.openPopup();
+
+}
+
+function createButton(label) {
+  var btn = L.DomUtil.create('button', "#000000");
+  btn.setAttribute('type', 'button');
+  btn.innerHTML = label;
+  return btn;
 }

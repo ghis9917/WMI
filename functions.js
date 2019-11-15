@@ -1,40 +1,29 @@
 const OpenLocationCode = require('open-location-code').OpenLocationCode;
 const openLocationCode = new OpenLocationCode();
-const client = require('mongodb').MongoClient;
-var Promise = require('rsvp').Promise;
+const axios = require('axios');
 
 module.exports = {
-  validator: function validator(d){
+  validator: function validator(d) {
     var list = d.split(":")
-    try{
-      return openLocationCode.decode(list[2]);
-    }catch{
+    try {
+      return {coords : openLocationCode.decode(list[2]), plusCode: list[2]};
+    } catch{
       return false
     }
+  },
+  get: function get(search) {
+    return axios.get(search);
+  },
+  dist: function dist(item,lat,lon){
+    var url = "https://graphhopper.com/api/1/matrix?from_point=" + lat + "," + lon;
+    url += "&to_point=" + item["latitudeCenter"] + "," + item["longitudeCenter"]
+    url += "&type=json&vehicle=foot&debug=true&out_array=weights&out_array=times&out_array=distances&key=a0695b22-2381-4b66-8330-9f213b610d8f";
+    return axios.get(url)
+    .then(response => {
+      item["distance"] = response["data"]["distances"][0][0];
+    })
+    .catch(error => {
+        console.log(error);
+    });
   }
-  //   console.log("qui entra");
-  //       await client.connect('mongodb://localhost:27017/db1', (error, db) =>{
-  //       console.log("error");
-  //       console.log(error);
-  //       console.log("db");
-  //       console.log(db);
-  //       if(!error) {
-  //
-  //           var mydb = db.db("WMIdb");
-  //            mydb.collection("Descrizioni").find({nome : name}).toArray(function(err, result) {
-  //               if (err) {console.log("Errrr");};
-  //               if (result.length !== 0){
-  //                 console.log("result");
-  //                 console.log(result);
-  //               } else {
-  //                 console.log("non trovato");
-  //                 POIs[name].description = "notFound";
-  //               }
-  //           });
-  //           db.close();
-  //         }
-  //         return;
-  //       });
-  //     console.log("fine funzione    ")
-  // }
 }
