@@ -110,29 +110,36 @@ function getPOIs(q){
 }
 
 function findDescription(q){
+  var vector = q.split(" ");
+  for(string in vector){
+    vector[string] = "%27" + vector[string] + "%27";
+    vector[string] = vector[string].toUpperCase();
+  }
+
+
+  var progress=20;
   return $.ajax({
-        type: "get",
-        url: "/data?searchQuery="+q,
-        success: function (data){
-          if(data === undefined) POIs[q] = "NOT FOUND"
-          POIs[q].description = data[0].description;
-            var popup = "<p class=\"text-center\" style=\"margin: 1em;\">"+POIs[q].description+"</p>";
-            var customOptions = {
-              'maxWidth': '500',
-              'maxHeight' : '250',
-              'className' : 'custom'
-            };
-           var m = L.marker([POIs[q].latitudeCenter, POIs[q].longitudeCenter], {
-              bounceOnAdd: true,
-              bounceOnAddOptions: {duration: 750, height: 150, loop: 2},
-              bounceOnAddCallback: function() {}
-            }).bindPopup(popup, customOptions).addTo(mymap);
-            sleep(250);
-        }
-      }
-    );
+    type: 'get',
+    url: "/getMammt?data="+vector+"&que="+q  ,
+    success: function(data) {
+    },
+    error: function(e) {
+        console.log(e);
+    }
+  });
 }
 
+function findFinalDescription(desc){
+  return $.ajax({
+    type: 'get',
+    url: desc,
+    success: function(data) {
+    },
+    error: function(e) {
+        console.log(e);
+    }
+  });
+}
 
 
 function sleep(ms) {
@@ -141,21 +148,29 @@ function sleep(ms) {
 
 function loadMarker(){
     if(typeof lat !== "undefined"){
-      console.log(lat);
       var q = OpenLocationCode.encode(lat, lon, 4);
-      console.log("PORCODIOOOOO")
-      console.log(q)
       q = q.replace("+","");
       $.when(getPOIs(q)).done(async function(){
-        console.log(POIs);
         for(key in POIs){
-          console.log(key)
-            $.when(findDescription(key)).done(await function(desc){
-              console.log(POIs)
-          });
+            $.when(findDescription(key)).done(function(desc){
+                if(desc != "Not Found"){
+                  $.when(findFinalDescription(desc)).done(function(data){
+                      for(k in data){
+                          var mm = data[k];
+                          if(typeof mm["http://www.w3.org/2000/01/rdf-schema#comment"] !== "undefined"){
+
+                            console.log(mm["http://www.w3.org/2000/01/rdf-schema#comment"][0].lang)
+                            console.log(mm["http://www.w3.org/2000/01/rdf-schema#comment"][0].value)
+                          }
+                          //console.log(val);
+                      }
+                      return;
+                  });
+                }
+            });
+          }
 
         mymap.setView(currentLocation.getLatLng(),15);
-      }
       });
     }
     else{

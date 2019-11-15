@@ -7,7 +7,8 @@ const path = require('path');
 const youtubeSearch = require('youtube-search');
 const f = require('./functions.js');
 var client = require('mongodb').MongoClient;
-
+var sparql = require('sparql' );
+const {Client} = require('virtuoso-sparql-client');
 app.use(express.static('public')); // for serving the HTML file
 
 const storage = multer.diskStorage({
@@ -26,25 +27,16 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname,'./index.html'));
 });
 
-function chec(data){
-  for(item in data){
-    for(){
-
-    }
-  }
-}
-
 app.get('/getPOIs', (req, res) => {
   var opts =  youtubeSearch.YouTubeSearchOptions = {
     maxResults: 20,
-    key: "AIzaSyB5PLURpl92Ix6gBHvgBMJ9s1JC7m69b2c"
+    key: "AIzaSyD5gNJnmZJlz4DsDcD1cFjgpqLfzX0LsFk"
   };
   youtubeSearch(req.query.searchQuery, opts,  function(err, results) {
     if (err) {
-      return console.log("  err");
+      return console.log("err");
     }
     else {
-      results = chec(results);
       var POIs = {};
       for (var key in results) {
         var item = results[key];
@@ -58,14 +50,6 @@ app.get('/getPOIs', (req, res) => {
   });
 });
 
-app.get('/poi', (req, res) => {
-  res.sendFile(path.join(__dirname,'./poi.json'));
-});
-
-
-app.get('/audio.wav', (req, res) => {
-  res.sendFile(path.join(__dirname,'./audio.wav'));
-});
 
 
 
@@ -90,6 +74,33 @@ app.get('/data', (req, res) => {
     });
 });
 
+app.get('/DBpedia', (req, res) => {
+  const sparql = require('sparql')
+ client = new sparql.Client('http://dbpedia.org/sparql')
+ console.log(req.query.ciao);
+client.query(req.query.ciao, (err, es) =>{
+  console.log(es)
+  res.send(es)});
+  });
+
+app.get('/getMammt', (req, res) => {
+   const sparql = require('sparql')
+   client = new sparql.Client('http://dbpedia.org/sparql')
+   console.log(req.query.data)
+   var prima = req.query.data;
+   var dopo = req.query.que.toUpperCase();
+   dopo = dopo.replace(/ /g," AND ")
+
+  var q =   " select ?s1 as ?c1, (bif:search_excerpt (bif:vector ("+prima+" , 'BOLOGNA'), ?o1)) as ?c2, ?sc, ?rank, ?g where {{{ select ?s1, (?sc * 3e-1) as ?sc, ?o1, (sql:rnk_scale (<LONG::IRI_RANK> (?s1))) as ?rank, ?g where  { quad map virtrdf:DefaultQuadMap { graph ?g  { ?s1 <http://dbpedia.org/ontology/abstract> ?o1 .?o1 bif:contains  '(" +dopo + " AND BOLOGNA)'  option (score ?sc)  . }}} order by desc (?sc * 3e-1 + sql:rnk_scale (<LONG::IRI_RANK> (?s1)))  limit 1 offset 0 }}}   "
+  client.query(q, (err, es) =>{
+          if ( typeof es !== 'undefined'){
+          if( es.results.bindings.length != 0){
+              res.send(es.results.bindings[0].c1.value.replace("resource", "data")+".json");
+          }else{
+             res.send("Not Found");
+          }}
+  });
+});
 app.get('*', (req, res) => {
   var ext = path.extname(req.url);
   if (ext === ".css" || ext === ".html" || ext === ".js" || ext === ".jpg" || ext === ".png" || ext === ".woff" || ext === ".woff2" || ext === ".ttf" || ext === ".svg" || ext === ".eot"){
