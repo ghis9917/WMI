@@ -74,7 +74,7 @@ function addRouting(mymap) {
     waypoints: [
       L.latLng(lat, lon)
     ],
-    router: L.Routing.graphHopper('a0695b22-2381-4b66-8330-9f213b610d8f', {
+    router: L.Routing.graphHopper('653995f0-72fe-4af8-b598-60e50479a0c2', {
       urlParameters: {
         vehicle: routingMode
       }
@@ -100,11 +100,16 @@ function checkDistance(mymap,mark){
   if(distance <= 20){
     var la = POIs[nearest].latitudeCenter;
     var lo = POIs[nearest].longitudeCenter;
-    var popup = "<h1 class=\"text-center\" style=\"margin: 1em;background-color: #000000;color: #ffffff\">" + nearest + "</h1>";
-    popup += "<p class=\"text-center\" style=\"margin: 1em;background-color: #000000;color: #ffffff\">" + POIs[nearest].description.en + "</p>";
+    var popup =
+      '<div id="popupContainer" style="width: 300px;height: 250px;padding: 1em;overflow: scroll;"><div class="d-flex justify-content-between"><div class="d-flex align-items-center"><p>' +
+      nearest +
+      '</p></div><div><img style="width: 100px; height: 100px" src=' +
+      POIs[nearest].img +
+      '/></div></div><div style="padding-top: 1em;"><p style="margin: 0px;">' +
+      POIs[nearest].description.en +
+      "</p></div></div>";
     var x = new L.LatLng(la,lo)
     onClickMarker(mymap,mark,popup,distance);
-    // console.log("arrivati")
   }
 }
 
@@ -128,7 +133,7 @@ function loadMarker() {
     var q = OpenLocationCode.encode(lat, lon, 4);
     q = q.replace("+", "");
     $.when(getPOIs(q)).done(async function () {
-      // console.log(POIs);
+      console.log(POIs);
       var min = 40075000;
       var id;
       for (var key in POIs) {
@@ -136,13 +141,22 @@ function loadMarker() {
           min = POIs[key].distance;
           id = key;
         }
-        var popup = "<h1 class=\"text-center\" style=\"margin: 1em;background-color: #000000;color: #ffffff\">" + key + "</h1>";
-        popup += "<p class=\"text-center\" style=\"margin: 1em;background-color: #000000;color: #ffffff\">" + POIs[key].description.en + "</p>";
-        var m = L.marker([POIs[key].latitudeCenter, POIs[key].longitudeCenter], {
+        var popup =
+          '<div id="popupContainer" style="width: 300px;height: 250px;padding: 1em;overflow: scroll;"><div class="d-flex justify-content-between"><div class="d-flex align-items-center"><p>' +
+          key +
+          '</p></div><div><img style="width: 100px; height: 100px" src=' +
+          POIs[key].img +
+          '/></div></div><div style="padding-top: 1em;"><p style="margin: 0px;">' +
+          POIs[key].description.en +
+          "</p></div></div>";
+          var m = new L.marker([POIs[key].latitudeCenter, POIs[key].longitudeCenter], {
           bounceOnAdd: true,
           bounceOnAddOptions: { },
           bounceOnAddCallback: function () { }
-        }).on('click', function(e){mymap.setView(m.getLatLng(), 12)}).bindPopup(popup).addTo(mymap);
+        }).on('click', function(e){
+          changeDestination(mymap, e);
+          mymap.setView(m.getLatLng(), 12)
+        }).bindPopup(popup).addTo(mymap);
         await sleep(250);
 
       }
@@ -205,6 +219,21 @@ function onClickMarker (mymap, mark,popup,distance = null)  {
 
 }
 
+function changeDestination(mymap, m){
+  console.log("FROM mark")
+  console.log( m)
+  for (key in POIs){
+    console.log("FROM POI")
+    console.log(POIs[key].latitudeCenter)
+    console.log(POIs[key].longitudeCenter);
+    // if(new L.LatLng(POIs[key].latitudeCenter,POIs[key].longitudeCenter) == m.getLatLng() ){
+    if(POIs[key].latitudeCenter == m["latlng"].lat && POIs[key].longitudeCenter == m["latlng"]  .lng ){
+      nearest = key;
+      console.log("NEW NEAREST " + nearest )
+      control.spliceWaypoints(control.getWaypoints().length - 1, 1,m["latlng"])
+    }
+  }
+}
 function createButton(label) {
   var btn = L.DomUtil.create('button', "#000000");
   btn.setAttribute('type', 'button');

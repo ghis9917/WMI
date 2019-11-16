@@ -53,30 +53,34 @@ app.get('/getDescription', (req, res) => {
   client.connect("mongodb://localhost:27017/", { useUnifiedTopology: true } ,
     function (error, db) {
       if (!error) {
-        var mydb = db.db("WMIdb");
-        mydb.collection("Descrizioni").find({ nome: req.query.val }).toArray(async function (err, result) {
+        var mydb = db.db("smogDB");
+        mydb.collection("descrizioni").find({ nome: req.query.val }).toArray(async function (err, result) {
           if (err) throw err;
           if (result.length !== 0) {
             res.send({ val: result[0].descrizione });
           } else {
             var d = await f.get('http://localhost:8000/askDBPedia?que=' + req.query.val);
             try{
-            var e = await f.get(d.data.results.bindings[0].c1.value.replace("resource", "data")+".rdf");
-            parseString(e.data, function (err, result) {
-              var list = result["rdf:RDF"]["rdf:Description"][0]['rdfs:comment'];
-              var json = {};
-              for (var key in list) {
-                var chiave = list[key]["$"]["xml:lang"];
-                var valore = list[key]["_"];
-                json[chiave] = valore;
-              }
-              res.send({val : json});
-            });
+              var e = await f.get(d.data.results.bindings[0].c1.value.replace("resource", "data")+".rdf");
+              parseString(e.data, function (err, result) {
+                var list = result["rdf:RDF"]["rdf:Description"][0]['rdfs:comment'];
+                var json = {};
+                for (var key in list) {
+                  var chiave = list[key]["$"]["xml:lang"];
+                  var valore = list[key]["_"];
+                  json[chiave] = valore;
+                }
+                var img =
+                  result["rdf:RDF"]["rdf:Description"][0]["dbo:thumbnail"][0][
+                    "$"
+                  ]["rdf:resource"];
+                res.send({ val: json, img: img });
+              });
           }
           catch{
             var json = {};
             json["en"] = "NOT FOUND";
-            res.send({val : json});
+            res.send({val : json,img: "NF"});
           }
           }
           db.close();
@@ -92,7 +96,7 @@ app.get('/getDescription', (req, res) => {
 app.get('/getPOIs', (req, res) => {
   var opts = youtubeSearch.YouTubeSearchOptions = {
     maxResults: 50,
-    key: rickykey_second
+    key: rickyKey
   };
 
   youtubeSearch(req.query.searchQuery, opts, async (err, results) => {
@@ -101,11 +105,8 @@ app.get('/getPOIs', (req, res) => {
       res.send({ error: err.response.statusText });
     }
     else {
-      // console.log(results);
-      //results = check(results);
       var POIs = {};
       var list = [];
-      // var min =
       for (var key in results) {
         var item = results[key];
         if ((val = f.validator(item.description)) !== false) {
@@ -113,9 +114,8 @@ app.get('/getPOIs', (req, res) => {
             list.push(val.plusCode);
             POIs[item.title] = val.coords;
             POIs[item.title].videoId = item.id;
-            var d = await f.get('http://localhost:8000/getDescription?val=' + item.title);
             await f.dist(POIs[item.title],req.query.Slat,req.query.Slon);
-            POIs[item.title].description = d.data.val;
+            await f.getDescription(client,POIs, item.title,f);
           }
         }
       }
@@ -134,19 +134,6 @@ app.get('/audio.wav', (req, res) => {
 });
 
 app.get('/insertDescription', (req, res) => {
-  client.connect("mongodb://localhost:27017/",
-    function (error, db) {
-      if (!error) {
-        var mydb = db.db("WMIdb");
-        var myobj = { nome: req.query.nome, descrizione: req.query.des };
-        mydb.collection("Descrizioni").insertOne(myobj, function (err, res) {
-          if (err) throw err;
-          // console.log("1 document inserted");
-          db.close();
-        });
-      }
-    }
-  );
 });
 
 app.post('/api/test', type, function (req, res) {
