@@ -6,14 +6,14 @@ var distanceRouting = null;
 var routingMode = "foot";
 var mymap;
 var POIs = {};
+var DSTs = {};
 var dsts, ret;
 var currentLocation;
 
-$(document).ready(function() {
+$(document).ready(async function() {
   createMap();
-  if (loadMarker()) {
-    createPlayer();
-  }
+  loadMarker();
+  createPlayer();
 });
 
 $("#stop").click(function() {
@@ -58,19 +58,25 @@ function onLocationFound(position) {
   lat = position.coords.latitude;
   lon = position.coords.longitude;
   try {
-    console.log("otherTimes");
     mymap.removeLayer(currentLocation);
-  } catch {
-    console.log("firstTime");
-  }
+  } catch {}
   currentLocation = L.marker([lat, lon])
     .bindPopup(popup)
     .addTo(mymap);
+  if (control !== null) {
+    if (checkDistanceFromPOI()) {
+      control.spliceWaypoints(0, 1, null);
+    } else {
+      control.spliceWaypoints(0, 1, [lat, lon]);
+    }
+  }
 }
 
 function onError(err) {
   console.warn(`ERROR(${err.code}): ${err.message}`);
 }
+
+//____________CREATEMAP FUNCTIONS_______________________________________
 
 function getPOIs(q) {
   return $.ajax({
@@ -119,28 +125,65 @@ function loadMarker() {
         await sleep(250);
       }
     });
-    return true;
   } else {
+    console.log("firstelse");
     timer = setTimeout(loadMarker, 1000);
   }
 }
 
+//____________LOADMARKER FUNCTIONS_______________________________________
+
 function createPlayer() {
+  var timer = null;
+  if (Object.keys(POIs).length !== 0) {
+    clearTimeout(timer);
+    addPlayButton();
+  } else {
+    timer = setTimeout(createPlayer, 1000);
+  }
+}
+
+function addPlayButton() {
+  L.easyButton('<span class="bigodot">&bigodot;</span>', function() {
+    elaborateDistance();
+  }).addTo(mymap);
+}
+
+function elaborateDistance() {
+  var a = {};
+  var count = 0;
+  var url =
+    "https://graphhopper.com/api/1/matrix?from_point=" + lat + "," + lon;
   for (var i in POIs) {
-    var url =
-      "https://graphhopper.com/api/1/matrix?from_point=" + lat + "," + lon;
+    a[count] = i;
+    count++;
     url +=
       "&to_point=" + POIs[i].latitudeCenter + "," + POIs[i].longitudeCenter;
-    url +=
-      "&type=json&vehicle=foot&debug=true&out_array=weights&out_array=times&out_array=distances&key=653995f0-72fe-4af8-b598-60e50479a0c2";
   }
-  $.when(getDistance(url)).done(async function() {
-    //ADD TO ROUTING
+  url +=
+    "&type=json&vehicle=foot&debug=true&out_array=weights&out_array=times&out_array=distances&key=653995f0-72fe-4af8-b598-60e50479a0c2";
+  $.when(getDistance(url)).done(function() {
+    var min = 40075000;
+    var index = null;
+    for (var key in DSTs.distances[0]) {
+      if (DSTs.distances[0][key] <= min) {
+        min = DSTs.distances[0][key];
+        index = key;
+      }
+    }
+    addRouting();
+    routingTo(POIs[a[index]]);
   });
 }
 
 function getDistance(q) {
-  console.log(q);
+  return $.ajax({
+    type: "get",
+    url: q,
+    success: function(data) {
+      DSTs = data;
+    }
+  });
 }
 
 function addRouting() {
@@ -159,3 +202,13 @@ function addRouting() {
     })
     .addTo(mymap);
 }
+
+function routingTo(p) {
+  control.spliceWaypoints(
+    control.getWaypoints().length - 1,
+    1,
+    L.latLng(p.latitudeCenter, p.longitudeCenter)
+  );
+}
+
+//____________CREATEPLAYER FUNCTIONS_______________________________________
