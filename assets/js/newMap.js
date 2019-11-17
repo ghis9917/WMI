@@ -9,6 +9,7 @@ var POIs = {};
 var DSTs = {};
 var dsts, ret;
 var currentLocation;
+var currentDestination;
 
 $(document).ready(async function() {
   createMap();
@@ -137,6 +138,7 @@ function createPlayer() {
   var timer = null;
   if (Object.keys(POIs).length !== 0) {
     clearTimeout(timer);
+    addRouting();
     addPlayButton();
   } else {
     timer = setTimeout(createPlayer, 1000);
@@ -144,9 +146,37 @@ function createPlayer() {
 }
 
 function addPlayButton() {
-  L.easyButton('<span class="bigodot">&bigodot;</span>', function() {
-    elaborateDistance();
+  L.easyButton({
+    states: [
+      {
+        stateName: "null", // name the state
+        icon: "fa-play", // and define its properties
+        title: "Click to get directions to the nearest POI", // like its title
+        onClick: function(btn) {
+          // and its callback
+          elaborateDistance();
+          $("#popupContainer").css("display", "block");
+          populatePopup();
+          btn.state("started"); // change state on click!
+        }
+      },
+      {
+        stateName: "started",
+        icon: "fa-stop",
+        title: "Stop the player!",
+        onClick: function(btn) {
+          $("#popupContainer").css("display", "none");
+          control.spliceWaypoints(control.getWaypoints().length - 1, 1, null);
+          btn.state("null");
+        }
+      }
+    ]
   }).addTo(mymap);
+}
+
+function populatePopup() {
+  console.log(currentDestination);
+  $("#popupTitle").text(currentDestination);
 }
 
 function elaborateDistance() {
@@ -171,8 +201,8 @@ function elaborateDistance() {
         index = key;
       }
     }
-    addRouting();
     routingTo(POIs[a[index]]);
+    currentDestination = a[index];
   });
 }
 
@@ -192,6 +222,7 @@ function addRouting() {
       createMarker: function() {
         return null;
       },
+      fitSelectedRoutes: false,
       addWaypoints: false,
       waypoints: [L.latLng(lat, lon)],
       router: L.Routing.graphHopper("653995f0-72fe-4af8-b598-60e50479a0c2", {

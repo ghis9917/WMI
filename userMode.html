@@ -89,7 +89,7 @@
         </div>
       </div>
     </nav>
-    <div id="mapid" style="height: 100%;">
+    <div id="mapid" style="height: 100%;z-index: 1">
       <div
         id="dad"
         hidden
@@ -119,6 +119,20 @@
             </div>
           </div>
         </div>
+      </div>
+    </div>
+    <div
+      id="popupContainer"
+      style="width: 100%;height: 250px;padding: 1em;position: absolute; bottom: 0; left: 0; z-index: 2; background-color: white;display: none;"
+    >
+      <div class="d-flex justify-content-between">
+        <div class="d-flex align-items-center">
+          <p id="popupTitle">Paragraph</p>
+        </div>
+        <div><img id="popupImg" style="width: 50px;height: 50px;" /></div>
+      </div>
+      <div style="padding-top: 1em;">
+        <p id="popupDescription" style="margin: 0px;">Descrizione</p>
       </div>
     </div>
     <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
