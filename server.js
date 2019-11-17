@@ -32,8 +32,9 @@ var type = upload.single('upl');
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, './index.html'));
 });
-
+//
 app.get('/askDBPedia', (req, res) => {
+  return new Promise(async (resolve,reject) => {
   var vector = req.query.que.split(" ");
   for(string in vector){
     vector[string] = "'" + vector[string] + "'";
@@ -43,60 +44,19 @@ app.get('/askDBPedia', (req, res) => {
   string = string.replace(/ /g," AND ");
   var q = "select ?s1 as ?c1, (bif:search_excerpt (bif:vector ("+vector+" , 'BOLOGNA'), ?o1)) as ?c2, ?sc, ?rank, ?g where {{{ select ?s1, (?sc * 3e-1) as ?sc, ?o1, (sql:rnk_scale (<LONG::IRI_RANK> (?s1))) as ?rank, ?g where  { quad map virtrdf:DefaultQuadMap { graph ?g { ?s1 ?s1textp ?o1 . ?o1 bif:contains  '(" +string + " AND BOLOGNA)'  option (score ?sc)  . } } } order by desc (?sc * 3e-1 + sql:rnk_scale (<LONG::IRI_RANK> (?s1)))  limit 1  offset 0 }}}";
   dps.client().query(q).timeout(15000).asJson().then((r) => {
+    console.log("RESOLVED")
+    console.log(r)
     res.send(r);
   }).catch((e) => {
     res.send(e);
   });
 });
-
-app.get('/getDescription', (req, res) => {
-  client.connect("mongodb://localhost:27017/", { useUnifiedTopology: true } ,
-    function (error, db) {
-      if (!error) {
-        var mydb = db.db("smogDB");
-        mydb.collection("descrizioni").find({ nome: req.query.val }).toArray(async function (err, result) {
-          if (err) throw err;
-          if (result.length !== 0) {
-            res.send({ val: result[0].descrizione });
-          } else {
-            var d = await f.get('http://localhost:8000/askDBPedia?que=' + req.query.val);
-            try{
-              var e = await f.get(d.data.results.bindings[0].c1.value.replace("resource", "data")+".rdf");
-              parseString(e.data, function (err, result) {
-                var list = result["rdf:RDF"]["rdf:Description"][0]['rdfs:comment'];
-                var json = {};
-                for (var key in list) {
-                  var chiave = list[key]["$"]["xml:lang"];
-                  var valore = list[key]["_"];
-                  json[chiave] = valore;
-                }
-                var img =
-                  result["rdf:RDF"]["rdf:Description"][0]["dbo:thumbnail"][0][
-                    "$"
-                  ]["rdf:resource"];
-                res.send({ val: json, img: img });
-              });
-          }
-          catch{
-            var json = {};
-            json["en"] = "NOT FOUND";
-            res.send({val : json,img: "NF"});
-          }
-          }
-          db.close();
-        });
-      }
-      else {
-        console.log(error);
-      }
-    }
-  );
 });
 
 app.get('/getPOIs', (req, res) => {
   var opts = youtubeSearch.YouTubeSearchOptions = {
     maxResults: 50,
-    key: rickyKey
+    key: maxKey
   };
 
   youtubeSearch(req.query.searchQuery, opts, async (err, results) => {
@@ -105,25 +65,36 @@ app.get('/getPOIs', (req, res) => {
       res.send({ error: err.response.statusText });
     }
     else {
-      var POIs = {};
-      var list = [];
-      for (var key in results) {
-        var item = results[key];
-        if ((val = f.validator(item.description)) !== false) {
-          if (list.indexOf(val.plusCode) === -1) {
-            list.push(val.plusCode);
-            POIs[item.title] = val.coords;
-            POIs[item.title].videoId = item.id;
-            await f.dist(POIs[item.title],req.query.Slat,req.query.Slon);
-            await f.getDescription(client,POIs, item.title,f);
-          }
-        }
-      }
-      res.send(POIs);
+      var data = await call(results,req.query.Slat,req.query.Slon);
+      console.log("SEND POISSS")
+      console.log(data)
+      res.send(data);
     }
   });
 });
 
+function call(results,Slat,Slon){
+return new Promise(async (resolve,reject) => {
+  var POIs = {};
+  var list = [];
+  for (var key in results) {
+    var item = results[key];
+    if ((val = f.validator(item.description)) !== false) {
+      if (list.indexOf(val.plusCode) === -1) {
+        list.push(val.plusCode);
+        POIs[item.title] = val.coords;
+        POIs[item.title].videoId = item.id;
+        var dist = await f.dist(POIs[item.title],Slat,Slon);
+        POIs[item.title].distance = dist;
+        var json = await f.getDescription(client,POIs, item.title,f);
+        POIs[item.title].description = json["desc"];
+        POIs[item.title].img = json["img"];
+      }
+    }
+  }
+  resolve(POIs);
+});
+}
 app.get('/poi', (req, res) => {
   res.sendFile(path.join(__dirname, './poi.json'));
 });
@@ -131,9 +102,6 @@ app.get('/poi', (req, res) => {
 
 app.get('/audio.wav', (req, res) => {
   res.sendFile(path.join(__dirname, './audio.wav'));
-});
-
-app.get('/insertDescription', (req, res) => {
 });
 
 app.post('/api/test', type, function (req, res) {

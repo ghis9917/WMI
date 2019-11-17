@@ -81,25 +81,21 @@ function addRouting(mymap) {
     })
   }).addTo(mymap);
   control.spliceWaypoints(0, 1, L.latLng(lat, lon));
+  control.on('routesfound', function (e) {
+      var distance = e.routes[0].summary.totalDistance;
+      checkDistance(distance);
+  });
 }
 
-function checkDistance(mymap,mark){
-  var text,distance;
-  // if (d === null){
-    text = $("h3").text().split(",")[0];
-    if(text.indexOf(" km") >= 0){
-      console.log(text.replace(" km",""))
-      distance = parseFloat(text.replace(" km",""));
-      distance = distance * 1000;
-    }
-    else{
-      distance = parseFloat(text);
-    }
-  // }
-  // console.log(distance)
+function checkDistance(distance){
   if(distance <= 20){
     var la = POIs[nearest].latitudeCenter;
     var lo = POIs[nearest].longitudeCenter;
+    var mark = new L.marker([la, lo], {
+    bounceOnAdd: true,
+    bounceOnAddOptions: { },
+    bounceOnAddCallback: function () { }
+  })
     var popup =
       '<div id="popupContainer" style="width: 300px;height: 250px;padding: 1em;overflow: scroll;"><div class="d-flex justify-content-between"><div class="d-flex align-items-center"><p>' +
       nearest +
@@ -133,7 +129,7 @@ function loadMarker() {
     var q = OpenLocationCode.encode(lat, lon, 4);
     q = q.replace("+", "");
     $.when(getPOIs(q)).done(async function () {
-      console.log(POIs);
+      // console.log(POIs);
       var min = 40075000;
       var id;
       for (var key in POIs) {
@@ -141,6 +137,10 @@ function loadMarker() {
           min = POIs[key].distance;
           id = key;
         }
+        // if()
+        // console.log(key)
+        // console.log(POIs)
+        // console.log(POIs[key].description)
         var popup =
           '<div id="popupContainer" style="width: 300px;height: 250px;padding: 1em;overflow: scroll;"><div class="d-flex justify-content-between"><div class="d-flex align-items-center"><p>' +
           key +
@@ -164,13 +164,14 @@ function loadMarker() {
       var la = POIs[id].latitudeCenter;
       var lo = POIs[id].longitudeCenter;
       var x = new L.LatLng(la,lo)
+      control.spliceWaypoints(control.getWaypoints().length - 1, 1,x);
+      console.log("CONTROL DOPO")
+      console.log(control.routes)
       var mark = L.marker([la,lo], {
           bounceOnAdd: true,
           bounceOnAddOptions: { },
           bounceOnAddCallback: function () { }
-        })
-        control.spliceWaypoints(control.getWaypoints().length - 1, 1,x);
-        checkDistance(mymap,mark);
+        });
     });
   }
   else {
@@ -194,12 +195,8 @@ const onClick = (mymap) => {
         bounceOnAdd: true,
         bounceOnAddOptions: { },
         bounceOnAddCallback: function () { }
-      })
-      checkDistance(mymap,m);
+      });
     });
-    // var div = L.DomUtil.create("div", "");
-    // div.appendChild(addBtn);
-    // div.appendChild(fakeBtn);
     L.popup("#ffffff")
       .setContent(fakeBtn)
       .setLatLng(e.latlng)
@@ -208,28 +205,26 @@ const onClick = (mymap) => {
 }
 
 
-function onClickMarker (mymap, mark,popup,distance = null)  {
-
-  console.log("Arrived time to play description")
-  mark.bindPopup(popup).addTo(mymap);
-  // console.log(POIs[nearest].description);
-  var msg = new SpeechSynthesisUtterance(POIs[nearest].description.en);
-  window.speechSynthesis.speak(msg);
-  mark.openPopup();
+async function onClickMarker (mymap, mark,popup,distance = null)  {
+  var speec = window.speechSynthesis;
+  var availableVoices =  setSpeech();
+  availableVoices.then(voice => {
+        console.log(voice)
+        mark.bindPopup(popup).addTo(mymap);
+        var msg = new SpeechSynthesisUtterance(POIs[nearest].description.en);
+        msg.voice = voice[5]
+        speec.speak(msg);
+        mark.openPopup();
+  });
 
 }
 
 function changeDestination(mymap, m){
-  console.log("FROM mark")
-  console.log( m)
   for (key in POIs){
-    console.log("FROM POI")
-    console.log(POIs[key].latitudeCenter)
-    console.log(POIs[key].longitudeCenter);
     // if(new L.LatLng(POIs[key].latitudeCenter,POIs[key].longitudeCenter) == m.getLatLng() ){
     if(POIs[key].latitudeCenter == m["latlng"].lat && POIs[key].longitudeCenter == m["latlng"]  .lng ){
       nearest = key;
-      console.log("NEW NEAREST " + nearest )
+      // console.log("NEW NEAREST " + nearest )
       control.spliceWaypoints(control.getWaypoints().length - 1, 1,m["latlng"])
     }
   }
@@ -239,4 +234,19 @@ function createButton(label) {
   btn.setAttribute('type', 'button');
   btn.innerHTML = label;
   return btn;
+}
+
+function setSpeech() {
+    return new Promise(
+        function (resolve, reject) {
+            let synth = window.speechSynthesis;
+            let id;
+            id = setInterval(() => {
+                if (synth.getVoices().length !== 0) {
+                    resolve(synth.getVoices());
+                    clearInterval(id);
+                }
+            }, 10);
+        }
+    )
 }
