@@ -6,15 +6,14 @@ var distanceRouting = null;
 var routingMode = "foot";
 var mymap;
 var POIs = {};
-var Desc = {};
 var dsts, ret;
-/*Sets up the map are of the html file
- */
 var currentLocation;
 
 $(document).ready(function() {
   createMap();
-  loadMarker();
+  if (loadMarker()) {
+    createPlayer();
+  }
 });
 
 $("#stop").click(function() {
@@ -88,7 +87,9 @@ function sleep(ms) {
 }
 
 function loadMarker() {
+  var timer = null;
   if (typeof lat !== "undefined") {
+    clearTimeout(timer);
     var q = OpenLocationCode.encode(lat, lon, 4);
     q = q.replace("+", "");
     $.when(getPOIs(q)).done(async function() {
@@ -118,7 +119,43 @@ function loadMarker() {
         await sleep(250);
       }
     });
+    return true;
   } else {
-    setTimeout(loadMarker, 1000);
+    timer = setTimeout(loadMarker, 1000);
   }
+}
+
+function createPlayer() {
+  for (var i in POIs) {
+    var url =
+      "https://graphhopper.com/api/1/matrix?from_point=" + lat + "," + lon;
+    url +=
+      "&to_point=" + POIs[i].latitudeCenter + "," + POIs[i].longitudeCenter;
+    url +=
+      "&type=json&vehicle=foot&debug=true&out_array=weights&out_array=times&out_array=distances&key=653995f0-72fe-4af8-b598-60e50479a0c2";
+  }
+  $.when(getDistance(url)).done(async function() {
+    //ADD TO ROUTING
+  });
+}
+
+function getDistance(q) {
+  console.log(q);
+}
+
+function addRouting() {
+  control = L.routing
+    .control({
+      createMarker: function() {
+        return null;
+      },
+      addWaypoints: false,
+      waypoints: [L.latLng(lat, lon)],
+      router: L.Routing.graphHopper("653995f0-72fe-4af8-b598-60e50479a0c2", {
+        urlParameters: {
+          vehicle: routingMode
+        }
+      })
+    })
+    .addTo(mymap);
 }

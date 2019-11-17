@@ -1,4 +1,5 @@
 {
     "workbench.colorTheme": "Cobalt2",
-    "workbench.iconTheme": "material-icon-theme"
+    "workbench.iconTheme": "material-icon-theme",
+    "git.ignoreLimitWarning": true
 }

@@ -111,7 +111,7 @@ app.get("/getDescription", (req, res) => {
 app.get("/getPOIs", (req, res) => {
   var opts = (youtubeSearch.YouTubeSearchOptions = {
     maxResults: 50,
-    key: rickykey_second
+    key: guiKey
   });
 
   youtubeSearch(req.query.searchQuery, opts, async (err, results) => {
