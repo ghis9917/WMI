@@ -45,7 +45,6 @@
     <link rel="stylesheet" href="assets/css/Navigation-Clean.css" />
     <link rel="stylesheet" href="assets/css/Navigation-with-Button.css" />
     <link rel="stylesheet" href="assets/css/Profile-Card.css" />
-    <link rel="stylesheet" href="assets/css/styles.css" />
     <link
       rel="stylesheet"
       href="https://unpkg.com/@bootstrapstudio/bootstrap-better-nav/dist/bootstrap-better-nav.min.css"
@@ -54,6 +53,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.1.1/aos.css"
     />
+    <link rel="stylesheet" href="assets/css/styles.css" />
   </head>
 
   <body class="d-flex flex-column justify-content-between">
@@ -122,17 +122,48 @@
       </div>
     </div>
     <div
+      class="d-flex shadow"
       id="popupContainer"
-      style="width: 100%;height: 250px;padding: 1em;position: absolute; bottom: 0; left: 0; z-index: 2; background-color: white;display: none;"
+      style="width: calc(100% - 2em);height: 250px; z-index: -1; position: absolute; bottom: 0; left: 0; background: white; margin: 1em;"
     >
-      <div class="d-flex justify-content-between">
-        <div class="d-flex align-items-center">
-          <p id="popupTitle">Paragraph</p>
-        </div>
-        <div><img id="popupImg" style="width: 50px;height: 50px;" /></div>
+      <div
+        id="prev"
+        class="shadow-lg d-flex justify-content-center align-items-center"
+        style="font-size: 25px;width: 5%;background-color: #ffffff;"
+      >
+        <i
+          class="fas fa-chevron-left d-flex justify-content-center align-items-center"
+          id="prev"
+        ></i>
       </div>
-      <div style="padding-top: 1em;">
-        <p id="popupDescription" style="margin: 0px;">Descrizione</p>
+      <div
+        class="d-flex flex-column"
+        style="width: 90%;padding: 1em; overflow: scroll;"
+      >
+        <div class="d-flex justify-content-between">
+          <div
+            class="d-flex align-items-top"
+            style="width: 50%;padding-right: 1em;"
+          >
+            <h4 id="popupTitle"></h4>
+          </div>
+          <div style="width: 50%;">
+            <img id="popupImg" style="width: 50%;height: auto;" />
+          </div>
+        </div>
+        <div style="padding-top: 1em;">
+          <p id="popupDescription" style="margin: 0px;"></p>
+        </div>
+      </div>
+      <div
+        id="next"
+        class="shadow-lg d-flex justify-content-center align-items-center"
+        style="font-size: 25px; width: 5%;background-color: #ffffff;"
+      >
+        <i
+          class="fas fa-chevron-right d-flex justify-content-center align-items-center"
+          style="width: 10%;"
+        ></i>
       </div>
     </div>
     <script src="http://www.openlayers.org/api/OpenLayers.js"></script>

@@ -10,6 +10,7 @@ var DSTs = {};
 var dsts, ret;
 var currentLocation;
 var currentDestination;
+var referenceTable = {};
 
 $(document).ready(async function() {
   createMap();
@@ -155,8 +156,7 @@ function addPlayButton() {
         onClick: function(btn) {
           // and its callback
           elaborateDistance();
-          $("#popupContainer").css("display", "block");
-          populatePopup();
+          $("#popupContainer").css("z-index", "2");
           btn.state("started"); // change state on click!
         }
       },
@@ -165,7 +165,7 @@ function addPlayButton() {
         icon: "fa-stop",
         title: "Stop the player!",
         onClick: function(btn) {
-          $("#popupContainer").css("display", "none");
+          $("#popupContainer").css("z-index", "-1");
           control.spliceWaypoints(control.getWaypoints().length - 1, 1, null);
           btn.state("null");
         }
@@ -175,17 +175,23 @@ function addPlayButton() {
 }
 
 function populatePopup() {
-  console.log(currentDestination);
-  $("#popupTitle").text(currentDestination);
+  $("#popupTitle").text(referenceTable[currentDestination]);
+  $("#popupDescription").text(
+    POIs[referenceTable[currentDestination]].description !== "NF"
+      ? POIs[referenceTable[currentDestination]].description.it
+      : "Non è disponibile nessuna descrizione..."
+  );
+  $("#popupImg").attr("src", "" + POIs[referenceTable[currentDestination]].img);
+  $("#popupImg").attr("style", "width: 50%;height: auto; float: right;");
+  $("#popupContainer").css("width", "calc(100% - 2em)");
 }
 
 function elaborateDistance() {
-  var a = {};
   var count = 0;
   var url =
     "https://graphhopper.com/api/1/matrix?from_point=" + lat + "," + lon;
   for (var i in POIs) {
-    a[count] = i;
+    referenceTable[count] = i;
     count++;
     url +=
       "&to_point=" + POIs[i].latitudeCenter + "," + POIs[i].longitudeCenter;
@@ -201,8 +207,9 @@ function elaborateDistance() {
         index = key;
       }
     }
-    routingTo(POIs[a[index]]);
-    currentDestination = a[index];
+    routingTo(POIs[referenceTable[index]]);
+    currentDestination = index;
+    populatePopup();
   });
 }
 
@@ -241,5 +248,15 @@ function routingTo(p) {
     L.latLng(p.latitudeCenter, p.longitudeCenter)
   );
 }
+
+$("#prev").on("click", function() {
+  currentDestination--;
+  populatePopup();
+});
+
+$("#next").on("click", function() {
+  currentDestination++;
+  populatePopup();
+});
 
 //____________CREATEPLAYER FUNCTIONS_______________________________________

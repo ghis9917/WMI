@@ -2,7 +2,34 @@
   padding: 1em;
 }
 
-html, body {
+html,
+body {
   height: 100%;
+  width: 100%;
 }
 
+#popupContainer {
+  border-radius: 15px !important;
+}
+
+#prev {
+  border-top-left-radius: 15px;
+  border-bottom-left-radius: 15px;
+  transition: all 0.25s ease-in-out;
+}
+
+#prev:hover {
+  transform: scaleX(1.1);
+  background-color: #aaaaaa !important;
+}
+
+#next {
+  border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px;
+  transition: all 0.25s ease-in-out;
+}
+
+#next:hover {
+  transform: scaleX(1.1);
+  background-color: #aaaaaa !important;
+}
