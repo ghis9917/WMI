@@ -20,7 +20,7 @@ body {
 
 #prev:hover {
   transform: scaleX(1.1);
-  background-color: #aaaaaa !important;
+  background-color: #cccccc !important;
 }
 
 #next {
@@ -31,5 +31,5 @@ body {
 
 #next:hover {
   transform: scaleX(1.1);
-  background-color: #aaaaaa !important;
+  background-color: #cccccc !important;
 }

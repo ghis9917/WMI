@@ -11,6 +11,7 @@ var dsts, ret;
 var currentLocation;
 var currentDestination;
 var referenceTable = {};
+var minIndexes = [];
 
 $(document).ready(async function() {
   createMap();
@@ -47,7 +48,6 @@ function createMap() {
     }
   ).addTo(mymap);
 
-  mymap.on("locationerror", function(e) {});
   mymap.setView([44.49394, 11.3426944], 12);
   navigator.geolocation.watchPosition(onLocationFound, onError, {
     enableHighAccuracy: true,
@@ -103,14 +103,6 @@ function loadMarker() {
     $.when(getPOIs(q)).done(async function() {
       console.log(POIs);
       for (var key in POIs) {
-        var popup =
-          '<div id="popupContainer" style="width: 300px;height: 250px;padding: 1em;overflow: scroll;"><div class="d-flex justify-content-between"><div class="d-flex align-items-center"><p>' +
-          key +
-          '</p></div><div><img style="width: 100px; height: 100px" src=' +
-          POIs[key].img +
-          '/></div></div><div style="padding-top: 1em;"><p style="margin: 0px;">' +
-          POIs[key].description.it +
-          "</p></div></div>";
         var m = L.marker(
           [POIs[key].latitudeCenter, POIs[key].longitudeCenter],
           {
@@ -122,7 +114,6 @@ function loadMarker() {
           .on("click", function(e) {
             mymap.setView(m.getLatLng(), 12);
           })
-          .bindPopup(popup)
           .addTo(mymap);
         await sleep(250);
       }
@@ -175,42 +166,62 @@ function addPlayButton() {
 }
 
 function populatePopup() {
-  $("#popupTitle").text(referenceTable[currentDestination]);
+  $("#popupTitle").text(referenceTable[minIndexes[currentDestination]]);
   $("#popupDescription").text(
-    POIs[referenceTable[currentDestination]].description !== "NF"
-      ? POIs[referenceTable[currentDestination]].description.it
+    POIs[referenceTable[minIndexes[currentDestination]]].description !== "NF"
+      ? POIs[referenceTable[minIndexes[currentDestination]]].description.it
       : "Non è disponibile nessuna descrizione..."
   );
-  $("#popupImg").attr("src", "" + POIs[referenceTable[currentDestination]].img);
+  $("#popupImg").attr(
+    "src",
+    "" + POIs[referenceTable[minIndexes[currentDestination]]].img
+  );
   $("#popupImg").attr("style", "width: 50%;height: auto; float: right;");
   $("#popupContainer").css("width", "calc(100% - 2em)");
 }
 
 function elaborateDistance() {
   var count = 0;
-  var url =
-    "https://graphhopper.com/api/1/matrix?from_point=" + lat + "," + lon;
+  var url = "https://graphhopper.com/api/1/matrix?point=" + lat + "," + lon;
   for (var i in POIs) {
     referenceTable[count] = i;
     count++;
-    url +=
-      "&to_point=" + POIs[i].latitudeCenter + "," + POIs[i].longitudeCenter;
+    url += "&point=" + POIs[i].latitudeCenter + "," + POIs[i].longitudeCenter;
   }
   url +=
     "&type=json&vehicle=foot&debug=true&out_array=weights&out_array=times&out_array=distances&key=653995f0-72fe-4af8-b598-60e50479a0c2";
   $.when(getDistance(url)).done(function() {
-    var min = 40075000;
-    var index = null;
-    for (var key in DSTs.distances[0]) {
-      if (DSTs.distances[0][key] <= min) {
-        min = DSTs.distances[0][key];
-        index = key;
+    console.log(DSTs);
+    var index = 0;
+    while (true) {
+      index = createRoute(index);
+      if (index === -1) {
+        break;
       }
     }
-    routingTo(POIs[referenceTable[index]]);
-    currentDestination = index;
+    console.log(minIndexes);
+    routingTo(POIs[referenceTable[minIndexes[0]]]);
+    currentDestination = 0;
     populatePopup();
   });
+}
+
+function createRoute(i) {
+  var min = 40075000;
+  var minIndex = -1;
+  for (var index in DSTs.distances[i]) {
+    if (
+      DSTs.distances[i][index] > 0 &&
+      DSTs.distances[i][index] <= min &&
+      !minIndexes.includes(index) &&
+      index != 0
+    ) {
+      minIndex = index - 1;
+      min = DSTs.distances[i][index];
+    }
+  }
+  minIndexes.push(minIndex);
+  return minIndex;
 }
 
 function getDistance(q) {
@@ -250,12 +261,16 @@ function routingTo(p) {
 }
 
 $("#prev").on("click", function() {
-  currentDestination--;
+  if (currentDestination !== 0) {
+    currentDestination--;
+  }
   populatePopup();
 });
 
 $("#next").on("click", function() {
-  currentDestination++;
+  if (currentDestination !== minIndexes.length() - 1) {
+    currentDestination++;
+  }
   populatePopup();
 });
 
