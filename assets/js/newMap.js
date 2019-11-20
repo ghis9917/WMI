@@ -47,7 +47,6 @@ function createMap() {
     }
   ).addTo(mymap);
 
-  mymap.on("locationerror", function(e) {});
   mymap.setView([44.49394, 11.3426944], 12);
   navigator.geolocation.watchPosition(onLocationFound, onError, {
     enableHighAccuracy: true,

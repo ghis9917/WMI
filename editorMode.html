@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>WMI</title>
+    <script src="assets/js/jquery.min.js"></script>
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:300,400,600">
     <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
@@ -28,6 +29,30 @@
     <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="stylesheet" href="https://unpkg.com/@bootstrapstudio/bootstrap-better-nav/dist/bootstrap-better-nav.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.1.1/aos.css">
+
+
+    <meta name="google-signin-scope" content="profile email">
+    <meta name="google-signin-client_id"
+        content="96653811721-8oobhsk5dh915ctggai3amn5n6nb2sm5.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="assets/js/googleSignIn.js"></script>
+    <script>
+        $(document).ready(function () {
+            getLog();
+        });
+    </script>
+     <style>
+            #spinner {
+                height: 100%;
+            }
+
+            .spinner-border {
+                position: absolute;
+                top: 50%;
+                bottom: 50%;
+            }
+      </style>
 </head>
 
 <body class="d-flex flex-column justify-content-between">
@@ -38,13 +63,56 @@
                 <ul class="nav navbar-nav ml-auto">
                     <li class="nav-item" role="presentation"><a class="nav-link active" href="#">User Mode</a></li>
                     <li class="nav-item" role="presentation"><a class="nav-link" href="#">Editor Mode</a></li>
-                    <li class="nav-item" role="presentation"><a class="nav-link" href="#">Profile</a></li>
+                    <li class="nav-item" role="presentation"><a id="profileText" class="nav-link" href="#">Profile</a></li>
                 </ul>
             </div>
         </div>
     </nav>
-    <div id="mapid" style="height: 100%;"></div>
-    <script src="assets/js/jquery.min.js"></script>
+    <div id="spinner" class="d-flex justify-content-center">
+        <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <div id="mapid" style="display:nonde;height: 100%;"></div>
+    <div id="loginModal"class="modal fade" role="dialog" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div id="headerModal">
+                    <header>
+                        <p class="text-center" style="margin-bottom: 0px;font-size: 40px;"><strong>Log In</strong></p>
+                    </header>
+                </div>
+                <div class="modal-body text-center">
+                    <div></div>
+                    <div class="text-center">
+                        <p>Click the button to log in with your google account</p>
+                            <div class="g-signin2" data-onsuccess="onSignIn"></div>
+                          </div>
+                </div>
+                <div class="modal-footer"><button class="btn btn-light" type="button" onclick="window.open('http://localhost:8000/', '_self')">Close</button></div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="noGeo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Inserisci</h5>
+            <button id="btn-close-modal" type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <label>Inserisci:</label>
+            <input type="search" id="address" class="form-control" placeholder="Where are we going?" />
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" id="btn-load">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="assets/js/bs-animation.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.1.1/aos.js"></script>
@@ -52,15 +120,16 @@
     <script src="https://apis.google.com/js/platform.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/openlocationcode/1.0.3/openlocationcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="assets/js/newMap.js"></script>
+    <script src="assets/js/editorMap.js"></script>
     <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
     <script src="https://unpkg.com/@bootstrapstudio/bootstrap-better-nav/dist/bootstrap-better-nav.min.js"></script>
     <script src="https://unpkg.com/leaflet-geosearch@latest/dist/bundle.min.js"></script>
     <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
     <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/places.js@1.16.6"></script>
     <script src="assets/js/lrm-graphhopper.js"></script>
-    <script src="assets/js/googleSignIn.js"></script>
+     <script src="assets/js/googleSignIn.js"></script>
 </body>
 
 </html>
