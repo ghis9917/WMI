@@ -6,10 +6,14 @@ var distanceRouting = null;
 var routingMode = 'foot'
 var mymap;
 var POIs = {}
-var Desc = {}
+var DSTs = {}
 var dsts, ret;
 var nearest;
 var speec = window.speechSynthesis;
+var currentLocation;
+var currentDestination;
+var referenceTable = {};
+var minIndexes = [];
 /*Sets up the map are of the html file
 */
 var currentLocation;
@@ -17,18 +21,18 @@ var currentLocation;
 $(document).ready(function () {
   createMap();
   loadMarker();
+  createPlayer();
 });
 
 $("#stop").click(function () {
-  document.getElementById('dad').hidden = true;
-  try {
-    speec.cancel();
-  }
-  catch(err){
-  console.log(err)
- }
+  $("#popupContainer").css("z-index", "-1");
+
 });
 
+function showInfo(){
+  $("#popupContainer").css("z-index", "2");
+
+}
 function createMap() {
   var bounds = new L.LatLngBounds(new L.LatLng(-90, -180), new L.LatLng(90, 180));
   mymap = L.map('mapid', {
@@ -55,10 +59,8 @@ function onLocationFound(position) {
   lat = position.coords.latitude;
   lon = position.coords.longitude;
   try{
-    console.log("otherTimes");
     mymap.removeLayer(currentLocation);
-  } catch {
-    console.log("firstTime");
+  } catch (err){
   }
   currentLocation = L.marker([lat, lon]).bindPopup(popup).addTo(mymap);
   addRouting(mymap);
@@ -92,23 +94,14 @@ function addRouting(mymap) {
 
 function checkDistance(distance){
   if(distance <= 20){
-    var la = POIs[nearest].latitudeCenter;
-    var lo = POIs[nearest].longitudeCenter;
+    var la = POIs[referenceTable[minIndexes[currentDestination]]].latitudeCenter;
+    var lo = POIs[referenceTable[minIndexes[currentDestination]]].longitudeCenter;
     var mark = new L.marker([la, lo], {
     bounceOnAdd: true,
     bounceOnAddOptions: { },
     bounceOnAddCallback: function () { }
   })
-    var popup =
-      '<div id="popupContainer" style="width: 300px;height: 250px;padding: 1em;overflow: scroll;"><div class="d-flex justify-content-between"><div class="d-flex align-items-center"><p>' +
-      nearest +
-      '</p></div><div><img style="width: 100px; height: 100px" src=' +
-      POIs[nearest].img +
-      '/></div></div><div style="padding-top: 1em;"><p style="margin: 0px;">' +
-      POIs[nearest].description.en +
-      "</p></div></div>";
-    var x = new L.LatLng(la,lo)
-    onClickMarker(mymap,mark,popup,distance);
+    onClickMarker(mymap,mark);
   }
 }
 
@@ -133,48 +126,21 @@ function loadMarker() {
     q = q.replace("+", "");
     $.when(getPOIs(q)).done(async function () {
       // console.log(POIs);
-      var min = 40075000;
-      var id;
       for (var key in POIs) {
-        if(POIs[key].distance < min){
-          min = POIs[key].distance;
-          id = key;
-        }
-        // if()
-        // console.log(key)
-        // console.log(POIs)
-        // console.log(POIs[key].description)
-        var popup =
-          '<div id="popupContainer" style="width: 300px;height: 250px;padding: 1em;overflow: scroll;"><div class="d-flex justify-content-between"><div class="d-flex align-items-center"><p>' +
-          key +
-          '</p></div><div><img style="width: 100px; height: 100px" src=' +
-          POIs[key].img +
-          '/></div></div><div style="padding-top: 1em;"><p style="margin: 0px;">' +
-          POIs[key].description.en +
-          "</p></div></div>";
-          var m = new L.marker([POIs[key].latitudeCenter, POIs[key].longitudeCenter], {
-          bounceOnAdd: true,
-          bounceOnAddOptions: { },
-          bounceOnAddCallback: function () { }
-        }).on('click', function(e){
-          changeDestination(mymap, e);
-          mymap.setView(m.getLatLng(), 12)
-        }).bindPopup(popup).addTo(mymap);
+        var m = L.marker(
+          [POIs[key].latitudeCenter, POIs[key].longitudeCenter],
+          {
+            bounceOnAdd: true,
+            bounceOnAddOptions: {},
+            bounceOnAddCallback: function() {}
+          }
+        )
+          .on("click", function(e) {
+            mymap.setView(m.getLatLng(), 12);
+          })
+          .addTo(mymap);
         await sleep(250);
-
       }
-      nearest = id;
-      var la = POIs[id].latitudeCenter;
-      var lo = POIs[id].longitudeCenter;
-      var x = new L.LatLng(la,lo)
-      control.spliceWaypoints(control.getWaypoints().length - 1, 1,x);
-      console.log("CONTROL DOPO")
-      console.log(control.routes)
-      var mark = L.marker([la,lo], {
-          bounceOnAdd: true,
-          bounceOnAddOptions: { },
-          bounceOnAddCallback: function () { }
-        });
     });
   }
   else {
@@ -189,16 +155,10 @@ const onClick = (mymap) => {
 
     L.DomEvent.on(fakeBtn, 'click', function () {
       mymap.closePopup();
-      // console.log(e);
       lat = e.latlng.lat;
       lon = e.latlng.lng;
       currentLocation.setLatLng(e.latlng);
       control.spliceWaypoints(0,1,e.latlng);
-      var m = L.marker([POIs[nearest].latitudeCenter, POIs[nearest].longitudeCenter], {
-        bounceOnAdd: true,
-        bounceOnAddOptions: { },
-        bounceOnAddCallback: function () { }
-      });
     });
     L.popup("#ffffff")
       .setContent(fakeBtn)
@@ -208,26 +168,24 @@ const onClick = (mymap) => {
 }
 
 
-async function onClickMarker (mymap, mark,popup,distance = null)  {
+async function onClickMarker (mymap, mark)  {
   // var speec = window.speechSynthesis;
   var availableVoices =  setSpeech();
   availableVoices.then(voice => {
-        console.log(voice)
-        mark.bindPopup(popup).addTo(mymap);
-        var msg = new SpeechSynthesisUtterance(POIs[nearest].description.en);
+        var msg = new SpeechSynthesisUtterance(POIs[referenceTable[minIndexes[currentDestination]]].description.en);
         msg.voice = voice[5]
         speec.speak(msg);
-        mark.openPopup();
+        $("#popupContainer").css("z-index", "2");
+        var rout = document.getElementById("newroute");
+        rout.hidden = true
   });
 
 }
 
 function changeDestination(mymap, m){
   for (key in POIs){
-    // if(new L.LatLng(POIs[key].latitudeCenter,POIs[key].longitudeCenter) == m.getLatLng() ){
     if(POIs[key].latitudeCenter == m["latlng"].lat && POIs[key].longitudeCenter == m["latlng"]  .lng ){
       nearest = key;
-      // console.log("NEW NEAREST " + nearest )
       control.spliceWaypoints(control.getWaypoints().length - 1, 1,m["latlng"])
     }
   }
@@ -253,3 +211,143 @@ function setSpeech() {
         }
     )
 }
+
+
+function createPlayer() {
+  var timer = null;
+  if (Object.keys(POIs).length !== 0) {
+    clearTimeout(timer);
+    addRouting();
+    elaborateDistance();
+    addPlayButton();
+  } else {
+    timer = setTimeout(createPlayer, 1000);
+  }
+}
+
+function addPlayButton() {
+  L.easyButton({
+    states: [
+      {
+        stateName: "starting", // name the state
+        icon: "fa-play", // and define its properties
+        title: "Click to get directions to the nearest POI", // like its title
+        onClick: function(btn) {
+          // and its callback
+          elaborateDistance();
+          $("#popupContainer").css("z-index", "2");
+          btn.state("started"); // change state on click!
+        }
+      },
+      {
+        stateName: "started",
+        icon: "fa-stop",
+        title: "Stop the player!",
+        onClick: function(btn) {
+          $("#popupContainer").css("z-index", "-1");
+          control.spliceWaypoints(control.getWaypoints().length - 1, 1, null);
+          btn.state("starting");
+        }
+      }
+    ]
+  }).addTo(mymap);
+}
+
+function populatePopup() {
+  $("#popupTitle").text(referenceTable[minIndexes[currentDestination]]);
+  $("#popupDescription").text(
+    POIs[referenceTable[minIndexes[currentDestination]]].description !== "NF"
+      ? POIs[referenceTable[minIndexes[currentDestination]]].description.it
+      : "Non è disponibile nessuna descrizione..."
+  );
+  $("#popupImg").attr(
+    "src",
+    "" + POIs[referenceTable[minIndexes[currentDestination]]].img
+  );
+  $("#popupImg").attr("style", "width: 50%;height: auto; float: right;");
+  $("#popupContainer").css("width", "calc(100% - 2em)");
+}
+
+function elaborateDistance() {
+  var count = 0;
+  var url = "https://graphhopper.com/api/1/matrix?point=" + lat + "," + lon;
+  for (var i in POIs) {
+    referenceTable[count] = i;
+    count++;
+    url += "&point=" + POIs[i].latitudeCenter + "," + POIs[i].longitudeCenter;
+  }
+  url +=
+    "&type=json&vehicle=foot&debug=true&out_array=weights&out_array=times&out_array=distances&key=653995f0-72fe-4af8-b598-60e50479a0c2";
+  $.when(getDistance(url)).done(async function() {
+    // console.log(DSTs);
+    var index = 0;
+    do{
+
+      index = createRoute(index);
+    }
+    while(index != -1);
+    // console.log(minIndexes)
+   currentDestination = 0;
+   routingTo(POIs[referenceTable[minIndexes[currentDestination]]]);
+   populatePopup();
+ });
+}
+
+function createRoute(i) {
+ var min = 40075000;
+ var minIndex = -1;
+ for (var index in DSTs.distances[i]) {
+   if (
+     DSTs.distances[i][index] > 0 &&
+     DSTs.distances[i][index] <= min &&
+     !minIndexes.includes(index) &&
+     index != 0
+   ) {
+     minIndex = index;
+     min = DSTs.distances[i][index];
+   }
+ }
+ minIndexes.push(minIndex);
+ return minIndex;
+}
+
+function getDistance(q) {
+  return $.ajax({
+    type: "get",
+    url: q,
+    success: function(data) {
+      DSTs = data;
+    }
+  });
+}
+
+function routingTo(p) {
+  control.spliceWaypoints(
+    control.getWaypoints().length - 1,
+    1,
+    L.latLng(p.latitudeCenter, p.longitudeCenter)
+  );
+}
+
+$("#prev").on("click", function() {
+  var rout = document.getElementById("newroute");
+  rout.hidden = false;
+  if (currentDestination !== 0) {
+    currentDestination--;
+  }
+  populatePopup();
+});
+
+$("#next").on("click", function() {
+  var rout = document.getElementById("newroute");
+  rout.hidden = false;
+  if (currentDestination !== minIndexes.length - 1) {
+    currentDestination++;
+  }
+  populatePopup();
+});
+
+$("#newroute").on("click", function() {
+  routingTo(POIs[referenceTable[minIndexes[currentDestination]]]);
+});
+//____________CREATEPLAYER FUNCTIONS_______________________________________
