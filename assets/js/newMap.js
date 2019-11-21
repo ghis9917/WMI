@@ -9,6 +9,7 @@ var POIs = {}
 var Desc = {}
 var dsts, ret;
 var nearest;
+var speec = window.speechSynthesis;
 /*Sets up the map are of the html file
 */
 var currentLocation;
@@ -21,9 +22,11 @@ $(document).ready(function () {
 $("#stop").click(function () {
   document.getElementById('dad').hidden = true;
   try {
-    document.getElementById('iframe').stop();
+    speec.cancel();
   }
-  catch{ }
+  catch(err){
+  console.log(err)
+ }
 });
 
 function createMap() {
@@ -206,7 +209,7 @@ const onClick = (mymap) => {
 
 
 async function onClickMarker (mymap, mark,popup,distance = null)  {
-  var speec = window.speechSynthesis;
+  // var speec = window.speechSynthesis;
   var availableVoices =  setSpeech();
   availableVoices.then(voice => {
         console.log(voice)
