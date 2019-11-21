@@ -125,7 +125,6 @@ function loadMarker() {
     var q = OpenLocationCode.encode(lat, lon, 4);
     q = q.replace("+", "");
     $.when(getPOIs(q)).done(async function () {
-      // console.log(POIs);
       for (var key in POIs) {
         var m = L.marker(
           [POIs[key].latitudeCenter, POIs[key].longitudeCenter],
@@ -279,36 +278,47 @@ function elaborateDistance() {
   url +=
     "&type=json&vehicle=foot&debug=true&out_array=weights&out_array=times&out_array=distances&key=653995f0-72fe-4af8-b598-60e50479a0c2";
   $.when(getDistance(url)).done(async function() {
-    // console.log(DSTs);
     var index = 0;
     do{
 
       index = createRoute(index);
     }
     while(index != -1);
-    // console.log(minIndexes)
    currentDestination = 0;
+   for(item in minIndexes){
+     minIndexes[item] = minIndexes[item] - 1;
+   }
    routingTo(POIs[referenceTable[minIndexes[currentDestination]]]);
    populatePopup();
  });
 }
 
 function createRoute(i) {
- var min = 40075000;
- var minIndex = -1;
- for (var index in DSTs.distances[i]) {
-   if (
-     DSTs.distances[i][index] > 0 &&
-     DSTs.distances[i][index] <= min &&
-     !minIndexes.includes(index) &&
-     index != 0
-   ) {
-     minIndex = index;
-     min = DSTs.distances[i][index];
-   }
- }
- minIndexes.push(minIndex);
- return minIndex;
+  var min = 40075000;
+  var minIndex = -1;
+  var exist = 0;
+  for (var index in DSTs.distances[i]) {
+    if (
+      DSTs.distances[i][index] > 0 &&
+      DSTs.distances[i][index] <= min
+    ) {
+      for(item in minIndexes){
+        if(minIndexes[item] == index){
+          exist = 1;
+          break;
+        }
+      }
+      if(exist == 0 && index != 0){
+        minIndex = index;
+        min = DSTs.distances[i][index];
+      }
+      exist = 0;
+    }
+  }
+  if(minIndex != -1){
+    minIndexes.push(Number(minIndex));
+  }
+  return minIndex;
 }
 
 function getDistance(q) {
