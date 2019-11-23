@@ -14,6 +14,7 @@ var currentLocation;
 var currentDestination;
 var referenceTable = {};
 var minIndexes = [];
+var actualRoute = null;
 /*Sets up the map are of the html file
 */
 var currentLocation;
@@ -55,16 +56,17 @@ function createMap() {
 }
 
 function onLocationFound(position) {
+  console.log("LOCATION FOUND")
   var popup = "<p class=\"text-center\" style=\"margin: 1em;\">Sei qui!</p>";
   lat = position.coords.latitude;
   lon = position.coords.longitude;
   try{
     mymap.removeLayer(currentLocation);
+    control.spliceWaypoints(0, 1, L.latLng(lat, lon));
   } catch (err){
   }
   currentLocation = L.marker([lat, lon]).bindPopup(popup).addTo(mymap);
   addRouting(mymap);
-
 }
 
 function onError(err){
@@ -88,12 +90,24 @@ function addRouting(mymap) {
   control.spliceWaypoints(0, 1, L.latLng(lat, lon));
   control.on('routesfound', function (e) {
       var distance = e.routes[0].summary.totalDistance;
-      checkDistance(distance);
-  });
+      var instruction = e.routes[0].instructions[0].text;
+      var distanceChange = e.routes[0].instructions[0].distance
+      if(distanceChange <= 10){
+        try{
+          instruction = e.routes[0].instructions[1].text;
+        }
+        catch(err){
+          console.log(err);
+        }
+      }
+
+      checkDistance(distance,instruction)
+    });
 }
 
-function checkDistance(distance){
+function checkDistance(distance,instruction){
   if(distance <= 20){
+    //Time to talk description of POI
     var la = POIs[referenceTable[minIndexes[currentDestination]]].latitudeCenter;
     var lo = POIs[referenceTable[minIndexes[currentDestination]]].longitudeCenter;
     var mark = new L.marker([la, lo], {
@@ -101,8 +115,9 @@ function checkDistance(distance){
     bounceOnAddOptions: { },
     bounceOnAddCallback: function () { }
   })
-    onClickMarker(mymap,mark);
+  instruction = POIs[referenceTable[minIndexes[currentDestination]]].description.en;
   }
+  onClickMarker(instruction,distance);
 }
 
 function getPOIs(q) {
@@ -167,16 +182,18 @@ const onClick = (mymap) => {
 }
 
 
-async function onClickMarker (mymap, mark)  {
+async function onClickMarker (instruction,distance)  {
   // var speec = window.speechSynthesis;
   var availableVoices =  setSpeech();
   availableVoices.then(voice => {
-        var msg = new SpeechSynthesisUtterance(POIs[referenceTable[minIndexes[currentDestination]]].description.en);
+        var msg = new SpeechSynthesisUtterance(instruction);
         msg.voice = voice[5]
         speec.speak(msg);
-        $("#popupContainer").css("z-index", "2");
-        var rout = document.getElementById("newroute");
-        rout.hidden = true
+        if(distance < 20){
+          $("#popupContainer").css("z-index", "2");
+          var rout = document.getElementById("newroute");
+          rout.hidden = true
+        }
   });
 
 }
@@ -259,10 +276,15 @@ function populatePopup() {
       ? POIs[referenceTable[minIndexes[currentDestination]]].description.it
       : "Non è disponibile nessuna descrizione..."
   );
-  $("#popupImg").attr(
-    "src",
-    "" + POIs[referenceTable[minIndexes[currentDestination]]].img
-  );
+  if(POIs[referenceTable[minIndexes[currentDestination]]].img){
+    $("#popupImg").attr(
+      "src",
+      POIs[referenceTable[minIndexes[currentDestination]]].img !== "NF"
+        ? POIs[referenceTable[minIndexes[currentDestination]]].img
+        : "https://cdn.shopify.com/s/files/1/1552/7487/products/good_game_gg-smiley_fornite_spray_emote_printed_sticker_grfxp_grafixpressions_720x.jpg?v=1525975056"
+    );
+
+  }
   $("#popupImg").attr("style", "width: 50%;height: auto; float: right;");
   $("#popupContainer").css("width", "calc(100% - 2em)");
 }
@@ -278,16 +300,12 @@ function elaborateDistance() {
   url +=
     "&type=json&vehicle=foot&debug=true&out_array=weights&out_array=times&out_array=distances&key=653995f0-72fe-4af8-b598-60e50479a0c2";
   $.when(getDistance(url)).done(async function() {
-    var index = 0;
+    var index = -1;
     do{
-
-      index = createRoute(index);
+      index = createRoute(index+1);
     }
     while(index != -1);
    currentDestination = 0;
-   for(item in minIndexes){
-     minIndexes[item] = minIndexes[item] - 1;
-   }
    routingTo(POIs[referenceTable[minIndexes[currentDestination]]]);
    populatePopup();
  });
@@ -296,23 +314,15 @@ function elaborateDistance() {
 function createRoute(i) {
   var min = 40075000;
   var minIndex = -1;
-  var exist = 0;
   for (var index in DSTs.distances[i]) {
     if (
       DSTs.distances[i][index] > 0 &&
-      DSTs.distances[i][index] <= min
+      DSTs.distances[i][index] <= min &&
+      Number(index) != 0 &&
+      !minIndexes.includes(index -1)
     ) {
-      for(item in minIndexes){
-        if(minIndexes[item] == index){
-          exist = 1;
-          break;
-        }
-      }
-      if(exist == 0 && index != 0){
-        minIndex = index;
+        minIndex = index-1;
         min = DSTs.distances[i][index];
-      }
-      exist = 0;
     }
   }
   if(minIndex != -1){

@@ -8,7 +8,7 @@ module.exports = {
     var list = d.split(":")
     try {
       return {coords : openLocationCode.decode(list[2]), plusCode: list[2]};
-    } catch{
+    } catch(err){
       return false
     }
   },

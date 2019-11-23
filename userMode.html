@@ -104,7 +104,7 @@
               <h4 class="modal-title">Modal Title</h4>
             </div>
             <audio id="iframe" class="modal-body"></audio>
-            <button hidden id="route">Route me here.</button>
+            <button hidden style="height:30px;" id="route">Route me here.</button>
             <label id="text"> </label>
             <div class="modal-footer">
               <!-- Draw other clips of that POI -->
@@ -118,6 +118,16 @@
       id="popupContainer"
       style="width: calc(100% - 2em);height: 250px; z-index: -1; position: absolute; bottom: 0; left: 0; background: white; margin: 1em;"
     >
+    <div style="line-height: 4em;">
+      <svg class="bg-light icon align-bottom">
+        <rect onclick=""></rect>
+        <use xlink:href="/bootstrap-italia/dist/svg/sprite.svg#it-arrow-down-triangle"></use>
+      </svg>
+      <svg class="bg-light icon align-middle">
+          <rect onclick=""></rect>
+          <use xlink:href="/bootstrap-italia/dist/svg/sprite.svg#it-arrow-down-triangle"></use>
+      </svg>
+    </div>
       <div
         id="prev"
         class="shadow-lg d-flex justify-content-center align-items-center"

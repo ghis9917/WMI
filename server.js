@@ -33,6 +33,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, './index.html'));
 });
 //
+
 app.get('/askDBPedia', (req, res) => {
   return new Promise(async (resolve,reject) => {
   var vector = req.query.que.split(" ");
