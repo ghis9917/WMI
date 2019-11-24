@@ -166,6 +166,23 @@
         ></i>
       </div>
     </div>
+    <div class="modal fade" id="noGeo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Inserisci</h5>
+          </div>
+          <div class="modal-body">
+            <label>Inserisci:</label>
+            <input type="search" id="address" class="form-control" placeholder="Where are we going?" />
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" id="btn-load">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/js/redirect.js"></script>
@@ -185,5 +202,6 @@
     <script src="http://maximeh.github.io/leaflet.bouncemarker/bouncemarker.js"></script>
     <script src="assets/js/lrm-graphhopper.js"></script>
     <script src="assets/js/newMap.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/places.js@1.16.6"></script>
   </body>
 </html>

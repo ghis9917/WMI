@@ -118,6 +118,7 @@ app.get("/getPOIs", (req, res) => {
     if (err) {
       console.log(err);
       res.send({ error: err.response.statusText });
+<<<<<<< Updated upstream
     } else {
       console.log(results);
       //results = check(results);
@@ -139,12 +140,45 @@ app.get("/getPOIs", (req, res) => {
         }
       }
       res.send(POIs);
+=======
+    }
+    else {
+      var data = await call(results);
+      console.log("SEND POISSS")
+      console.log(data)
+      res.send(data);
+>>>>>>> Stashed changes
     }
   });
 });
 
+<<<<<<< Updated upstream
 app.get("/poi", (req, res) => {
   res.sendFile(path.join(__dirname, "./poi.json"));
+=======
+function call(results){
+return new Promise(async (resolve,reject) => {
+  var POIs = {};
+  var list = [];
+  for (var key in results) {
+    var item = results[key];
+    if ((val = f.validator(item.description)) !== false) {
+      if (list.indexOf(val.plusCode) === -1) {
+        list.push(val.plusCode);
+        POIs[item.title] = val.coords;
+        POIs[item.title].videoId = item.id;
+        var json = await f.getDescription(client,POIs, item.title,f);
+        POIs[item.title].description = json["desc"];
+        POIs[item.title].img = json["img"];
+      }
+    }
+  }
+  resolve(POIs);
+});
+}
+app.get('/poi', (req, res) => {
+  res.sendFile(path.join(__dirname, './poi.json'));
+>>>>>>> Stashed changes
 });
 
 app.get("/audio.wav", (req, res) => {

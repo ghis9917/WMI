@@ -73,11 +73,115 @@ function onLocationFound(position) {
   }
 }
 
+<<<<<<< Updated upstream
 function onError(err) {
   console.warn(`ERROR(${err.code}): ${err.message}`);
 }
 
 //____________CREATEMAP FUNCTIONS_______________________________________
+=======
+function setApiKey(){
+  this.placesAutocomplete = places({
+  appId: 'plTCO8O9NAP7',
+  apiKey: 'a5c7d70d42023f9e0afdfa6bac7a2634',
+  container: document.querySelector('#address')
+  });
+}
+
+function cssError(){
+      $('.ap-input').css({'backgroundColor':'red'});
+}
+
+function callApi(){
+  if($("#address").val() != ""){
+    $.ajax({
+      url: "https://api.opencagedata.com/geocode/v1/json?q="+$("#address").val()+"&key=4e6db93d236944d68db1551367316df5&language=it&pretty=1",
+      success: (result) => {
+          if(result.results.length != 0){
+            var popup = '<p class="text-center" style="margin: 1em;">Sei qui!</p>';
+            lat = result.results[0].geometry.lat;
+            lon = result.results[0].geometry.lng;;
+            try {
+              mymap.removeLayer(currentLocation);
+            } catch {}
+            currentLocation = L.marker([lat, lon])
+              .bindPopup(popup)
+              .addTo(mymap);
+            if (control !== null) {
+                control.spliceWaypoints(0, 1, [lat, lon]);
+            }
+
+            $('#noGeo').modal('toggle');
+
+            loadMarker();
+          }else{
+            cssError();
+          }
+      },
+      error: (result) =>{
+        console.log("Impossibile contattare il server");
+        cssError();
+      }
+    });
+  }else {
+      cssError();
+  }
+}
+
+function onError(err) {
+    setApiKey();
+    $('#noGeo').modal({ backdrop: 'static', keyboard: false })
+    $("#btn-load").click(function(){
+        callApi();
+    });
+}
+function addRouting(mymap) {
+  if (control  !== null) return;
+  control = L.routing.control({
+    createMarker: function () { return null; },
+    addWaypoints: false,
+    waypoints: [
+      L.latLng(lat, lon)
+    ],
+    router: L.Routing.graphHopper('653995f0-72fe-4af8-b598-60e50479a0c2', {
+      urlParameters: {
+        vehicle: routingMode
+      }
+    })
+  }).addTo(mymap);
+  control.spliceWaypoints(0, 1, L.latLng(lat, lon));
+  control.on('routesfound', function (e) {
+      var distance = e.routes[0].summary.totalDistance;
+      var instruction = e.routes[0].instructions[0].text;
+      var distanceChange = e.routes[0].instructions[0].distance
+      if(distanceChange <= 10){
+        try{
+          instruction = e.routes[0].instructions[1].text;
+        }
+        catch(err){
+          console.log(err);
+        }
+      }
+
+      checkDistance(distance,instruction)
+    });
+}
+
+function checkDistance(distance,instruction){
+  if(distance <= 20){
+    //Time to talk description of POI
+    var la = POIs[referenceTable[minIndexes[currentDestination]]].latitudeCenter;
+    var lo = POIs[referenceTable[minIndexes[currentDestination]]].longitudeCenter;
+    var mark = new L.marker([la, lo], {
+    bounceOnAdd: true,
+    bounceOnAddOptions: { },
+    bounceOnAddCallback: function () { }
+  })
+  instruction = POIs[referenceTable[minIndexes[currentDestination]]].description.en;
+  }
+  onClickMarker(instruction,distance);
+}
+>>>>>>> Stashed changes
 
 function getPOIs(q) {
   return $.ajax({

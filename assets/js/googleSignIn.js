@@ -23,10 +23,16 @@ function onSignIn(googleUser) {
     $('#logbtn').hide();
     $('.close').click();
   }
+<<<<<<< Updated upstream
   if ("http://localhost:8000/editorMode.html" == window.location.href || "http://localhost:8000/editorMode.html/" == window.location.href) {
       $("#profileText").html(profile.getName());
       $('#signInModal').modal('hide');
       createMap();
+=======
+  if ("http://localhost:8000/editorMode.html" == window.location.href || "http://localhost:8000/editorMode.html/" == window.location.href || "http://localhost:8000/editorMode.html#" == window.location.href) {
+      $("#profileText").html(profile.getName());
+      $('#signInModal').modal('hide');
+>>>>>>> Stashed changes
   }
 }
 
