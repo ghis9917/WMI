@@ -16,23 +16,17 @@ function onSignIn(googleUser) {
     $("#display").show();
   }
   if ("http://localhost:8000/" == window.location.href || "http://localhost:8000/index.html" == window.location.href) {
-    $('#signInModal').modal('hide');
+    $('#loginModal').modal('hide');
     $('#profile').show();
     $('#profile > a').html(profile.getName());
     $('#logout').show();
     $('#logbtn').hide();
     $('.close').click();
   }
-<<<<<<< Updated upstream
-  if ("http://localhost:8000/editorMode.html" == window.location.href || "http://localhost:8000/editorMode.html/" == window.location.href) {
-      $("#profileText").html(profile.getName());
-      $('#signInModal').modal('hide');
-      createMap();
-=======
   if ("http://localhost:8000/editorMode.html" == window.location.href || "http://localhost:8000/editorMode.html/" == window.location.href || "http://localhost:8000/editorMode.html#" == window.location.href) {
       $("#profileText").html(profile.getName());
-      $('#signInModal').modal('hide');
->>>>>>> Stashed changes
+      $('#loginModal').modal('hide');
+      createMap();
   }
 }
 

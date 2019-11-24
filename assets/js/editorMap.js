@@ -1,3 +1,15 @@
+//Init Map
+
+async function init(){
+  createMap();
+  if ("http://localhost:8000/userMode.html" == window.location.href || "http://localhost:8000/userMode.html/" == window.location.href || "http://localhost:8000/userMode.html#" == window.location.href) {
+    loadMarker();
+    createPlayer();
+  }
+}
+
+
+
 var lat, lon;
 var searchControl;
 var waypoints = [];
@@ -12,14 +24,6 @@ var currentLocation;
 var currentDestination;
 var referenceTable = {};
 
-$(document).ready(async function() {
-<<<<<<< Updated upstream
-
-=======
-    createMap();
-    loadMarker();
->>>>>>> Stashed changes
-});
 
 $("#stop").click(function() {
   document.getElementById("dad").hidden = true;
@@ -52,20 +56,14 @@ function createMap() {
       id: "mapbox.streets"
     }
   ).addTo(mymap);
-<<<<<<< Updated upstream
 
-=======
   addPlayButton();
->>>>>>> Stashed changes
   mymap.setView([44.49394, 11.3426944], 12);
   navigator.geolocation.watchPosition(onLocationFound, onError, {
     enableHighAccuracy: true,
     maximumAge: 0
   });
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
+  loadMarker();
 }
 
 function onLocationFound(position) {
@@ -74,22 +72,16 @@ function onLocationFound(position) {
   lon = position.coords.longitude;
   try {
     mymap.removeLayer(currentLocation);
-<<<<<<< Updated upstream
-  } catch {}
-=======
   } catch (err){}
->>>>>>> Stashed changes
   currentLocation = L.marker([lat, lon])
     .bindPopup(popup)
     .addTo(mymap);
   if (control !== null) {
       control.spliceWaypoints(0, 1, [lat, lon]);
   }
-<<<<<<< Updated upstream
 
   loadMarker();
-=======
->>>>>>> Stashed changes
+
 }
 
 function setApiKey(){
@@ -100,9 +92,6 @@ function setApiKey(){
   });
 }
 
-function cssError(){
-      $('.ap-input').css({'backgroundColor':'red'});
-}
 
 function callApi(){
   if($("#address").val() != ""){
@@ -122,15 +111,9 @@ function callApi(){
             if (control !== null) {
                 control.spliceWaypoints(0, 1, [lat, lon]);
             }
-<<<<<<< Updated upstream
 
             $('#noGeo').modal('toggle');
 
-            loadMarker();
-=======
-            $('#noGeo').modal('toggle');
-
->>>>>>> Stashed changes
           }else{
             cssError();
           }
@@ -212,8 +195,6 @@ function loadMarker() {
 }
 
 //____________LOADMARKER FUNCTIONS_______________________________________
-<<<<<<< Updated upstream
-=======
 
 function addPlayButton() {
   L.easyButton({
@@ -229,4 +210,3 @@ function addPlayButton() {
     ]
   }).addTo(mymap);
 }
->>>>>>> Stashed changes
