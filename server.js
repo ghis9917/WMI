@@ -33,27 +33,29 @@ app.get("/", (req, res) => {
 });
 //
 
-app.get("/insertReview", (req, res) => {
+app.get("/insertReviewUserMode", (req, res) => {
   client.connect(
     "mongodb://localhost:27017/",
     { useUnifiedTopology: true },
     function(error, db) {
       if (!error) {
         var mydb = db.db("WMIdb");
-        mydb
-          .collection("review")
-          .find({ _id: "Esempio" })
-          .toArray(async function(err, result) {
+        mydb.collection("review").find({ _id: req.query.id  }).toArray(async function(err, result) {
             //res.send(result);
             if (result == 0) {
-              res.send("NON FUNZIA");
+              var myobj = { _id: req.query.id , Value: [{ Voto : req.query.voto, Descrizione : req.query.descrizione}]};
+              mydb.collection("review").insertOne(myobj, function (err, resu) {
+                if (err) throw err;
+                res.send(resu);
+                db.close();
+              });
             } else {
               var ob = result;
               ob[0].Value.push({
-                Voto: "3",
-                Descrizione: "Massidai"
+                Voto: req.query.voto,
+                Descrizione: req.query.descrizione
               });
-              var myquery = { _id: "Esempio" };
+              var myquery = { _id: req.query.id  };
               var newvalues = { $set: { Value: ob[0].Value } };
               mydb
                 .collection("review")
