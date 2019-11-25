@@ -1,3 +1,5 @@
+//Called by editor map e user map
+
 var lat, lon;
 var searchControl;
 var waypoints = [];
@@ -18,11 +20,15 @@ var actualRoute = null;
 */
 var currentLocation;
 $(document).ready(async function() {
+    setApiKey();
   if ("http://localhost:8000/userMode.html" == window.location.href || "http://localhost:8000/userMode.html/" == window.location.href || "http://localhost:8000/userMode.html#" == window.location.href) {
      await createMap();
     loadMarker();
     createPlayer();
   }
+  $("#btn-load").click(function(){
+      callApi();
+  });
 });
 
 $("#stop").click(function() {
@@ -81,7 +87,7 @@ function onLocationFound(position) {
   } catch (err){
   }
   currentLocation = L.marker([lat, lon]).bindPopup(popup).addTo(mymap);
-  addRouting(mymap);
+  // addRouting(mymap);
 }
 
 
@@ -104,7 +110,6 @@ function callApi(){
       async: false,
       url: "https://api.opencagedata.com/geocode/v1/json?q="+$("#address").val()+"&key=4e6db93d236944d68db1551367316df5&language=it&pretty=1",
       success: (result) => {
-          console.log("RESULT SUCCESS DIO MERDA")
           if(result.results.length != 0){
             var popup = '<p class="text-center" style="margin: 1em;">Sei qui!</p>';
             lat = result.results[0].geometry.lat;
@@ -139,11 +144,7 @@ function callApi(){
 
 function onError(err) {
     console.log("position not found")
-    setApiKey();
     $('#noGeo').modal({ backdrop: 'static', keyboard: false })
-    $("#btn-load").click(function(){
-        callApi();
-    });
 }
 function addRouting() {
   if (control  !== null) return;
@@ -243,7 +244,6 @@ function createPlayer() {
     console.log(mymap.getSize())
     addRouting();
     elaborateDistance();
-    addPlayButton();
   } else {
     timer = setTimeout(createPlayer, 1000);
   }
@@ -286,27 +286,58 @@ function populatePopup() {
 
 function elaborateDistance() {
   var count = 0;
-  var url =
-    "https://graphhopper.com/api/1/matrix?from_point=" + lat + "," + lon;
-    console.log(referenceTable)
-  for (var i in POIs) {
-    referenceTable[count] = i;
-    count++;
-    url +=
-      "&to_point=" + POIs[i].latitudeCenter + "," + POIs[i].longitudeCenter;
-  }
-  url +=
-    "&type=json&vehicle=foot&debug=true&out_array=weights&out_array=times&out_array=distances&key=a0695b22-2381-4b66-8330-9f213b610d8f";
-    $.when(getDistance(url)).done(async function() {
-      var index = -1;
-      do{
-        index = createRoute(index+1);
-      }
-      while(index != -1);
-     currentDestination = 0;
-     routingTo(POIs[referenceTable[minIndexes[currentDestination]]]);
-     populatePopup();
-   });
+  // var url =
+  //   "https://maps.googleapis.com/maps/api/distancematrix/xml?origins=" + lat + "," + lon + "|";
+  // var point = "";
+  // // var url2 = url;
+  //   console.log(referenceTable)
+  // for (var i in POIs) {
+  //   referenceTable[count] = i;
+  //   count++;
+  //   point +=
+  //       POIs[i].latitudeCenter + "," + POIs[i].longitudeCenter;
+  //   if(count <=  12){
+  //     point += "|";
+  //   }
+  // }
+  //
+  // url += point;
+  // url +=
+  //   "&destinations=" + point + "&key=AIzaSyCAXQP_4KlAztXqWzAOvjv7Pa7DWIUb42U";
+  //
+  // console.log(url)
+    // count = 0 ;
+    // for (var i in POIs) {
+    //   if(count > 10 ){
+    //   referenceTable[count] = i;
+    //   url2 +=
+    //     "&to_point=" + POIs[i].latitudeCenter + "," + POIs[i].longitudeCenter;
+    //   }
+    //   count++;
+    // }
+    // url2 +=
+    //   "&type=json&vehicle=foot&debug=true&out_array=distances&key=653995f0-72fe-4af8-b598-60e50479a0c2";
+   //    $.when(getDistance(url)).done(async function() {
+   //      // $.when(getDistance(url2)).done(async function() {
+   //        console.log(DSTs)
+   //            var index = 0;
+   //            do{
+   //              index = createRoute(index);
+   //            }
+   //            while(index != -1);
+   //           currentDestination = 0;
+   //           routingTo(POIs[referenceTable[minIndexes[currentDestination]]]);
+   //           populatePopup();
+   //         // });
+   // });
+   DSTs[0] = "CURRENT LOCATION"
+   for (var i in POIs) {
+     referenceTable[count] = i;
+     DSTs["CURRENT LOCATION"].count = distance(lat,lon,POIs[i].latitudeCenter, POIs[i].longitudeCenter,"K");
+     count++;
+   }
+   console.log(DSTs)
+
   }
 
   function createRoute(i) {
@@ -317,9 +348,9 @@ function elaborateDistance() {
         DSTs.distances[i][index] > 0 &&
         DSTs.distances[i][index] <= min &&
         Number(index) != 0 &&
-        !minIndexes.includes(index -1)
+        !minIndexes.includes(index)
       ) {
-          minIndex = index-1;
+          minIndex = index;
           min = DSTs.distances[i][index];
       }
     }
@@ -333,7 +364,18 @@ function getDistance(q) {
     type: "get",
     url: q,
     success: function(data) {
+      console.lof
       DSTs = data;
+      // console.log(data)
+      // if(jQuery.isEmptyObject(DSTs)) {
+      //   console.log("PRIMO CASO VUOTO")
+      //   DSTs = data;
+      // }
+      // else {
+      //   for(item in data){
+      //     DSTs[item] = data[item];
+      //   }
+      // }
     }
   });
 }
@@ -417,4 +459,27 @@ function createButton(label) {
   btn.setAttribute('type', 'button');
   btn.innerHTML = label;
   return btn;
+}
+
+
+function distance(lat1, lon1, lat2, lon2, unit) {
+	if ((lat1 == lat2) && (lon1 == lon2)) {
+		return 0;
+	}
+	else {
+		var radlat1 = Math.PI * lat1/180;
+		var radlat2 = Math.PI * lat2/180;
+		var theta = lon1-lon2;
+		var radtheta = Math.PI * theta/180;
+		var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+		if (dist > 1) {
+			dist = 1;
+		}
+		dist = Math.acos(dist);
+		dist = dist * 180/Math.PI;
+		dist = dist * 60 * 1.1515;
+		if (unit=="K") { dist = dist * 1.609344 }
+		if (unit=="N") { dist = dist * 0.8684 }
+		return dist;
+	}
 }
