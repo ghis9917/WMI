@@ -14,6 +14,8 @@ function onSignIn(googleUser) {
     $(".spinner-border").remove();
     $("#spinner").remove();
     $("#display").show();
+    
+    getReview(profile.getName());
   }
   if ("http://localhost:8000/" == window.location.href || "http://localhost:8000/index.html" == window.location.href) {
     $('#loginModal').modal('hide');

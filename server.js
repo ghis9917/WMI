@@ -34,6 +34,23 @@ app.get('/', (req, res) => {
 });
 //
 
+
+app.get('/getReview', (req, res) => {
+  client.connect("mongodb://localhost:27017/",  { useUnifiedTopology: true },
+    function (error, db) {
+      if (!error) {
+        var mydb = db.db("WMIdb");
+        mydb.collection("review").find({ name: req.query.name }).toArray( async function (err, result) {
+          if (err) throw err;
+          res.send(result);
+          db.close();
+        });
+      }
+    }
+  );
+});
+
+
 app.get('/askDBPedia', (req, res) => {
   return new Promise(async (resolve,reject) => {
   var vector = req.query.que.split(" ");
