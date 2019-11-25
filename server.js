@@ -48,7 +48,8 @@ app.get("/insertReview", (req, res) => {
             if (result == 0) {
               res.send("NON FUNZIA");
             } else {
-              var ob = result[0].Value.push({
+              var ob = result;
+              ob[0].Value.push({
                 Voto: "3",
                 Descrizione: "Massidai"
               });
