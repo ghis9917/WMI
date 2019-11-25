@@ -34,6 +34,32 @@ app.get('/', (req, res) => {
 });
 //
 
+app.get('/insertReview', (req, res) => {
+  client.connect("mongodb://localhost:27017/",  { useUnifiedTopology: true },
+    function (error, db) {
+      if (!error) {
+        var mydb = db.db("WMIdb");
+        mydb.collection("review").find({_id : "Esempio"}).toArray( async function (err, result) {
+          //res.send(result);
+          if(result == 0){
+            res.send("NON FUNZIA")
+          }else{
+            var ob = result;
+            ob[0].Value.push({"Voto": "3", "Descrizione" : "Massidai"});
+            var myquery = { Value: result[0].Value };
+            var newvalues = { $set: { Value: ob[0].Value }};
+            mydb.collection("review").updateOne(result, ob, function(err, resu) {
+              res.send(resu);
+            });
+
+              res.send("NON FUNZIA 2")
+          }
+          db.close();
+        });
+      }
+    }
+  );
+});
 
 app.get('/getReview', (req, res) => {
   client.connect("mongodb://localhost:27017/",  { useUnifiedTopology: true },
