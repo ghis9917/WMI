@@ -200,6 +200,7 @@ function getPOIs(q) {
     url: "/getPOIs?searchQuery=" + q,
     success: function(data) {
       POIs = data;
+      console.log(POIs)
     }
   });
 }
@@ -286,76 +287,130 @@ function populatePopup() {
 
 function elaborateDistance() {
   var count = 0;
-  // var url =
-  //   "https://maps.googleapis.com/maps/api/distancematrix/xml?origins=" + lat + "," + lon + "|";
-  // var point = "";
-  // // var url2 = url;
-  //   console.log(referenceTable)
-  // for (var i in POIs) {
-  //   referenceTable[count] = i;
-  //   count++;
-  //   point +=
-  //       POIs[i].latitudeCenter + "," + POIs[i].longitudeCenter;
-  //   if(count <=  12){
-  //     point += "|";
-  //   }
-  // }
-  //
-  // url += point;
-  // url +=
-  //   "&destinations=" + point + "&key=AIzaSyCAXQP_4KlAztXqWzAOvjv7Pa7DWIUb42U";
-  //
-  // console.log(url)
-    // count = 0 ;
-    // for (var i in POIs) {
-    //   if(count > 10 ){
-    //   referenceTable[count] = i;
-    //   url2 +=
-    //     "&to_point=" + POIs[i].latitudeCenter + "," + POIs[i].longitudeCenter;
-    //   }
-    //   count++;
-    // }
-    // url2 +=
-    //   "&type=json&vehicle=foot&debug=true&out_array=distances&key=653995f0-72fe-4af8-b598-60e50479a0c2";
-   //    $.when(getDistance(url)).done(async function() {
-   //      // $.when(getDistance(url2)).done(async function() {
-   //        console.log(DSTs)
-   //            var index = 0;
-   //            do{
-   //              index = createRoute(index);
-   //            }
-   //            while(index != -1);
-   //           currentDestination = 0;
-   //           routingTo(POIs[referenceTable[minIndexes[currentDestination]]]);
-   //           populatePopup();
-   //         // });
-   // });
-   DSTs[0] = "CURRENT LOCATION"
-   for (var i in POIs) {
-     referenceTable[count] = i;
-     DSTs["CURRENT LOCATION"].count = distance(lat,lon,POIs[i].latitudeCenter, POIs[i].longitudeCenter,"K");
-     count++;
-   }
-   console.log(DSTs)
-
+  var url =
+    "https://maps.googleapis.com/maps/api/distancematrix/xml?origins=" + lat + "," + lon + "|";
+  var point = "";
+  // var url2 = url;
+    console.log(referenceTable)
+  for (var i in POIs) {
+    referenceTable[count] = i;
+    count++;
+    point +=
+        POIs[i].latitudeCenter + "," + POIs[i].longitudeCenter;
+    if(count <=  12){
+      point += "|";
+    }
   }
+
+  url += point;
+  url +=
+    "&destinations=" + point + "&key=AIzaSyCAXQP_4KlAztXqWzAOvjv7Pa7DWIUb42U";
+
+  console.log(url)
+    count = 0 ;
+    for (var i in POIs) {
+      if(count > 10 ){
+      referenceTable[count] = i;
+      url2 +=
+        "&to_point=" + POIs[i].latitudeCenter + "," + POIs[i].longitudeCenter;
+      }
+      count++;
+    }
+    url2 +=
+      "&type=json&vehicle=foot&debug=true&out_array=distances&key=653995f0-72fe-4af8-b598-60e50479a0c2";
+      $.when(getDistance(url)).done(async function() {
+        // $.when(getDistance(url2)).done(async function() {
+          console.log(DSTs)
+              var index = 0;
+              do{
+                index = createRoute(index);
+              }
+              while(index != -1);
+             currentDestination = 0;
+             routingTo(POIs[referenceTable[minIndexes[currentDestination]]]);
+             populatePopup();
+           // });
+   });
+
+//   var count = 0;
+//   calcultateDistance(lat,lon,0);
+//   for (var i in POIs){
+//     referenceTable[count] = i;
+//
+//     calcultateDistance(POIs[i].latitudeCenter, POIs[i].longitudeCenter,count);
+//     count++;
+//   }
+//   console.log(DSTs);
+//
+//   count = 0;
+//   do{
+//      count = createRoute(count);
+//      console.log(count)
+//   }while(count != -1);
+// // console.log("MIN INDEXES")
+// // console.log(minIndexes)
+//   currentDestination = 0;
+//   routingTo(POIs[referenceTable[minIndexes[currentDestination]]]);
+//   populatePopup();
+  }
+
+  function calcultateDistance(slat,slon,index){
+    var count = 0;
+    DSTs[index] = {};
+    for (var i in POIs) {
+      if(POIs[i].latitudeCenter != slat && POIs[i].longitudeCenter != slon){
+        var dist = calcCrow(slat,slon,POIs[i].latitudeCenter, POIs[i].longitudeCenter);
+        DSTs[index][i] = {};
+        DSTs[index][i] = dist * 1000;
+        count++;
+      }
+    }
+  }
+
+
+  function calcCrow(lat1, lon1, lat2, lon2)
+    {
+      var R = 6371; // km
+      var dLat = toRad(lat2-lat1);
+      var dLon = toRad(lon2-lon1);
+      var lat1 = toRad(lat1);
+      var lat2 = toRad(lat2);
+
+      var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2);
+      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      var d = R * c;
+      return d;
+    }
+
+    // Converts numeric degrees to radians
+    function toRad(Value)
+    {
+        return Value * Math.PI / 180;
+    }
 
   function createRoute(i) {
     var min = 40075000;
     var minIndex = -1;
-    for (var index in DSTs.distances[i]) {
+    var count = 0;
+    console.log( DSTs[i])
+    for (var index in DSTs[i]) {
       if (
-        DSTs.distances[i][index] > 0 &&
-        DSTs.distances[i][index] <= min &&
-        Number(index) != 0 &&
-        !minIndexes.includes(index)
+        DSTs[i][index] > 0 &&
+        DSTs[i][index] <= min &&
+        !minIndexes.includes(count)
       ) {
-          minIndex = index;
-          min = DSTs.distances[i][index];
+          minIndex = count;
+          min = DSTs[i][index];
+          // console.log("AG  GIORNATO MIN " +  DSTs[i][index] )
+          // console.log(m  inIndex)
+
       }
+      count++;
     }
     if(minIndex != -1){
       minIndexes.push(Number(minIndex));
+      console.log("pushing " + minIndex)
     }
     return minIndex;
   }
@@ -390,13 +445,21 @@ function routingTo(p) {
 }
 
 $("#prev").on("click", function() {
-  currentDestination--;
-  populatePopup();
+  if(currentDestination > 0){
+    currentDestination--;
+    routingTo(POIs[referenceTable[minIndexes[currentDestination]]]);
+    populatePopup();
+  }
 });
 
 $("#next").on("click", function() {
-  currentDestination++;
-  populatePopup();
+  if(currentDestination < minIndexes.length -   1){
+    console.log(referenceTable[minIndexes[currentDestination]])
+    console.log(minIndexes[currentDestination])
+    currentDestination++;
+    routingTo(POIs[referenceTable[minIndexes[currentDestination]]]);
+    populatePopup();
+  }
 });
 
 //____________CREATEPLAYER FUNCTIONS_______________________________________
@@ -459,27 +522,4 @@ function createButton(label) {
   btn.setAttribute('type', 'button');
   btn.innerHTML = label;
   return btn;
-}
-
-
-function distance(lat1, lon1, lat2, lon2, unit) {
-	if ((lat1 == lat2) && (lon1 == lon2)) {
-		return 0;
-	}
-	else {
-		var radlat1 = Math.PI * lat1/180;
-		var radlat2 = Math.PI * lat2/180;
-		var theta = lon1-lon2;
-		var radtheta = Math.PI * theta/180;
-		var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
-		if (dist > 1) {
-			dist = 1;
-		}
-		dist = Math.acos(dist);
-		dist = dist * 180/Math.PI;
-		dist = dist * 60 * 1.1515;
-		if (unit=="K") { dist = dist * 1.609344 }
-		if (unit=="N") { dist = dist * 0.8684 }
-		return dist;
-	}
 }
