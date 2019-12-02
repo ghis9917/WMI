@@ -16,6 +16,10 @@ var currentDestination;
 var referenceTable = {};
 var minIndexes = [];
 var actualRoute = null;
+var state = "open"
+var customdirection = null;
+
+var lang = "en"; // use for metadata and translate deafult english
 /*Sets up the map are of the html file
 */
 var currentLocation;
@@ -24,7 +28,7 @@ $(document).ready(async function() {
   if ("http://localhost:8000/userMode.html" == window.location.href || "http://localhost:8000/userMode.html/" == window.location.href || "http://localhost:8000/userMode.html#" == window.location.href) {
      await createMap();
     loadMarker();
-    createPlayer();
+
   }
   $("#btn-load").click(function(){
       callApi();
@@ -36,10 +40,29 @@ $("#stop").click(function() {
 
 });
 
-function showInfo(){
-  $("#popupContainer").css("z-index", "2");
-
+function showCloseInfo(){
+  if (state === "close"){
+    $("#popupContainer").css("z-index", "-1");
+    $("#popupContainer").css("height", "0px");
+    $("#popupOpener").css("bottom","0px");
+    $("#popupOpener").css("margin-bottom","1em");
+    $("#popupOpener").css("border-radius","15px");
+    $("#upDown").attr("class", "fa fa-angle-up d-flex");
+    state = "open";
+  }
+  else {
+    $("#popupContainer").css("z-index", "2");
+    $("#popupContainer").css("height", "250px");
+    $("#popupContainer").css("margin-top","0em");
+    $("#popupOpener").css("bottom","266px");
+    $("#popupOpener").css("margin-bottom","0em");
+    $("#popupOpener").css("border-bottom-right-radius","0px");
+    $("#popupOpener").css("border-bottom-left-radius","0px");
+    $("#upDown").attr("class", "fa fa-angle-down d-flex");
+    state = "close";
+  }
 }
+
 function createMap() {
 return new Promise((resolve,reject) => {
   $('#mapid').show();
@@ -78,6 +101,15 @@ return new Promise((resolve,reject) => {
 
 function onLocationFound(position) {
   var popup = "<p class=\"text-center\" style=\"margin: 1em;\">Sei qui!</p>";
+  var blackIcon = new L.Icon({
+  iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+
   lat = position.coords.latitude;
   lon = position.coords.longitude;
   try{
@@ -85,8 +117,7 @@ function onLocationFound(position) {
     control.spliceWaypoints(0, 1, L.latLng(lat, lon));
   } catch (err){
   }
-  currentLocation = L.marker([lat, lon]).bindPopup(popup).addTo(mymap);
-  // addRouting(mymap);
+  currentLocation = L.marker([lat, lon],{icon: blackIcon}).bindPopup(popup).addTo(mymap);
 }
 
 
@@ -116,7 +147,15 @@ function callApi(){
             try {
               mymap.removeLayer(currentLocation);
             } catch {}
-            currentLocation = L.marker([lat, lon])
+            var blackIcon = new L.Icon({
+              iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png',
+              shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+              iconSize: [25, 41],
+              iconAnchor: [12, 41],
+              popupAnchor: [1, -34],
+              shadowSize: [41, 41]
+            });
+            currentLocation = L.marker([lat, lon], {icon : blackIcon})
               .bindPopup(popup)
               .addTo(mymap);
             if (control !== null) {
@@ -153,7 +192,7 @@ function addRouting() {
     waypoints: [
       L.latLng(lat, lon)
     ],
-    router: L.Routing.graphHopper('a0695b22-2381-4b66-8330-9f213b610d8f', {
+    router: L.Routing.graphHopper('653995f0-72fe-4af8-b598-60e50479a0c2', {
       urlParameters: {
         vehicle: routingMode
       }
@@ -208,6 +247,8 @@ function sleep(ms) {
 
 function loadMarker() {
   if (typeof lat !== "undefined") {
+    var list, place = "";
+    customdirection.state("start");
     var q = OpenLocationCode.encode(lat, lon, 4);
     q = q.replace("+", "");
     $.when(getPOIs(q)).done(async function () {
@@ -226,6 +267,34 @@ function loadMarker() {
           .addTo(mymap);
         await sleep(250);
       }
+      L.easyButton({
+        states: [
+        {
+          stateName: "custon", // name the state
+          icon: "fas fa-bong", // and define its properties
+          title: "Custom way", // like its title
+          onClick: function(btn) {
+              $('#porc').modal({ backdrop: 'static', keyboard: false });
+          }
+        }
+      ]
+      }).addTo(mymap);
+      list = document.getElementById("listWithHandle");
+      elaborateDistance();
+      console.log(DSTs)
+      console.log(referenceTable.length)
+      console.log(referenceTable)
+
+      var cont = 0;
+      for(var i in referenceTable){
+        place += "<div class='list-group-item'>"+
+          "<span class='badge'>"+DSTs[0][referenceTable[minIndexes[cont]]].toFixed(0)+"m</span>"+
+        "  <span class='glyphicon glyphicon-move' aria-hidden='true' id='route"+cont+"' title='" + referenceTable[minIndexes[cont]] + "'></span>"+
+        referenceTable[minIndexes[cont]]+
+        "</div>";
+        cont++;
+      }
+      $("#listWithHandle").append(place);
     });
   }
   else {
@@ -240,24 +309,44 @@ function createPlayer() {
   if (Object.keys(POIs).length !== 0) {
     clearTimeout(timer);
     addRouting();
-    elaborateDistance();
+    routingTo(POIs[referenceTable[minIndexes[0]]]);
   } else {
     timer = setTimeout(createPlayer, 1000);
   }
 }
 
 function addPlayButton() {
-  L.easyButton({
+  customdirection = L.easyButton({
     states: [
       {
         stateName: "search", // name the state
         icon: "fas fa-bong", // and define its properties
-        title: "Click to get directions to the nearest POI", // like its title
+        title: "Enter address", // like its title
         onClick: function(btn) {
             $('#noGeo').modal({ backdrop: 'static', keyboard: false });
         }
+      },
+      {
+        stateName: "start", // name the state
+        icon: "fas fa-play", // and define its properties
+        title: "Start routing to nearest POI", // like its title
+        onClick: async function(btn) {
+          btn.state("started");
+          createPlayer();
+
+        }
+      },
+      {
+        stateName: "started", // name the state
+        icon: "fas fa-pause", // and define its properties
+        title: "Stop routing", // like its title
+        onClick: function(btn) {
+          mymap.removeControl(control);
+          control = null;
+          btn.state("start");
+        }
       }
-    ]
+  ]
   }).addTo(mymap);
 }
 
@@ -294,7 +383,6 @@ function elaborateDistance() {
      count = createRoute(count+1);
   }while(count != -1);
   currentDestination = 0;
-  routingTo(POIs[referenceTable[minIndexes[currentDestination]]]);
   populatePopup();
   }
 
@@ -341,17 +429,14 @@ function getDistance(q) {
 
 
 function routingTo(p) {
-  control.spliceWaypoints(
-    control.getWaypoints().length - 1,
-    1,
-    L.latLng(p.latitudeCenter, p.longitudeCenter)
-  );
+  control.spliceWaypoints(0, 0, L.latLng(lat,lon));
+  control.spliceWaypoints(control.getWaypoints().length - 1, 1, L.latLng(p.latitudeCenter, p.longitudeCenter));
 }
 
 $("#prev").on("click", function() {
   if(currentDestination > 0){
     currentDestination--;
-    routingTo(POIs[referenceTable[minIndexes[currentDestination]]]);
+    // routingTo(POIs[referenceTable[minIndexes[currentDestination]]]);
     populatePopup();
   }
 });
@@ -359,12 +444,28 @@ $("#prev").on("click", function() {
 $("#next").on("click", function() {
   if(currentDestination < minIndexes.length -   1){
     currentDestination++;
-    routingTo(POIs[referenceTable[minIndexes[currentDestination]]]);
+    // routingTo(POIs[referenceTable[minIndexes[currentDestination]]]);
     populatePopup();
   }
 });
 
 //____________CREATEPLAYER FUNCTIONS_______________________________________
+
+
+function customRouting(){
+  var cont = 0;
+  var latlng = L.latLng(lat, lon);
+  var list = document.getElementById("listWithHandle").children,child;
+  if (control == null) addRouting();
+  while(cont < 5){
+    child = list[cont].childNodes[3].data;
+    console.log(child)
+    control.spliceWaypoints(cont,cont,latlng);
+    latlng =  L.latLng(POIs[child].latitudeCenter,POIs[child].longitudeCenter)
+    cont++
+  }
+  customdirection.state("started");
+}
 
 async function onClickMarker (instruction,distance)  {
   // var speec = window.speechSynthesis;
@@ -375,15 +476,8 @@ async function onClickMarker (instruction,distance)  {
         speec.speak(msg);
         if(distance < 20){
           $("#popupContainer").css("z-index", "2");
-          var rout = document.getElementById("newroute");
-          rout.hidden = true
         }
-  });function createButton(label) {
-  var btn = L.DomUtil.create('button', "#000000");
-  btn.setAttribute('type', 'button');
-  btn.innerHTML = label;
-  return btn;
-}
+  });
 }
 
 const onClick = () => {

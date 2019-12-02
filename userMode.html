@@ -20,6 +20,9 @@
     <link rel="stylesheet" href="assets/css/Footer-Basic.css" />
     <link rel="stylesheet" href="assets/css/Footer-Clean.css" />
     <link rel="stylesheet" href="assets/css/Footer-Dark.css" />
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css"/>
+    <link href="https://www.solodev.com/core/fileparse.php/131/urlt/google-translate.css" rel="stylesheet">
+
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css"
@@ -78,10 +81,18 @@
             <li class="nav-item" role="presentation">
               <a class="nav-link" href="/profile.html">Profile</a>
             </li>
-            <!-- onclick="document.getElementById('dad').hidden = false;" -->
-            <li class="nav-item" role="presentation">
-              <a class="nav-link" href="#" onclick="showInfo()">Open Modal</a>
-            </li>
+            <ul class="list-unstyled list-inline ct-topbar__list">
+              <li class="ct-language">ENGLISH <i class="fa fa-arrow-down"></i>
+              <ul class="list-unstyled ct-language__dropdown">
+                <li><a href="#googtrans(en|en)" class="lang-en lang-select" data-lang="en"><img src="https://www.solodev.com/assets/google-translate/flag-usa.png" alt="USA"></a></li>
+                <li><a href="#googtrans(en|es)" class="lang-es lang-select" data-lang="es"><img src="https://www.solodev.com/assets/google-translate/flag-mexico.png" alt="MEXICO"></a></li>
+                <li><a href="#googtrans(en|fr)" class="lang-es lang-select" data-lang="fr"><img src="https://www.solodev.com/assets/google-translate/flag-france.png" alt="FRANCE"></a></li>
+                <li><a href="#googtrans(en|zh-CN)" class="lang-es lang-select" data-lang="zh-CN"><img src="https://www.solodev.com/assets/google-translate/flag-china.png" alt="CHINA"></a></li>
+                <li><a href="#googtrans(en|ja)" class="lang-es lang-select" data-lang="ja"><img src="https://www.solodev.com/assets/google-translate/flag-japan.png" alt="JAPAN"></a></li>
+                <li><a href="#googtrans(en|it)" class="lang-es lang-select" data-lang="it"><img style="width:24px; height:19px;" src="http://icons.iconarchive.com/icons/wikipedia/flags/512/IT-Italy-Flag-icon.png" alt="ITALY"></a></li>
+              </ul>
+              </li>
+            </ul>
           </ul>
         </div>
       </div>
@@ -119,6 +130,14 @@
       </div>
     </div>
     <div
+      class="d-flex justify-content-center align-items-center"
+      id="popupOpener"
+      onclick="showCloseInfo()"
+      style="width: calc(100% - 2em);height: 25px; z-index: 3; position: absolute; bottom: 0; left: 0; background: white; margin: 1em;"
+    >
+    <i class="fa fa-angle-up d-flex" id="upDown" style="font-size: 25px;"></i>
+  </div>
+    <div
       class="d-flex shadow"
       id="popupContainer"
       style="width: calc(100% - 2em);height: 250px; z-index: -1; position: absolute; bottom: 0; left: 0; background: white; margin: 1em;"
@@ -135,7 +154,7 @@
       </div>
       <div
         class="d-flex flex-column"
-        style="width: 90%;padding: 1em; overflow: scroll;"
+        style="width: 90%;padding: 1em; overflow-y: scroll;"
       >
         <div class="d-flex justify-content-between">
           <div
@@ -163,7 +182,7 @@
         ></i>
       </div>
     </div>
-    <div class="modal fade" id="noGeo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal" id="noGeo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -180,8 +199,37 @@
         </div>
       </div>
     </div>
-    <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+
+    <div id="porc" class="modal" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Modal title</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div id="listWithHandle" class="list-group">
+            </div>
+            </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" onclick="customRouting()">Start custom routing</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://raw.githack.com/SortableJS/Sortable/master/Sortable.js"></script>
     <script src="assets/js/jquery.min.js"></script>
+    <script>
+    Sortable.create(listWithHandle, {
+      handle: '.glyphicon-move',
+      animation: 150
+    });
+
+    </script>
+    <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
     <script src="assets/js/redirect.js"></script>
     <script src="assets/js/main.js"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>

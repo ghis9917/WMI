@@ -6,38 +6,44 @@ html,
 body {
   height: 100%;
   width: 100%;
+  overflow: hidden;
 }
 
 #popupContainer {
-  border-radius: 15px !important;
+  border-bottom-left-radius: 15px !important;
+  border-bottom-right-radius: 15px !important;
+  transition: all 0.50s ease-in-out;
+  /* transition: all 0.50s ease-in; */
+
+}
+
+.glyphicon-move {
+  cursor: move;
+  cursor: -webkit-grabbing;
+}
+#popupOpener {
+  border-radius: 15px;
+  border-bottom: 2px solid #cccccc;
+  transition: all 0.50s ease-in-out;
+  /* transition: all 0.50s ease-in; */
 }
 
 #prev {
-  border-top-left-radius: 15px;
   border-bottom-left-radius: 15px;
   transition: all 0.25s ease-in-out;
 }
 
 #prev:hover {
   transform: scaleX(1.1);
-<<<<<<< Updated upstream
-  background-color: #aaaaaa !important;
-=======
   background-color: #cccccc !important;
->>>>>>> Stashed changes
 }
 
 #next {
-  border-top-right-radius: 15px;
   border-bottom-right-radius: 15px;
   transition: all 0.25s ease-in-out;
 }
 
 #next:hover {
   transform: scaleX(1.1);
-<<<<<<< Updated upstream
-  background-color: #aaaaaa !important;
-=======
   background-color: #cccccc !important;
->>>>>>> Stashed changes
 }
