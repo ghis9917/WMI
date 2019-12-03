@@ -18,11 +18,27 @@ var minIndexes = [];
 var actualRoute = null;
 var state = "open"
 var customdirection = null;
+var routing = [];
+var blackIcon = new L.Icon({
+    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+  });
 
+var orangeIcon = new L.Icon({
+    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+  });
 var lang = "en"; // use for metadata and translate deafult english
 /*Sets up the map are of the html file
 */
-var currentLocation;
 $(document).ready(async function() {
     setApiKey();
   if ("http://localhost:8000/userMode.html" == window.location.href || "http://localhost:8000/userMode.html/" == window.location.href || "http://localhost:8000/userMode.html#" == window.location.href) {
@@ -101,15 +117,6 @@ return new Promise((resolve,reject) => {
 
 function onLocationFound(position) {
   var popup = "<p class=\"text-center\" style=\"margin: 1em;\">Sei qui!</p>";
-  var blackIcon = new L.Icon({
-  iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
-});
-
   lat = position.coords.latitude;
   lon = position.coords.longitude;
   try{
@@ -147,14 +154,6 @@ function callApi(){
             try {
               mymap.removeLayer(currentLocation);
             } catch {}
-            var blackIcon = new L.Icon({
-              iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png',
-              shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-              iconSize: [25, 41],
-              iconAnchor: [12, 41],
-              popupAnchor: [1, -34],
-              shadowSize: [41, 41]
-            });
             currentLocation = L.marker([lat, lon], {icon : blackIcon})
               .bindPopup(popup)
               .addTo(mymap);
@@ -182,7 +181,7 @@ function callApi(){
 
 function onError(err) {
     console.log("position not found")
-    $('#noGeo').modal({ backdrop: 'static', keyboard: false })
+    $('#noGeo').modal()
 }
 function addRouting() {
   if (control  !== null) return;
@@ -192,7 +191,7 @@ function addRouting() {
     waypoints: [
       L.latLng(lat, lon)
     ],
-    router: L.Routing.graphHopper('653995f0-72fe-4af8-b598-60e50479a0c2', {
+    router: L.Routing.graphHopper('a0695b22-2381-4b66-8330-9f213b610d8f', {
       urlParameters: {
         vehicle: routingMode
       }
@@ -211,22 +210,37 @@ function addRouting() {
           console.log(err);
         }
       }
-
       checkDistance(distance,instruction)
     });
 }
 
 function checkDistance(distance,instruction){
-  if(distance <= 20){
+  if(instruction.includes("Waypoint")) {
+    var waypoi = control["_selectedRoute"].actualWaypoints
+    var key = routing.shift();
+    var poi = POIs[key];
+    var la = poi.latitudeCenter;
+    var lo = poi.longitudeCenter;
+    console.log("LAT LNG")
+    console.log(la)
+    console.log(lo)
+    for(var i in waypoi){
+      console.log(waypoi[i])
+    }
+    poi.marker.setIcon(orangeIcon);
+    instruction = poi.description.en;
+    control.spliceWaypoints(1,1,null)
+    console.log(" control ")
+    console.log(control)
+
+  }
+  else if(distance <= 20){
     //Time to talk description of POI
-    var la = POIs[referenceTable[minIndexes[currentDestination]]].latitudeCenter;
-    var lo = POIs[referenceTable[minIndexes[currentDestination]]].longitudeCenter;
-    var mark = new L.marker([la, lo], {
-    bounceOnAdd: true,
-    bounceOnAddOptions: { },
-    bounceOnAddCallback: function () { }
-  })
-  instruction = POIs[referenceTable[minIndexes[currentDestination]]].description.en;
+    var poi = POIs[referenceTable[minIndexes[currentDestination]]];
+    var la = poi.latitudeCenter;
+    var lo = poi.longitudeCenter;
+    instruction = poi.description.en;
+    poi.marker.setIcon(orangeIcon);
   }
   onClickMarker(instruction,distance);
 }
@@ -265,6 +279,7 @@ function loadMarker() {
             mymap.setView(m.getLatLng(), 12);
           })
           .addTo(mymap);
+          POIs[key].marker = m;
         await sleep(250);
       }
       L.easyButton({
@@ -323,7 +338,7 @@ function addPlayButton() {
         icon: "fas fa-bong", // and define its properties
         title: "Enter address", // like its title
         onClick: function(btn) {
-            $('#noGeo').modal({ backdrop: 'static', keyboard: false });
+            $('#noGeo').modal();
         }
       },
       {
@@ -429,7 +444,7 @@ function getDistance(q) {
 
 
 function routingTo(p) {
-  control.spliceWaypoints(0, 0, L.latLng(lat,lon));
+  control.spliceWaypoints(0, 1, L.latLng(lat,lon));
   control.spliceWaypoints(control.getWaypoints().length - 1, 1, L.latLng(p.latitudeCenter, p.longitudeCenter));
 }
 
@@ -459,11 +474,13 @@ function customRouting(){
   if (control == null) addRouting();
   while(cont < 5){
     child = list[cont].childNodes[3].data;
+    routing[cont] = child;
     console.log(child)
-    control.spliceWaypoints(cont,cont,latlng);
+    control.spliceWaypoints(cont,1,latlng);
     latlng =  L.latLng(POIs[child].latitudeCenter,POIs[child].longitudeCenter)
     cont++
   }
+  console.log(routing)
   customdirection.state("started");
 }
 
