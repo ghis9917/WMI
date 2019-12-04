@@ -67,12 +67,13 @@ app.get("/getReviewProfileMode", (req, res) => {
 });
 });
 
-function insertReviewProfile(id, luogo,  voto, des , mydb, db){
+function insertReviewProfile(id, luogo,  voto, des , mydb, db, res){
           console.log("whr")
           mydb.collection("reviewProfile").find({ _id: id  }).toArray(async function(err, result) {
               if (result == 0) {
                 var myobj = { _id: id , luogo: luogo, recensione: [{ Voto : voto, Descrizione : des}]};
                 mydb.collection("reviewProfile").insertOne(myobj, function (err, resu) {
+                  res.send("salvato");
                 });
               } else {
                 var ob = result;
@@ -84,6 +85,7 @@ function insertReviewProfile(id, luogo,  voto, des , mydb, db){
                 var newvalues = { $set: { recensione: ob[0].recensione } };
                 mydb.collection("reviewProfile").updateOne(myquery, newvalues, function(err, resu) {
                     if(err)throw err;
+                    res.send("salvato");
                     });
               }
               db.close();
@@ -101,12 +103,11 @@ app.post("/insertReviewUserMode", (req, res) => {
               var myobj = { _id: req.query.id , Value: [{ Voto : req.query.voto, Descrizione : req.query.descrizione}]};
               mydb.collection("review").insertOne(myobj, function (err, resu) {
                 if (err) throw err;
-                insertReviewProfile("Massimo Monacchi",req.query.id, req.query.voto, req.query.descrizione , mydb, db)
-                res.send("Save");
-                db.close();
+                insertReviewProfile("Massimo Monacchi",req.query.id, req.query.voto, req.query.descrizione , mydb, db, res)
+
               });
             } else {
-              insertReviewProfile("Massimo Monacchi",req.query.id, req.query.voto, req.query.descrizione, mydb, db )
+              insertReviewProfile("Massimo Monacchi",req.query.id, req.query.voto, req.query.descrizione, mydb, db, res )
               var ob = result;
               ob[0].Value.push({
                 Voto: req.query.voto,
@@ -115,10 +116,7 @@ app.post("/insertReviewUserMode", (req, res) => {
               var myquery = { _id: req.query.id  };
               var newvalues = { $set: { Value: ob[0].Value } };
               mydb.collection("review").updateOne(myquery, newvalues, function(err, resu) {
-                  if (err) {
-                    res.send(err);
-                  }
-                  res.send(resu);
+                if (err) throw err;
                 });
             }
           });
