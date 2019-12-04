@@ -54,6 +54,96 @@ app.get('/askDBPedia', (req, res) => {
 });
 });
 
+app.get("/getReviewProfileMode", (req, res) => {
+  client.connect("mongodb://localhost:27017/",{ useUnifiedTopology: true },function(error, db) {
+    var mydb = db.db("WMIdb");
+    mydb.collection("reviewProfile").find({ _id: req.query.name  }).toArray(async function(err, result) {
+      if(err){
+        res.send(err)
+      }else{
+        res.send(result)
+      }
+  });
+});
+});
+
+function insertReviewProfile(id, luogo,  voto, des , mydb, db){
+          console.log("whr")
+          mydb.collection("reviewProfile").find({ _id: id  }).toArray(async function(err, result) {
+              if (result == 0) {
+                var myobj = { _id: id , luogo: luogo, recensione: [{ Voto : voto, Descrizione : des}]};
+                mydb.collection("reviewProfile").insertOne(myobj, function (err, resu) {
+                });
+              } else {
+                var ob = result;
+                ob[0].recensione.push({
+                  Voto: voto,
+                  Descrizione: des
+                });
+                var myquery = { _id: id };
+                var newvalues = { $set: { recensione: ob[0].recensione } };
+                mydb.collection("reviewProfile").updateOne(myquery, newvalues, function(err, resu) {
+                    if(err)throw err;
+                    });
+              }
+              db.close();
+            });
+
+}
+
+app.post("/insertReviewUserMode", (req, res) => {
+  console.log("ciao")
+  client.connect("mongodb://localhost:27017/",{ useUnifiedTopology: true },function(error, db) {
+      if (!error) {
+        var mydb = db.db("WMIdb");
+        mydb.collection("review").find({ _id: req.query.id  }).toArray(async function(err, result) {
+            if (result == 0) {
+              var myobj = { _id: req.query.id , Value: [{ Voto : req.query.voto, Descrizione : req.query.descrizione}]};
+              mydb.collection("review").insertOne(myobj, function (err, resu) {
+                if (err) throw err;
+                insertReviewProfile("Massimo Monacchi",req.query.id, req.query.voto, req.query.descrizione , mydb, db)
+                res.send("Save");
+                db.close();
+              });
+            } else {
+              insertReviewProfile("Massimo Monacchi",req.query.id, req.query.voto, req.query.descrizione, mydb, db )
+              var ob = result;
+              ob[0].Value.push({
+                Voto: req.query.voto,
+                Descrizione: req.query.descrizione
+              });
+              var myquery = { _id: req.query.id  };
+              var newvalues = { $set: { Value: ob[0].Value } };
+              mydb.collection("review").updateOne(myquery, newvalues, function(err, resu) {
+                  if (err) {
+                    res.send(err);
+                  }
+                  res.send(resu);
+                });
+            }
+          });
+      }
+    });
+});
+
+app.get("/getReview", (req, res) => {
+  client.connect(
+    "mongodb://localhost:27017/",
+    { useUnifiedTopology: true },
+    function(error, db) {
+      if (!error) {
+        var mydb = db.db("WMIdb");
+        mydb.collection("review").find({ name: req.query.name }).toArray(async function(err, result) {
+            if (err) throw err;
+            res.send(result);
+            db.close();
+          });
+      }
+    }
+  );
+});
+
+
 app.get('/getPOIs', (req, res) => {
   var opts = youtubeSearch.YouTubeSearchOptions = {
     maxResults: 50,
