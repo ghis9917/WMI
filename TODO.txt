@@ -34,9 +34,9 @@ Optional Features (Browser):
   *Provincia
   *Paese
   (5 pt.) (AKA creating form to ask those infos + API to get coordinates from them) (DONE)
--Clip filters based on metadata(language, date, length, audience, etc.) (5 pt.) 
+-Clip filters based on metadata(language, date, length, audience, etc.) (5 pt.)
 -Turist location filters based on opening hours and type of location (5 pt.)
--Option to check location as visited (5 pt.) (Probably gonna use a database to save user infos on visited locations)
+-Option to check location as visited (5 pt.) (DONE Probably gonna use a database to save user infos on visited locations)
 -Show content of DBPedia of the location and language requested by user and reproduced with speech synthesis (20 pt.) (DONE)
 -Ratings of each clip and location with feedback visualisation on map (10 pt.) (DONE need graphic)
 

@@ -216,31 +216,34 @@ function addRouting() {
 
 function checkDistance(distance,instruction){
   if(instruction.includes("Waypoint")) {
-    var waypoi = control["_selectedRoute"].actualWaypoints
+    //Time to talk description of POI waypoint
+    var waylength = control.getWaypoints().length - routing.length;
     var key = routing.shift();
     var poi = POIs[key];
-    var la = poi.latitudeCenter;
-    var lo = poi.longitudeCenter;
-    console.log("LAT LNG")
-    console.log(la)
-    console.log(lo)
-    for(var i in waypoi){
-      console.log(waypoi[i])
-    }
+    mymap.removeLayer(poi.marker)
+    poi.marker.addTo(mymap)
     poi.marker.setIcon(orangeIcon);
+    var route = control.getWaypoints();
+    route.splice(1, 1);
+    control.setWaypoints(route);
     instruction = poi.description.en;
-    control.spliceWaypoints(1,1,null)
-    console.log(" control ")
-    console.log(control)
-
+    populatePopup(key);
+    distance = 5;
   }
   else if(distance <= 20){
-    //Time to talk description of POI
+    //Time to talk description of POI destination
     var poi = POIs[referenceTable[minIndexes[currentDestination]]];
     var la = poi.latitudeCenter;
     var lo = poi.longitudeCenter;
-    instruction = poi.description.en;
+    mymap.removeLayer(poi.marker)
+    poi.marker.addTo(mymap)
     poi.marker.setIcon(orangeIcon);
+    instruction = poi.description.en;
+    mymap.removeControl(control);
+    control = null;
+    routing = [];
+    customdirection.state("start");
+    populatePopup(referenceTable[minIndexes[currentDestination]]);
   }
   onClickMarker(instruction,distance);
 }
@@ -262,8 +265,8 @@ function sleep(ms) {
 function loadMarker() {
   if (typeof lat !== "undefined") {
     var list, place = "";
-    customdirection.state("start");
     var q = OpenLocationCode.encode(lat, lon, 4);
+    customdirection.state("loading");
     q = q.replace("+", "");
     $.when(getPOIs(q)).done(async function () {
       for (var key in POIs) {
@@ -296,10 +299,6 @@ function loadMarker() {
       }).addTo(mymap);
       list = document.getElementById("listWithHandle");
       elaborateDistance();
-      console.log(DSTs)
-      console.log(referenceTable.length)
-      console.log(referenceTable)
-
       var cont = 0;
       for(var i in referenceTable){
         place += "<div class='list-group-item'>"+
@@ -310,6 +309,7 @@ function loadMarker() {
         cont++;
       }
       $("#listWithHandle").append(place);
+      customdirection.state("start");
     });
   }
   else {
@@ -322,6 +322,8 @@ function loadMarker() {
 function createPlayer() {
   var timer = null;
   if (Object.keys(POIs).length !== 0) {
+    customdirection.state("started");
+    currentDestination = 0;
     clearTimeout(timer);
     addRouting();
     routingTo(POIs[referenceTable[minIndexes[0]]]);
@@ -335,7 +337,7 @@ function addPlayButton() {
     states: [
       {
         stateName: "search", // name the state
-        icon: "fas fa-bong", // and define its properties
+        icon: "fa-location-arrow", // and define its properties
         title: "Enter address", // like its title
         onClick: function(btn) {
             $('#noGeo').modal();
@@ -345,11 +347,14 @@ function addPlayButton() {
         stateName: "start", // name the state
         icon: "fas fa-play", // and define its properties
         title: "Start routing to nearest POI", // like its title
-        onClick: async function(btn) {
-          btn.state("started");
+        onClick: function(btn) {
           createPlayer();
-
         }
+      },
+      {
+        stateName: "loading", // name the state
+        icon: "fa fa-spinner", // and define its properties
+        title: "We are loading POI" // like its title
       },
       {
         stateName: "started", // name the state
@@ -365,18 +370,18 @@ function addPlayButton() {
   }).addTo(mymap);
 }
 
-function populatePopup() {
-  $("#popupTitle").text(referenceTable[minIndexes[currentDestination]]);
+function populatePopup(key) {
+  $("#popupTitle").text(key);
   $("#popupDescription").text(
-    POIs[referenceTable[minIndexes[currentDestination]]].description !== "NF"
-      ? POIs[referenceTable[minIndexes[currentDestination]]].description.it
-      : "Non è disponibile nessuna descrizione..."
+    POIs[key].description.en !== "NOT FOUND"
+      ? POIs[key].description.en
+      : "No description available"
   );
-  if(POIs[referenceTable[minIndexes[currentDestination]]].img){
+  if(POIs[key].img){
     $("#popupImg").attr(
       "src",
-      POIs[referenceTable[minIndexes[currentDestination]]].img !== "NF"
-        ? POIs[referenceTable[minIndexes[currentDestination]]].img
+      POIs[key].img !== "NF"
+        ? POIs[key].img
         : "https://cdn.shopify.com/s/files/1/1552/7487/products/good_game_gg-smiley_fornite_spray_emote_printed_sticker_grfxp_grafixpressions_720x.jpg?v=1525975056"
     );
   }
@@ -398,7 +403,7 @@ function elaborateDistance() {
      count = createRoute(count+1);
   }while(count != -1);
   currentDestination = 0;
-  populatePopup();
+  populatePopup(referenceTable[minIndexes[currentDestination]]);
   }
 
   function calculateDistance(slat,slon,index){
@@ -451,16 +456,14 @@ function routingTo(p) {
 $("#prev").on("click", function() {
   if(currentDestination > 0){
     currentDestination--;
-    // routingTo(POIs[referenceTable[minIndexes[currentDestination]]]);
-    populatePopup();
+    populatePopup(referenceTable[minIndexes[currentDestination]]);
   }
 });
 
 $("#next").on("click", function() {
-  if(currentDestination < minIndexes.length -   1){
+  if(currentDestination < minIndexes.length - 1){
     currentDestination++;
-    // routingTo(POIs[referenceTable[minIndexes[currentDestination]]]);
-    populatePopup();
+    populatePopup(referenceTable[minIndexes[currentDestination]]);
   }
 });
 
@@ -472,27 +475,38 @@ function customRouting(){
   var latlng = L.latLng(lat, lon);
   var list = document.getElementById("listWithHandle").children,child;
   if (control == null) addRouting();
-  while(cont < 5){
+  while(cont < 4){
     child = list[cont].childNodes[3].data;
     routing[cont] = child;
-    console.log(child)
-    control.spliceWaypoints(cont,1,latlng);
     latlng =  L.latLng(POIs[child].latitudeCenter,POIs[child].longitudeCenter)
+    control.spliceWaypoints(cont+1,1,latlng);
     cont++
   }
-  console.log(routing)
+  var i;
+  for(key in referenceTable){
+    if(referenceTable[key] == routing[cont-1]){
+      i = key
+    }
+  }
+  for(key in minIndexes){
+    if(minIndexes[key] == i){
+      currentDestination = key
+    }
+  }
   customdirection.state("started");
 }
 
 async function onClickMarker (instruction,distance)  {
   // var speec = window.speechSynthesis;
+  var msg = new SpeechSynthesisUtterance(instruction);
   var availableVoices =  setSpeech();
   availableVoices.then(voice => {
-        var msg = new SpeechSynthesisUtterance(instruction);
         msg.voice = voice[5]
         speec.speak(msg);
-        if(distance < 20){
-          $("#popupContainer").css("z-index", "2");
+        console.log("PWECHE NON PARLI")
+        if(distance <= 20){
+          state = "open";
+          showCloseInfo();
         }
   });
 }
@@ -506,7 +520,9 @@ const onClick = () => {
       lat = e.latlng.lat;
       lon = e.latlng.lng;
       currentLocation.setLatLng(e.latlng);
-      control.spliceWaypoints(0,1,e.latlng);
+      console.log("CONTROL")
+      console.log(control)
+      if(control !== null) control.spliceWaypoints(0,1,e.latlng);
     });
     L.popup("#ffffff")
       .setContent(fakeBtn)
