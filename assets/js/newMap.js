@@ -315,7 +315,7 @@ function loadMarker() {
             }
           ]
         }).addTo(mymap);
-        list = document.getElementById("listWithHandle");
+        list = document.getElementById("B");
         elaborateDistance();
         var cont = 0;
         for(var i in referenceTable){
@@ -326,7 +326,7 @@ function loadMarker() {
             "</div>";
             cont++;
           }
-          $("#listWithHandle").append(place);
+          $("#B").append(place);
           customdirection.state("start");
       }
     });

@@ -9,7 +9,7 @@
     />
     <title>WMI</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/prova.css"/>
+
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css" />
     <link
       rel="stylesheet"
@@ -190,6 +190,7 @@
       </div>
     </div>
     <div class="modal" id="noGeo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -208,7 +209,15 @@
     </div>
 
     <div id="porc" class="modal" tabindex="-1" role="dialog">
-      <div class="modal-dialog" role="document">
+
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
+      <script src="https://raw.githack.com/SortableJS/Sortable/master/Sortable.js"></script>
+      <style media="screen">
+      .list-group-item {
+        cursor: move;
+        cursor: -webkit-grabbing;
+      }
+      </style>
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">Modal title</h5>
@@ -217,15 +226,38 @@
             </button>
           </div>
           <div class="modal-body">
-            <div id="listWithHandle" class="list-group">
+            <p class="title">Trascina qui i punti da aggiungere al tuo percorso personalizzato</p>
+            <div id="A" class="list-group">
+
             </div>
+            <hr>
+            <div id="B" class="list-group">
             </div>
+          </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" onclick="customRouting()">Start custom routing</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           </div>
         </div>
       </div>
+      </div>
+
+    <script type="text/javascript">
+      Sortable.create(A, {
+        animation: 200,
+        group: {
+          name: "shared",
+          revertClone: true,
+        },
+        sort: true
+      });
+
+      Sortable.create(B, {
+        group: "shared",
+        sort: false
+      });
+
+    </script>
     </div>
     <div id="modalReview" class="modal" role="dialog" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -244,15 +276,6 @@
         </div>
     </div>
     <script src="https://raw.githack.com/SortableJS/Sortable/master/Sortable.js"></script>
-
-
-    <script>
-    Sortable.create(listWithHandle, {
-      handle: '.glyphicon-move',
-      animation: 150
-    });
-
-    </script>
     <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
     <script src="assets/js/redirect.js"></script>
     <script src="assets/js/main.js"></script>
