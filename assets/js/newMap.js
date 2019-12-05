@@ -320,9 +320,9 @@ function loadMarker() {
         var cont = 0;
         for(var i in referenceTable){
           place += "<div class='list-group-item'>"+
-            "<span class='badge'>"+DSTs[0][referenceTable[minIndexes[cont]]].toFixed(0)+"m</span>"+
             "  <span class='glyphicon glyphicon-move' aria-hidden='true' id='route"+cont+"' title='" + referenceTable[minIndexes[cont]] + "'></span>"+
             referenceTable[minIndexes[cont]]+
+              "<span class='badge'>"+DSTs[0][referenceTable[minIndexes[cont]]].toFixed(0)+"</span>"+
             "</div>";
             cont++;
           }
