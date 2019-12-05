@@ -39,13 +39,20 @@ var orangeIcon = new L.Icon({
 var lang = "en"; // use for metadata and translate deafult english
 /*Sets up the map are of the html file
 */
+function checkMode(){
+  if ("http://localhost:8000/userMode.html" == window.location.href || "http://localhost:8000/userMode.html/" == window.location.href || "http://localhost:8000/userMode.html#" == window.location.href) {
+    console.log("PERLAMADONNA");
+    return 1;
+  }
+  else return 0;
+}
 $(document).ready(async function() {
     setApiKey();
-  if ("http://localhost:8000/userMode.html" == window.location.href || "http://localhost:8000/userMode.html/" == window.location.href || "http://localhost:8000/userMode.html#" == window.location.href) {
+  if(checkMode() == 1){
+    console.log("PORCODIO")
      await createMap();
-    loadMarker();
-
   }
+  loadMarker();
   $("#btn-load").click(function(){
       callApi();
   });
@@ -125,6 +132,11 @@ function onLocationFound(position) {
   } catch (err){
   }
   currentLocation = L.marker([lat, lon],{icon: blackIcon}).bindPopup(popup).addTo(mymap);
+  console.log("DATA POSIZIONE DA GPS")
+  if(checkMode() == 0) {
+    console.log("rimosso in teoria2");
+    mymap.removeControl(customdirection);
+  }
 }
 
 
@@ -157,6 +169,12 @@ function callApi(){
             currentLocation = L.marker([lat, lon], {icon : blackIcon})
               .bindPopup(popup)
               .addTo(mymap);
+            console.log("DATA POSIZIONE A MANO")
+            if(checkMode() == 0) {
+              console.log("rimosso in teoria");
+              mymap.removeControl(customdirection);
+            }
+
             if (control !== null) {
                 control.spliceWaypoints(0, 1, [lat, lon]);
             }
@@ -239,8 +257,6 @@ function checkDistance(distance,instruction){
     poi.marker.addTo(mymap)
     poi.marker.setIcon(orangeIcon);
     instruction = poi.description.en;
-    mymap.removeControl(control);
-    control = null;
     routing = [];
     customdirection.state("start");
     populatePopup(referenceTable[minIndexes[currentDestination]]);
@@ -264,6 +280,7 @@ function sleep(ms) {
 
 function loadMarker() {
   if (typeof lat !== "undefined") {
+    console.log("CIAO")
     var list, place = "";
     var q = OpenLocationCode.encode(lat, lon, 4);
     customdirection.state("loading");
@@ -285,31 +302,33 @@ function loadMarker() {
           POIs[key].marker = m;
         await sleep(250);
       }
-      L.easyButton({
-        states: [
-        {
-          stateName: "custon", // name the state
-          icon: "fas fa-bong", // and define its properties
-          title: "Custom way", // like its title
-          onClick: function(btn) {
-              $('#porc').modal({ backdrop: 'static', keyboard: false });
+      if (checkMode() == 1){
+        L.easyButton({
+          states: [
+            {
+              stateName: "custon", // name the state
+              icon: "fas fa-bong", // and define its properties
+              title: "Custom way", // like its title
+              onClick: function(btn) {
+                $('#porc').modal({ backdrop: 'static', keyboard: false });
+              }
+            }
+          ]
+        }).addTo(mymap);
+        list = document.getElementById("listWithHandle");
+        elaborateDistance();
+        var cont = 0;
+        for(var i in referenceTable){
+          place += "<div class='list-group-item'>"+
+            "<span class='badge'>"+DSTs[0][referenceTable[minIndexes[cont]]].toFixed(0)+"m</span>"+
+            "  <span class='glyphicon glyphicon-move' aria-hidden='true' id='route"+cont+"' title='" + referenceTable[minIndexes[cont]] + "'></span>"+
+            referenceTable[minIndexes[cont]]+
+            "</div>";
+            cont++;
           }
-        }
-      ]
-      }).addTo(mymap);
-      list = document.getElementById("listWithHandle");
-      elaborateDistance();
-      var cont = 0;
-      for(var i in referenceTable){
-        place += "<div class='list-group-item'>"+
-          "<span class='badge'>"+DSTs[0][referenceTable[minIndexes[cont]]].toFixed(0)+"m</span>"+
-        "  <span class='glyphicon glyphicon-move' aria-hidden='true' id='route"+cont+"' title='" + referenceTable[minIndexes[cont]] + "'></span>"+
-        referenceTable[minIndexes[cont]]+
-        "</div>";
-        cont++;
+          $("#listWithHandle").append(place);
+          customdirection.state("start");
       }
-      $("#listWithHandle").append(place);
-      customdirection.state("start");
     });
   }
   else {
@@ -333,41 +352,57 @@ function createPlayer() {
 }
 
 function addPlayButton() {
-  customdirection = L.easyButton({
-    states: [
-      {
-        stateName: "search", // name the state
-        icon: "fa-location-arrow", // and define its properties
-        title: "Enter address", // like its title
-        onClick: function(btn) {
-            $('#noGeo').modal();
-        }
-      },
-      {
-        stateName: "start", // name the state
-        icon: "fas fa-play", // and define its properties
-        title: "Start routing to nearest POI", // like its title
-        onClick: function(btn) {
-          createPlayer();
-        }
-      },
-      {
-        stateName: "loading", // name the state
-        icon: "fa fa-spinner", // and define its properties
-        title: "We are loading POI" // like its title
-      },
-      {
-        stateName: "started", // name the state
-        icon: "fas fa-pause", // and define its properties
-        title: "Stop routing", // like its title
-        onClick: function(btn) {
-          mymap.removeControl(control);
-          control = null;
-          btn.state("start");
-        }
-      }
-  ]
-  }).addTo(mymap);
+  if(checkMode() == 1){
+    customdirection = L.easyButton({
+      states: [
+        {
+          stateName: "search", // name the state
+          icon: "fa-location-arrow", // and define its properties
+          title: "Enter address", // like its title
+          onClick: function(btn) {
+              $('#noGeo').modal();
+            }
+          },
+          {
+            stateName: "start", // name the state
+            icon: "fas fa-play", // and define its properties
+            title: "Start routing to nearest POI", // like its title
+            onClick: function(btn) {
+              createPlayer();
+            }
+          },
+          {
+            stateName: "loading", // name the state
+            icon: "fa fa-spinner", // and define its properties
+            title: "We are loading POI" // like its title
+          },
+          {
+            stateName: "started", // name the state
+            icon: "fas fa-pause", // and define its properties
+            title: "Stop routing", // like its title
+            onClick: function(btn) {
+              mymap.removeControl(control);
+              control = null;
+              btn.state("start");
+            }
+          }
+        ]
+      }).addTo(mymap);
+    }
+    else{
+      customdirection = L.easyButton({
+        states: [
+          {
+            stateName: "search", // name the state
+            icon: "fa-location-arrow", // and define its properties
+            title: "Enter address", // like its title
+            onClick: function(btn) {
+                $('#noGeo').modal();
+              }
+            }
+          ]
+        }).addTo(mymap);
+    }
 }
 
 function populatePopup(key) {
