@@ -247,6 +247,7 @@ function checkDistance(distance,instruction){
     instruction = poi.description.en;
     populatePopup(key);
     distance = 5;
+    getVideoId(poi);
   }
   else if(distance <= 20){
     //Time to talk description of POI destination
@@ -260,6 +261,7 @@ function checkDistance(distance,instruction){
     routing = [];
     customdirection.state("start");
     populatePopup(referenceTable[minIndexes[currentDestination]]);
+    getVideoId(poi);
   }
   onClickMarker(instruction,distance);
 }
@@ -319,15 +321,12 @@ function loadMarker() {
         elaborateDistance();
         var cont = 0;
         for(var i in referenceTable){
-          place += "<div class='list-group-item'>"+
-            "<span class='badge'>"+DSTs[0][referenceTable[minIndexes[cont]]].toFixed(0)+"m</span>"+
-            "  <span class='glyphicon glyphicon-move' aria-hidden='true' id='route"+cont+"' title='" + referenceTable[minIndexes[cont]] + "'></span>"+
-            referenceTable[minIndexes[cont]]+
-            "</div>";
-            cont++;
-          }
-          $("#listWithHandle").append(place);
-          customdirection.state("start");
+              place += "<div class='list-group-item'>"+
+                "<span class='glyphicon glyphicon-move' aria-hidden='true' id='route"+cont+"' title='" + referenceTable[minIndexes[cont]] + "'></span>"+referenceTable[minIndexes[cont]]+"<span class='badge'>"+DSTs[0][referenceTable[minIndexes[cont]]].toFixed(0)+"</span>"+"</div>";
+                cont++;
+              }
+        $("#B").append(place);
+        customdirection.state("start");
       }
     });
   }

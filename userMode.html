@@ -59,8 +59,31 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.1.1/aos.css"
     />
     <link rel="stylesheet" href="assets/css/styles.css" />
-      <script src="assets/js/jquery.min.js"></script>
+    <script type="text/javascript" id="www-widgetapi-script" src="https://s.ytimg.com/yts/jsbin/www-widgetapi-vflS50iB-/www-widgetapi.js" async=""></script>
+    <script src="https://www.youtube.com/player_api"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="assets/js/jquery.min.js"></script>
     <script src="assets/js/review.js" > </script>
+    <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+    <script src="assets/js/redirect.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/bs-animation.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.1.1/aos.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://apis.google.com/js/platform.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/openlocationcode/1.0.3/openlocationcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/@bootstrapstudio/bootstrap-better-nav/dist/bootstrap-better-nav.min.js"></script>
+    <script src="https://unpkg.com/leaflet-geosearch@latest/dist/bundle.min.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
+    <script src="http://maximeh.github.io/leaflet.bouncemarker/bouncemarker.js"></script>
+    <script src="assets/js/lrm-graphhopper.js"></script>
+    <script src="assets/js/clip.js"></script>
+    <script src="assets/js/newMap.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/places.js@1.16.6"></script>
   </head>
 
   <body class="d-flex flex-column justify-content-between">
@@ -105,33 +128,35 @@
       </div>
     </nav>
     <div id="mapid" style="height: 100%;z-index: 1">
-      <div
-        id="dad"
-        hidden
-        role="dialog"
-        tabindex="-1"
-        class="modal fade show"
-        style="display: block;"
-      >
-        <div class="modal-dialog" role="document" align="center  ">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h4 class="modal-title">Modal Title</h4>
-              <button
-                type="button"
-                class="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true" id="stop">×</span>
-              </button>
-            </div>
-            <audio id="iframe" class="modal-body"></audio>
+    </div>
+    <div
+      id="dad"
+      hidden
+      role="dialog"
+      tabindex="-1"
+      class="modal show"
+      style="display: block; z-index:4;"
+
+    >
+      <div class="modal-dialog" role="document" align="center  ">
+        <div class="modal-content" >
+          <div class="modal-header">
+            <h4 class="modal-title">Modal Title</h4>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true" id="stop">×</span>
+            </button>
+          </div>
+          <div class="modal-body" id="iframe" >
             <button hidden id="route">Route me here.</button>
             <label id="text"> </label>
-            <div class="modal-footer">
-              <!-- Draw other clips of that POI -->
-            </div>
+          </div>
+          <div class="modal-footer">
+            <!-- Draw other clips of that POI -->
           </div>
         </div>
       </div>
@@ -208,7 +233,14 @@
     </div>
 
     <div id="porc" class="modal" tabindex="-1" role="dialog">
-      <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
+      <script src="https://raw.githack.com/SortableJS/Sortable/master/Sortable.js"></script>
+      <style media="screen">
+      .list-group-item {
+        cursor: move;
+        cursor: -webkit-grabbing;
+      }
+      </style>
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">Modal title</h5>
@@ -217,15 +249,35 @@
             </button>
           </div>
           <div class="modal-body">
-            <div id="listWithHandle" class="list-group">
+            <p class="title">Trascina qui i punti da aggiungere al tuo percorso personalizzato</p>
+            <div id="A" class="list-group">
             </div>
+            <hr>
+            <div id="B" class="list-group">
             </div>
+          </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" onclick="customRouting()">Start custom routing</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           </div>
         </div>
       </div>
+    <script type="text/javascript">
+      Sortable.create(A, {
+        animation: 200,
+        group: {
+          name: "shared",
+          revertClone: true,
+        },
+        sort: true
+      });
+
+      Sortable.create(B, {
+        group: "shared",
+        sort: false
+      });
+
+    </script>
     </div>
     <div id="modalReview" class="modal" role="dialog" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -243,34 +295,5 @@
             </div>
         </div>
     </div>
-    <script src="https://raw.githack.com/SortableJS/Sortable/master/Sortable.js"></script>
-
-
-    <script>
-    Sortable.create(listWithHandle, {
-      handle: '.glyphicon-move',
-      animation: 150
-    });
-
-    </script>
-    <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
-    <script src="assets/js/redirect.js"></script>
-    <script src="assets/js/main.js"></script>
-    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="assets/js/bs-animation.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.1.1/aos.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <script src="https://apis.google.com/js/platform.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/openlocationcode/1.0.3/openlocationcode.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/@bootstrapstudio/bootstrap-better-nav/dist/bootstrap-better-nav.min.js"></script>
-    <script src="https://unpkg.com/leaflet-geosearch@latest/dist/bundle.min.js"></script>
-    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
-    <script src="http://maximeh.github.io/leaflet.bouncemarker/bouncemarker.js"></script>
-    <script src="assets/js/lrm-graphhopper.js"></script>
-    <script src="assets/js/newMap.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/places.js@1.16.6"></script>
   </body>
 </html>
