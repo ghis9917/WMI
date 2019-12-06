@@ -247,6 +247,7 @@ function checkDistance(distance,instruction){
     instruction = poi.description.en;
     populatePopup(key);
     distance = 5;
+    getVideoId(poi);
   }
   else if(distance <= 20){
     //Time to talk description of POI destination
@@ -260,6 +261,7 @@ function checkDistance(distance,instruction){
     routing = [];
     customdirection.state("start");
     populatePopup(referenceTable[minIndexes[currentDestination]]);
+    getVideoId(poi);
   }
   onClickMarker(instruction,distance);
 }

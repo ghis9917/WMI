@@ -59,8 +59,31 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.1.1/aos.css"
     />
     <link rel="stylesheet" href="assets/css/styles.css" />
-      <script src="assets/js/jquery.min.js"></script>
+    <script type="text/javascript" id="www-widgetapi-script" src="https://s.ytimg.com/yts/jsbin/www-widgetapi-vflS50iB-/www-widgetapi.js" async=""></script>
+    <script src="https://www.youtube.com/player_api"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="assets/js/jquery.min.js"></script>
     <script src="assets/js/review.js" > </script>
+    <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+    <script src="assets/js/redirect.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/bs-animation.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.1.1/aos.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://apis.google.com/js/platform.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/openlocationcode/1.0.3/openlocationcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/@bootstrapstudio/bootstrap-better-nav/dist/bootstrap-better-nav.min.js"></script>
+    <script src="https://unpkg.com/leaflet-geosearch@latest/dist/bundle.min.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
+    <script src="http://maximeh.github.io/leaflet.bouncemarker/bouncemarker.js"></script>
+    <script src="assets/js/lrm-graphhopper.js"></script>
+    <script src="assets/js/clip.js"></script>
+    <script src="assets/js/newMap.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/places.js@1.16.6"></script>
   </head>
 
   <body class="d-flex flex-column justify-content-between">
@@ -105,33 +128,35 @@
       </div>
     </nav>
     <div id="mapid" style="height: 100%;z-index: 1">
-      <div
-        id="dad"
-        hidden
-        role="dialog"
-        tabindex="-1"
-        class="modal fade show"
-        style="display: block;"
-      >
-        <div class="modal-dialog" role="document" align="center  ">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h4 class="modal-title">Modal Title</h4>
-              <button
-                type="button"
-                class="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true" id="stop">×</span>
-              </button>
-            </div>
-            <audio id="iframe" class="modal-body"></audio>
+    </div>
+    <div
+      id="dad"
+      hidden
+      role="dialog"
+      tabindex="-1"
+      class="modal show"
+      style="display: block; z-index:4;"
+
+    >
+      <div class="modal-dialog" role="document" align="center  ">
+        <div class="modal-content" >
+          <div class="modal-header">
+            <h4 class="modal-title">Modal Title</h4>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true" id="stop">×</span>
+            </button>
+          </div>
+          <div class="modal-body" id="iframe" >
             <button hidden id="route">Route me here.</button>
             <label id="text"> </label>
-            <div class="modal-footer">
-              <!-- Draw other clips of that POI -->
-            </div>
+          </div>
+          <div class="modal-footer">
+            <!-- Draw other clips of that POI -->
           </div>
         </div>
       </div>
