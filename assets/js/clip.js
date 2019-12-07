@@ -129,7 +129,7 @@ function searchByKeyword(query) {
               type: 'video',
               videoEmbeddable: true,
           },
-          success: function(data){
+          success: async function(data){
               console.log(data)
               var item = data["items"];
               var iframe;
@@ -142,13 +142,12 @@ function searchByKeyword(query) {
                 // iframe.height="0";
                 // iframe.frameborder="0";
                 // $("#iframeContainer").append(iframe)
-                onYouTubeIframeAPIReady(videoId);
+                 onYouTubeIframeAPIReady(videoId);
 
               }
               var div = document.getElementById("clipContainer")
               div.hidden = false;
 
-              // getVideo(data)
           },
           error: function(response){
               console.log("Request Failed");
@@ -159,21 +158,22 @@ function searchByKeyword(query) {
 
 function onYouTubeIframeAPIReady(videoId){
   var e = document.getElementById("iframeContainer"),t=document.createElement("img");
-  t.setAttribute("id","youtube-icon");
+    t.setAttribute("id","youtube-icon"+videoId);
   t.style.cssText="cursor:pointer;cursor:hand";
   e.appendChild(t);
-  var a=document.createElement("div");a.setAttribute("id","youtube-player"),e.appendChild(a);
+  var a=document.createElement("div");
+  a.setAttribute("id","youtube-player"+videoId),e.appendChild(a);
   var o=function(e){
     var a=e?"IDzX9gL.png":"quyUPXN.png";
     t.setAttribute("src","https://i.imgur.com/"+a)
   };
-  e.onclick=function(){
-    r.getPlayerState()===YT.PlayerState.PLAYING||r.getPlayerState()===YT.PlayerState.BUFFERING?(r.pauseVideo(),o(!1)):(r.playVideo(),o(!0))
-  };
-  var r=new YT.Player("youtube-player",{height:"0",width:"0",videoId:videoId,playerVars:{autoplay:e.dataset.autoplay,loop:e.dataset.loop},events:{
+  var r=new YT.Player("youtube-player"+videoId,{height:"0",width:"0",videoId:videoId,playerVars:{autoplay:e.dataset.autoplay,loop:e.dataset.loop},events:{
     onReady:function(e){
       r.setPlaybackQuality("small"),o(r.getPlayerState()!==YT.PlayerState.CUED)},onStateChange:function(e){
         e.data===YT.PlayerState.ENDED&&o(!1)}
       }}
     )
+    e.onclick=function(){
+      r.getPlayerState()===YT.PlayerState.PLAYING||r.getPlayerState()===YT.PlayerState.BUFFERING?(r.pauseVideo(),o(!1)):(r.playVideo(),o(!0))
+    };
   }

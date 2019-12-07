@@ -108,4 +108,17 @@ module.exports = {
     });
 });
 }
+// ,
+//   url: function url(id){
+//     var url = 'https://www.youtube.com/watch?v=' + id;
+//
+//  // Audio format header (OPTIONAL)
+//     res.set({ "Content-Type": "audio/mpeg" });
+//
+//  // Send compressed audio mp3 data
+//     ffmpeg()
+//     .input(ytdl(url))
+//     .toFormat('mp3')
+//     .pipe(res);
+//   }
 }

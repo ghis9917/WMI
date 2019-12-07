@@ -32,7 +32,6 @@ var type = upload.single('upl');
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, './index.html'));
 });
-//
 
 app.get('/askDBPedia', (req, res) => {
   return new Promise(async (resolve,reject) => {
@@ -145,7 +144,7 @@ app.get("/getReview", (req, res) => {
 app.get('/getPOIs', (req, res) => {
   var opts = youtubeSearch.YouTubeSearchOptions = {
     maxResults: 50,
-    key: maxKey
+    key: guiKey
   };
 
   youtubeSearch(req.query.searchQuery, opts, async (err, results) => {

@@ -41,7 +41,6 @@ var lang = "en"; // use for metadata and translate deafult english
 */
 function checkMode(){
   if ("http://localhost:8000/userMode.html" == window.location.href || "http://localhost:8000/userMode.html/" == window.location.href || "http://localhost:8000/userMode.html#" == window.location.href) {
-    console.log("PERLAMADONNA");
     return 1;
   }
   else return 0;
@@ -131,7 +130,7 @@ function onLocationFound(position) {
   } catch (err){
   }
   currentLocation = L.marker([lat, lon],{icon: blackIcon}).bindPopup(popup).addTo(mymap);
-  console.log("DATA POSIZIONE DA GPS")
+  updateCustomRouting();
   if(checkMode() == 0) {
     console.log("rimosso in teoria2");
     mymap.removeControl(customdirection);
@@ -168,7 +167,7 @@ function callApi(){
             currentLocation = L.marker([lat, lon], {icon : blackIcon})
               .bindPopup(popup)
               .addTo(mymap);
-            console.log("DATA POSIZIONE A MANO")
+            updateCustomRouting();
             if(checkMode() == 0) {
               console.log("rimosso in teoria");
               mymap.removeControl(customdirection);
@@ -300,7 +299,6 @@ function sleep(ms) {
 
 function loadMarker() {
   if (typeof lat !== "undefined") {
-    console.log("CIAO")
     var list, place = "";
     var q = OpenLocationCode.encode(lat, lon, 4);
     customdirection.state("loading");
@@ -335,19 +333,8 @@ function loadMarker() {
             }
           ]
         }).addTo(mymap);
-        list = document.getElementById("B");
-        elaborateDistance();
-        var cont = 0;
-        for(var i in referenceTable){
-          place += "<div class='list-group-item'>"+
-            "  <span class='glyphicon glyphicon-move' aria-hidden='true' id='route"+cont+"' title='" + referenceTable[minIndexes[cont]] + "'></span>"+
-            referenceTable[minIndexes[cont]]+
-              "<span class='badge'>"+DSTs[0][referenceTable[minIndexes[cont]]].toFixed(0)+"</span>"+
-            "</div>";
-            cont++;
-          }
-          $("#B").append(place);
-          customdirection.state("start");
+        updateCustomRouting();
+        customdirection.state("start");
       }
     });
   }
@@ -454,6 +441,7 @@ function elaborateDistance() {
     calculateDistance(POIs[i].latitudeCenter, POIs[i].longitudeCenter,count);
   }
   count = -1;
+  minIndexes = [];
   do{
      count = createRoute(count+1);
   }while(count != -1);
@@ -574,6 +562,7 @@ const onClick = () => {
       console.log("CONTROL")
       console.log(control)
       if(control !== null) control.spliceWaypoints(0,1,e.latlng);
+      updateCustomRouting();
     });
     L.popup("#ffffff")
       .setContent(fakeBtn)
@@ -626,4 +615,26 @@ function updateCurrentDestination(lastPoi){
   console.log(currentDestination)
   console.log("TITLE")
   console.log(referenceTable[minIndexes[currentDestination]]);
+}
+
+function updateCustomRouting(){
+  if(Object.keys(POIs).length !== 0){
+    var list = document.getElementById("B");
+    var child = list.lastElementChild;
+    while (child) {
+      list.removeChild(child);
+      child = list.lastElementChild;
+    }
+    elaborateDistance();
+    var cont = 0,place = "";
+    for(var i in referenceTable){
+      place += "<div class='list-group-item'>"+
+        "  <span class='glyphicon glyphicon-move' aria-hidden='true' id='route"+cont+"' title='" + referenceTable[minIndexes[cont]] + "'></span>"+
+        referenceTable[minIndexes[cont]]+
+          "<span class='badge'>"+DSTs[0][referenceTable[minIndexes[cont]]].toFixed(0)+"</span>"+
+          "</div>";
+          cont++;
+        }
+    $("#B").append(place);
+  }
 }
