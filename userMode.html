@@ -59,6 +59,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.1.1/aos.css"
     />
     <link rel="stylesheet" href="assets/css/styles.css" />
+    <script src="assets/js/clip.js"></script>
     <script type="text/javascript" id="www-widgetapi-script" src="https://s.ytimg.com/yts/jsbin/www-widgetapi-vflS50iB-/www-widgetapi.js" async=""></script>
     <script src="https://www.youtube.com/player_api"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
@@ -81,7 +82,6 @@
     <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
     <script src="http://maximeh.github.io/leaflet.bouncemarker/bouncemarker.js"></script>
     <script src="assets/js/lrm-graphhopper.js"></script>
-    <script src="assets/js/clip.js"></script>
     <script src="assets/js/newMap.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/places.js@1.16.6"></script>
   </head>
@@ -129,38 +129,21 @@
     </nav>
     <div id="mapid" style="height: 100%;z-index: 1">
     </div>
-    <div
-      id="dad"
-      hidden
-      role="dialog"
-      tabindex="-1"
-      class="modal show"
-      style="display: block; z-index:4;"
+    <div id="clipContainer" hidden role="dialog" tabindex="-1" class="modal fade show" style="display: block;">
+        <div class="modal-dialog" role="document" align="center  ">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h4 class="modal-title">Modal Title</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="var div = document.getElementById('clipContainer'); div.hidden = true;"><span aria-hidden="true" id="stop">×</span></button>
+              </div>
+              <div class="modal-body" id="iframeContainer">
 
-    >
-      <div class="modal-dialog" role="document" align="center  ">
-        <div class="modal-content" >
-          <div class="modal-header">
-            <h4 class="modal-title">Modal Title</h4>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true" id="stop">×</span>
-            </button>
+            </div>
+              <div class="modal-footer">
+                <!-- Draw other clips of that POI -->
+              </div>
           </div>
-          <div class="modal-body" id="iframe" >
-            <button hidden id="route">Route me here.</button>
-            <label id="text"> </label>
-          </div>
-          <div class="modal-footer">
-            <!-- Draw other clips of that POI -->
-          </div>
-        </div>
-      </div>
     </div>
+  </div>
     <div
       class="d-flex justify-content-center align-items-center"
       id="popupOpener"
@@ -233,8 +216,7 @@
       </div>
     </div>
 
-    <div id="porc" class="modal" tabindex="-1" role="dialog">
-
+    <div id="customRoutingContainer" class="modal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-scrollable" role="document">
       <script src="https://raw.githack.com/SortableJS/Sortable/master/Sortable.js"></script>
       <style media="screen">

@@ -49,7 +49,6 @@ function checkMode(){
 $(document).ready(async function() {
     setApiKey();
   if(checkMode() == 1){
-    console.log("PORCODIO")
      await createMap();
   }
   loadMarker();
@@ -247,6 +246,7 @@ function checkDistance(distance,instruction){
     instruction = poi.description.en;
     populatePopup(key);
     distance = 5;
+    if(routing.length > 1) addNewWaypoint();
     getVideoId(poi);
   }
   else if(distance <= 20){
@@ -264,6 +264,24 @@ function checkDistance(distance,instruction){
     getVideoId(poi);
   }
   onClickMarker(instruction,distance);
+}
+
+function addNewWaypoint(){
+  var key,poi,x;
+  for(var cont in routing){
+    if(routing[cont] == referenceTable[minIndexes[currentDestination]]){
+      x = true;
+    }
+    else if(x == true){
+      key = routing[cont];
+      break;
+    }
+  }
+  poi = POIs[key];
+  var route = control.getWaypoints();
+  route.push(L.latLng(poi.latitudeCenter,poi.longitudeCenter));+
+  control.setWaypoints(route);
+  updateCurrentDestination(key);
 }
 
 function getPOIs(q) {
@@ -312,7 +330,7 @@ function loadMarker() {
               icon: "fas fa-bong", // and define its properties
               title: "Custom way", // like its title
               onClick: function(btn) {
-                $('#porc').modal({ backdrop: 'static', keyboard: false });
+                $('#customRoutingContainer').modal({ backdrop: 'static', keyboard: false });
               }
             }
           ]
@@ -509,28 +527,24 @@ $("#next").on("click", function() {
 
 function customRouting(){
   var cont = 0;
+  var lastPoi;
   var latlng = L.latLng(lat, lon);
-  var list = document.getElementById("listWithHandle").children,child;
+  var list = document.getElementById("A").children,child;
+  console.log(list)
   if (control == null) addRouting();
-  while(cont < 4){
-    child = list[cont].childNodes[3].data;
+  while(cont < list.length){
+    child = list[cont].childNodes[2].data;
     routing[cont] = child;
-    latlng =  L.latLng(POIs[child].latitudeCenter,POIs[child].longitudeCenter)
-    control.spliceWaypoints(cont+1,1,latlng);
+    if(cont < 4){
+      latlng =  L.latLng(POIs[child].latitudeCenter,POIs[child].longitudeCenter)
+      control.spliceWaypoints(cont+1,1,latlng);
+      lastPoi = cont;
+    }
     cont++
   }
-  var i;
-  for(key in referenceTable){
-    if(referenceTable[key] == routing[cont-1]){
-      i = key
-    }
-  }
-  for(key in minIndexes){
-    if(minIndexes[key] == i){
-      currentDestination = key
-    }
-  }
+  updateCurrentDestination(routing[lastPoi]);
   customdirection.state("started");
+  console.log(routing)
 }
 
 async function onClickMarker (instruction,distance)  {
@@ -588,4 +602,28 @@ function createButton(label) {
   btn.setAttribute('type', 'button');
   btn.innerHTML = label;
   return btn;
+}
+
+
+function updateCurrentDestination(lastPoi){
+  console.log("LAST POIs")
+  console.log(lastPoi)
+
+  var i;
+  for(key in referenceTable){
+    if(referenceTable[key] == lastPoi){
+      i = key
+    }
+  }
+  console.log("I")
+  console.log(i)
+  for(key in minIndexes){
+    if(minIndexes[key] == i){
+      currentDestination = key
+    }
+  }
+  console.log("currentDestination")
+  console.log(currentDestination)
+  console.log("TITLE")
+  console.log(referenceTable[minIndexes[currentDestination]]);
 }
