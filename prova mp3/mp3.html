@@ -1,0 +1,55 @@
+<html>
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="./style.css">
+
+  <script src='https://kit.fontawesome.com/a076d05399.js'></script>
+  <script src='./volume.js'></script>
+
+</head>
+<body>
+
+
+    <h1>HTML 5 Audio Player</h1>
+
+    <div class="container gradient">
+        <div class="player gradient">
+<!-- fas fa-volume-down -->
+<!-- fas fa-volume-down -->
+            <button class="button gradient" id="play">
+              <!-- on press became
+                  <i class="fa fa-pause"></i>
+              -->
+              <i class="fa fa-play">
+            </i>
+            </button>
+            <button class="button gradient" id="mute">
+              <i class="fas fa-volume-mute">
+            </i>
+            </button>
+
+                <input type="range" id="seek" value="0" max=""/>
+
+                <button class="button gradient" id="prev">
+                  <i class="fa fa-step-backward">
+                  </i>
+                </button>
+            <button class="button gradient" id="next">
+              <i class="fa fa-step-forward">
+            </i>
+            </button>
+
+            <!-- <div id="player">
+          		<i class="fa fa-volume-down"></i>
+          		<div id="volume"></div>
+          		<i class="fa fa-volume-up"></i>
+          	</div> -->
+            <div class="slidecontainer">
+              <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
+            </div>
+
+        </div><!-- / player -->
+
+    </div><!-- / Container-->
+</body>
+</html>

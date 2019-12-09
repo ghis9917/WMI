@@ -1,110 +1,3 @@
-// function getVideo(data){
-//   var videoId;
-//   var item = data["items"];
-//   console.log(item)
-//   for(video in item){
-//   console.log("VIDEO ID");
-//   videoId = item[video].id.videoId;
-//   console.log(videoId);
-//   // console.log(item[video].snippet.description)
-//   var div = document.getElementById('dad');
-//   audio_streams = {},
-//   audio_tag = document.getElementById('iframe');
-//   fetch("https://"+videoId+"-focus-opensocial.googleusercontent.com/gadgets/proxy?container=none&url=https%3A%2F%2Fwww.youtube.com%2Fget_video_info%3Fvideo_id%3D" + videoId).then(response => {
-//     if (response.ok) {
-//       response.text().then(data => {
-//         var data = parse_str(data),
-//         streams = (data.url_encoded_fmt_stream_map + ',' + data.adaptive_fmts).split(',');
-//         streams.forEach(function(s, n) {
-//           var stream = parse_str(s),
-//           itag = stream.itag * 1,
-//           quality = false;
-//           console.log(stream);
-//           switch (itag) {
-//             case 139:
-//               quality = "48kbps";
-//               break;
-//               case 140:
-//               quality = "128kbps";
-//               break;
-//               case 141:
-//               quality = "256kbps";
-//               break;
-//           }
-//           if (quality) audio_streams[quality] = stream.url;
-//         });
-//         console.log(audio_streams);
-//         audio_tag.src = audio_streams['128kbps'];
-//         audio_tag.controls = true;
-//         div.hidden = false;
-//         $("#iframe").append(audio_tag)
-//         // audio_tag.play();
-//       })
-//     }
-//   });
-//   }
-// }
-
-function getVideo(data){
-    var item = data["items"],videoId;
-
-  for(video in item){
-    videoId = item[video].id.videoId;
-}
-console.log("VIDEO ID");
-console.log(videoId);
-
-  var div = document.getElementById('dad');
-    audio_streams = {},
-    audio_tag = document.getElementById('iframe');
-    fetch("https://"+videoId+"-focus-opensocial.googleusercontent.com/gadgets/proxy?container=none&url=https%3A%2F%2Fwww.youtube.com%2Fget_video_info%3Fvideo_id%3D" + videoId).then(response => {
-      if (response.ok) {
-        response.text().then(data => {
-          // console.log("daata");
-          // console.log(data);
-          var data = parse_str(data),
-          streams = (data.url_encoded_fmt_stream_map + ',' + data.adaptive_fmts).split(',');
-          // console.log("STRSMD")
-          // console.log(streams);
-          var quality = false;
-          streams.forEach(function(s, n) {
-            var stream = parse_str(s),
-            itag = stream.itag * 1;
-            console.log("itag");
-            console.log(itag);
-            switch (itag) {
-              case 139:
-                quality = "48kbps";
-                break;
-                case 140:
-                quality = "128kbps";
-                break;
-                case 141:
-                quality = "256kbps";
-                break;
-            }
-            if (quality) audio_streams[quality] = stream.url;
-          });
-          console.log("quality");
-          console.log(quality);
-          audio_tag.src = audio_streams[quality];
-          audio_tag.controls = true;
-          div.hidden = false;
-          // audio_tag.play();
-        })
-      }
-    });
-}
-
-function parse_str(str) {
-    return str.split('&').reduce(function(params, param) {
-        var paramSplit = param.split('=').map(function(value) {
-            return decodeURIComponent(value.replace('+', ' '));
-        });
-        params[paramSplit[0]] = paramSplit[1];
-        return params;
-    }, {});
-}
 
 function getVideoId(poi){
   var search = "";
@@ -129,12 +22,13 @@ function searchByKeyword(query) {
               type: 'video',
               videoEmbeddable: true,
           },
-          success: async function(data){
+          success: function(data){
               console.log(data)
               var item = data["items"];
               var iframe;
+              var iCont = document.getElementById("iframeContainer")
               for(video in item ){
-                iframe = document.createElement("audio");
+                var audio_tag = document.createElement("audio");
                 videoId = item[video].id.videoId;
                 // iframe.src = "https://www.youtube.com/watch?v="+videoId;
                 // iframe.controls = true;
@@ -158,7 +52,7 @@ function searchByKeyword(query) {
 
 function onYouTubeIframeAPIReady(videoId){
   var e = document.getElementById("iframeContainer"),t=document.createElement("img");
-    t.setAttribute("id","youtube-icon"+videoId);
+  t.setAttribute("id","youtube-icon"+videoId);
   t.style.cssText="cursor:pointer;cursor:hand";
   e.appendChild(t);
   var a=document.createElement("div");
@@ -174,6 +68,8 @@ function onYouTubeIframeAPIReady(videoId){
       }}
     )
     e.onclick=function(){
+      console.log("player")
+      console.log(r);
       r.getPlayerState()===YT.PlayerState.PLAYING||r.getPlayerState()===YT.PlayerState.BUFFERING?(r.pauseVideo(),o(!1)):(r.playVideo(),o(!0))
     };
   }
