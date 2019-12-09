@@ -276,8 +276,10 @@ function elaborateDistance() {
   for (var i in POIs) {
     referenceTable[count] = i;
     count++;
-    calculateDistance(POIs[i].latitudeCenter, POIs[i].longitudeCenter, count);
+    console.log(i);
+    calculateDistance(POIs[i].latitudeCenter, POIs[i].longitudeCenter, count, i);
   }
+  console.log(POIs);
   count = -1;
   minIndexes = [];
   do {
@@ -287,7 +289,7 @@ function elaborateDistance() {
   populatePopup(referenceTable[minIndexes[currentDestination]]);
 }
 
-function calculateDistance(slat, slon, index) {
+function calculateDistance(slat, slon, index, t) {
   var x = L.latLng(slat, slon);
   DSTs[index] = {};
   for (var i in POIs) {
@@ -296,7 +298,10 @@ function calculateDistance(slat, slon, index) {
     );
     DSTs[index][i] = {};
     DSTs[index][i] = dist;
+    console.log(t);
+    POIs[t]["distance"] = dist;
   }
+
 }
 
 function createRoute(i) {
@@ -459,6 +464,11 @@ function updateCustomRouting() {
     elaborateDistance();
     var cont = 0,
       place = "";
+    console.log(referenceTable);
+    console.log(DSTs);
+    for (var i in referenceTable){
+
+    }
     for (var i in referenceTable) {
       place +=
         "<div class='list-group-item'>" +
