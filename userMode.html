@@ -1,20 +1,14 @@
 <!DOCTYPE html>
 <html>
   <head>
-      <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/jquery.min.js"></script>
     <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
     <title>WMI</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css" />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Montserrat:300,400,600"
-    />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:300,400,600" />
     <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css" />
     <link rel="stylesheet" href="assets/fonts/font-awesome.min.css" />
     <link rel="stylesheet" href="assets/fonts/fontawesome5-overrides.min.css" />
@@ -25,46 +19,24 @@
     <link rel="stylesheet" href="assets/css/Footer-Dark.css" />
     <link href="https://www.solodev.com/core/fileparse.php/131/urlt/google-translate.css" rel="stylesheet">
 
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-    />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
     <link rel="stylesheet" href="assets/css/Google-Style-Login.css" />
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet-geosearch@latest/assets/css/leaflet.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
-    />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-geosearch@latest/assets/css/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" />
     <link rel="stylesheet" href="assets/css/Map-Clean.css" />
     <link rel="stylesheet" href="assets/css/Navigation-Clean.css" />
     <link rel="stylesheet" href="assets/css/Navigation-with-Button.css" />
     <link rel="stylesheet" href="assets/css/Profile-Card.css" />
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/@bootstrapstudio/bootstrap-better-nav/dist/bootstrap-better-nav.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.1.1/aos.css"
-    />
+    <link rel="stylesheet" href="https://unpkg.com/@bootstrapstudio/bootstrap-better-nav/dist/bootstrap-better-nav.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.1.1/aos.css" />
     <link rel="stylesheet" href="assets/css/styles.css" />
     <script src="assets/js/clip.js"></script>
     <script type="text/javascript" id="www-widgetapi-script" src="https://s.ytimg.com/yts/jsbin/www-widgetapi-vflS50iB-/www-widgetapi.js" async=""></script>
-    <!-- <script src="https://www.youtube.com/player_api"></script> -->
-    <!-- <script src="https://www.youtube.com/iframe_api"></script> -->
     <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/js/review.js" > </script>
+    <script src="assets/js/review.js"> </script>
+    <script src="https://raw.githack.com/SortableJS/Sortable/master/Sortable.js"></script>
     <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
     <script src="assets/js/redirect.js"></script>
     <script src="assets/js/main.js"></script>
@@ -83,25 +55,18 @@
     <script src="http://maximeh.github.io/leaflet.bouncemarker/bouncemarker.js"></script>
     <script src="assets/js/lrm-graphhopper.js"></script>
     <script src="assets/js/newMap.js"></script>
+    <script src="assets/js/UserModeUtils.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/places.js@1.16.6"></script>
   </head>
 
   <body class="d-flex flex-column justify-content-between">
     <button onclick="openReviewModal()">
-        click
+      click
     </button>
-    <nav
-      class="navbar navbar-light navbar-expand-md text-uppercase shadow navigation-clean"
-    >
+    <nav class="navbar navbar-light navbar-expand-md text-uppercase shadow navigation-clean">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">Where Am I?</a
-        ><button
-          data-toggle="collapse"
-          class="navbar-toggler"
-          data-target="#navcol-1"
-        >
-          <span class="sr-only">Toggle navigation</span
-          ><span class="navbar-toggler-icon"></span>
+        <a class="navbar-brand" href="#">Where Am I?</a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1">
+          <span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navcol-1">
           <ul class="nav navbar-nav ml-auto">
@@ -113,14 +78,14 @@
             </li>
             <ul class="list-unstyled list-inline ct-topbar__list">
               <li class="ct-language">ENGLISH <i class="fa fa-arrow-down"></i>
-              <ul class="list-unstyled ct-language__dropdown">
-                <li><a href="#googtrans(en|en)" class="lang-en lang-select" data-lang="en"><img src="https://www.solodev.com/assets/google-translate/flag-usa.png" alt="USA"></a></li>
-                <li><a href="#googtrans(en|es)" class="lang-es lang-select" data-lang="es"><img src="https://www.solodev.com/assets/google-translate/flag-mexico.png" alt="MEXICO"></a></li>
-                <li><a href="#googtrans(en|fr)" class="lang-es lang-select" data-lang="fr"><img src="https://www.solodev.com/assets/google-translate/flag-france.png" alt="FRANCE"></a></li>
-                <li><a href="#googtrans(en|zh-CN)" class="lang-es lang-select" data-lang="zh-CN"><img src="https://www.solodev.com/assets/google-translate/flag-china.png" alt="CHINA"></a></li>
-                <li><a href="#googtrans(en|ja)" class="lang-es lang-select" data-lang="ja"><img src="https://www.solodev.com/assets/google-translate/flag-japan.png" alt="JAPAN"></a></li>
-                <li><a href="#googtrans(en|it)" class="lang-es lang-select" data-lang="it"><img style="width:24px; height:19px;" src="http://icons.iconarchive.com/icons/wikipedia/flags/512/IT-Italy-Flag-icon.png" alt="ITALY"></a></li>
-              </ul>
+                <ul class="list-unstyled ct-language__dropdown">
+                  <li><a href="#googtrans(en|en)" class="lang-en lang-select" data-lang="en"><img src="https://www.solodev.com/assets/google-translate/flag-usa.png" alt="USA"></a></li>
+                  <li><a href="#googtrans(en|es)" class="lang-es lang-select" data-lang="es"><img src="https://www.solodev.com/assets/google-translate/flag-mexico.png" alt="MEXICO"></a></li>
+                  <li><a href="#googtrans(en|fr)" class="lang-es lang-select" data-lang="fr"><img src="https://www.solodev.com/assets/google-translate/flag-france.png" alt="FRANCE"></a></li>
+                  <li><a href="#googtrans(en|zh-CN)" class="lang-es lang-select" data-lang="zh-CN"><img src="https://www.solodev.com/assets/google-translate/flag-china.png" alt="CHINA"></a></li>
+                  <li><a href="#googtrans(en|ja)" class="lang-es lang-select" data-lang="ja"><img src="https://www.solodev.com/assets/google-translate/flag-japan.png" alt="JAPAN"></a></li>
+                  <li><a href="#googtrans(en|it)" class="lang-es lang-select" data-lang="it"><img style="width:24px; height:19px;" src="http://icons.iconarchive.com/icons/wikipedia/flags/512/IT-Italy-Flag-icon.png" alt="ITALY"></a></li>
+                </ul>
               </li>
             </ul>
           </ul>
@@ -130,52 +95,31 @@
     <div id="mapid" style="height: 100%;z-index: 1">
     </div>
     <div id="clipContainer" hidden role="dialog" tabindex="-1" class="modal fade show" style="display: block;">
-        <div class="modal-dialog" role="document" align="center  ">
-          <div class="modal-content">
-              <div class="modal-header">
-                  <h4 class="modal-title">Modal Title</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="var div = document.getElementById('clipContainer'); div.hidden = true;"><span aria-hidden="true" id="stop">×</span></button>
-              </div>
-              <div class="modal-body" id="iframeContainer">
-
-            </div>
-              <div class="modal-footer">
-                <!-- Draw other clips of that POI -->
-              </div>
+      <div class="modal-dialog" role="document" align="center  ">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Modal Title</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="var div = document.getElementById('clipContainer'); div.hidden = true;"><span aria-hidden="true"
+                id="stop">×</span></button>
           </div>
-    </div>
-  </div>
-    <div
-      class="d-flex justify-content-center align-items-center"
-      id="popupOpener"
-      onclick="showCloseInfo()"
-      style="width: calc(100% - 2em);height: 25px; z-index: 3; position: absolute; bottom: 0; left: 0; background: white; margin: 1em;"
-    >
-    <i class="fa fa-angle-up d-flex" id="upDown" style="font-size: 25px;"></i>
-  </div>
-    <div
-      class="d-flex shadow"
-      id="popupContainer"
-      style="width: calc(100% - 2em);height: 250px; z-index: -1; position: absolute; bottom: 0; left: 0; background: white; margin: 1em;"
-    >
-      <div
-        id="prev"
-        class="shadow-lg d-flex justify-content-center align-items-center"
-        style="font-size: 25px;width: 5%;background-color: #ffffff;"
-      >
-        <i
-          class="fas fa-chevron-left d-flex justify-content-center align-items-center"
-          id="prev"
-        ></i>
+          <div class="modal-body" id="iframeContainer">
+
+          </div>
+          <div class="modal-footer">
+            <!-- Draw other clips of that POI -->
+          </div>
+        </div>
       </div>
-      <div
-        class="d-flex flex-column"
-        style="width: 90%;padding: 1em; overflow-y: scroll;"
-      >
+    </div>
+    <div class="d-flex justify-content-center align-items-center" id="popupOpener" onclick="showCloseInfo()" style="width: calc(100% - 2em);height: 25px; z-index: 3; position: absolute; bottom: 0; left: 0; background: white; margin: 1em;">
+      <i class="fa fa-angle-up d-flex" id="upDown" style="font-size: 25px;"></i>
+    </div>
+    <div class="d-flex shadow" id="popupContainer" style="width: calc(100% - 2em);height: 250px; z-index: -1; position: absolute; bottom: 0; left: 0; background: white; margin: 1em;">
+      <div id="prev" class="shadow-lg d-flex justify-content-center align-items-center" style="font-size: 25px;width: 5%;background-color: #ffffff;">
+        <i class="fas fa-chevron-left d-flex justify-content-center align-items-center" id="prev"></i>
+      </div>
+      <div class="d-flex flex-column" style="width: 90%;padding: 1em; overflow-y: scroll;">
         <div class="d-flex justify-content-between">
-          <div
-            class="d-flex align-items-top"
-            style="width: 50%;padding-right: 1em;"
-          >
+          <div class="d-flex align-items-top" style="width: 50%;padding-right: 1em;">
             <h4 id="popupTitle"></h4>
           </div>
           <div style="width: 50%;">
@@ -186,15 +130,8 @@
           <p id="popupDescription" style="margin: 0px;"></p>
         </div>
       </div>
-      <div
-        id="next"
-        class="shadow-lg d-flex justify-content-center align-items-center"
-        style="font-size: 25px; width: 5%;background-color: #ffffff;"
-      >
-        <i
-          class="fas fa-chevron-right d-flex justify-content-center align-items-center"
-          style="width: 10%;"
-        ></i>
+      <div id="next" class="shadow-lg d-flex justify-content-center align-items-center" style="font-size: 25px; width: 5%;background-color: #ffffff;">
+        <i class="fas fa-chevron-right d-flex justify-content-center align-items-center" style="width: 10%;"></i>
       </div>
     </div>
     <div class="modal" id="noGeo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
@@ -217,14 +154,14 @@
     </div>
 
     <div id="customRoutingContainer" class="modal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-scrollable" role="document">
-      <script src="https://raw.githack.com/SortableJS/Sortable/master/Sortable.js"></script>
-      <style media="screen">
-      .list-group-item {
-        cursor: move;
-        cursor: -webkit-grabbing;
-      }
-      </style>
+      <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <script src="https://raw.githack.com/SortableJS/Sortable/master/Sortable.js"></script>
+        <style media="screen">
+          .list-group-item {
+            cursor: move;
+            cursor: -webkit-grabbing;
+          }
+        </style>
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">Modal title</h5>
@@ -246,7 +183,7 @@
           </div>
         </div>
       </div>
-      </div>
+    </div>
 
     <script type="text/javascript">
       Sortable.create(A, {
@@ -262,44 +199,27 @@
         group: "shared",
         sort: false
       });
-
     </script>
     </div>
     <div id="modalReview" class="modal" role="dialog" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="reviewLuogo" >POI name</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
-                <div class="modal-body">
-                    <div class="d-flex flex-row"><label style="margin: 0px;font-size: 20px;">Voto:&nbsp;</label>
-                        <div class="d-flex align-items-center"><i class="fa fa-star starReview" id="1" style="color: rgb(230,180,0);font-size: 25px;margin-right: 2px;margin-left: 2px;"></i><i class="fa fa-star starReview" id="2" style="color: rgb(100,100,100);font-size: 25px;margin-right: 2px;margin-left: 2px;"></i><i class="fa fa-star starReview" id="3"
-                                style="color: rgb(100,100,100);font-size: 25px;margin-right: 2px;margin-left: 2px;"></i><i class="fa fa-star starReview" id="4" style="color: rgb(100,100,100);font-size: 25px;margin-right: 2px;margin-left: 2px;"></i><i class="fa fa-star starReview" id="5" style="color: rgb(100,100,100);font-size: 25px;margin-right: 2px;margin-left: 2px;"></i></div>
-                    </div>
-                    <div class="d-flex flex-column"><label style="margin: 0px;font-size: 20px;">Recensione:&nbsp;</label><textarea id="txtReview" wrap="soft"></textarea></div>
-                </div>
-                <div class="modal-footer"><button class="btn btn-light" type="button" data-dismiss="modal">Close</button><button id="sendReview" onclick="sendReview()" class="btn btn-primary" type="button">Save</button></div>
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" id="reviewLuogo">POI name</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+          </div>
+          <div class="modal-body">
+            <div class="d-flex flex-row"><label style="margin: 0px;font-size: 20px;">Voto:&nbsp;</label>
+              <div class="d-flex align-items-center"><i class="fa fa-star starReview" id="1" style="color: rgb(230,180,0);font-size: 25px;margin-right: 2px;margin-left: 2px;"></i><i class="fa fa-star starReview" id="2"
+                  style="color: rgb(100,100,100);font-size: 25px;margin-right: 2px;margin-left: 2px;"></i><i class="fa fa-star starReview" id="3" style="color: rgb(100,100,100);font-size: 25px;margin-right: 2px;margin-left: 2px;"></i><i
+                  class="fa fa-star starReview" id="4" style="color: rgb(100,100,100);font-size: 25px;margin-right: 2px;margin-left: 2px;"></i><i class="fa fa-star starReview" id="5"
+                  style="color: rgb(100,100,100);font-size: 25px;margin-right: 2px;margin-left: 2px;"></i></div>
             </div>
+            <div class="d-flex flex-column"><label style="margin: 0px;font-size: 20px;">Recensione:&nbsp;</label><textarea id="txtReview" wrap="soft"></textarea></div>
+          </div>
+          <div class="modal-footer"><button class="btn btn-light" type="button" data-dismiss="modal">Close</button><button id="sendReview" onclick="sendReview()" class="btn btn-primary" type="button">Save</button></div>
         </div>
+      </div>
     </div>
-    <script src="https://raw.githack.com/SortableJS/Sortable/master/Sortable.js"></script>
-    <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
-    <script src="assets/js/redirect.js"></script>
-    <script src="assets/js/main.js"></script>
-    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="assets/js/bs-animation.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.1.1/aos.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <script src="https://apis.google.com/js/platform.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/openlocationcode/1.0.3/openlocationcode.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/@bootstrapstudio/bootstrap-better-nav/dist/bootstrap-better-nav.min.js"></script>
-    <script src="https://unpkg.com/leaflet-geosearch@latest/dist/bundle.min.js"></script>
-    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
-    <script src="http://maximeh.github.io/leaflet.bouncemarker/bouncemarker.js"></script>
-    <script src="assets/js/lrm-graphhopper.js"></script>
-    <script src="assets/js/newMap.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/places.js@1.16.6"></script>
   </body>
+
 </html>
