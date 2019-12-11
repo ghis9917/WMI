@@ -103,7 +103,6 @@ app.post("/insertReviewUserMode", (req, res) => {
               mydb.collection("review").insertOne(myobj, function (err, resu) {
                 if (err) throw err;
                 insertReviewProfile("Massimo Monacchi",req.query.id, req.query.voto, req.query.descrizione , mydb, db, res)
-
               });
             } else {
               insertReviewProfile("Massimo Monacchi",req.query.id, req.query.voto, req.query.descrizione, mydb, db, res )

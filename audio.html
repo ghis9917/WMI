@@ -1,6 +1,7 @@
 <html>
   <head>
     <script src="assets/js/jquery.min.js"></script>
+    <script src="bundle.js"></script>
     <script src="https://unpkg.com/wavesurfer.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/wavesurfer.js/1.4.0/wavesurfer.min.js"></script>
@@ -66,13 +67,12 @@
               var file = document.querySelector('#'+id).files[0];
               var reader = new FileReader();
               var fileSize = file.size;
-              console.log(file.type)
+              console.log(file.size)
               reader.onload = function(e) {
                 if (file.type == "audio/mp3" || file.type == "audio/wav" || file.type == "audio/ogg") {
                     var audioElement = document.createElement('audio');
                     audioElement.src = e.target.result;
                     var timer = setInterval(function() {
-                      console.log(audioElement)
                       if (audioElement.readyState === 4) {
                         switch (tipo) {
                             case "why":
@@ -88,7 +88,7 @@
                             carica(file);
                             if(audioElement.duration > 30 && audioElement.duration < 15){
                               //TODO UPLOAD NEW AUDIO
-                            //  $('#'+id).val("");
+                              //$('#'+id).val("");
                             }else{
                               //TODO OK AUDIO
                             };break;
@@ -121,6 +121,9 @@
                 $("#ciao").append("<input type='file' id='why"+$("#ciao").children().length+"' name='avatar' accept='audio/mp3' onchange='checkFileDuration(this.id, "+c+")'>")
               }
       </script>
-
+      <button>
+          clickkk
+      </button>
+      <script src="bundle.js"></script>
   </body>
 </html>
