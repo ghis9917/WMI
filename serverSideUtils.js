@@ -107,7 +107,89 @@ module.exports = {
         reject(error);
     });
 });
+},
+cutAudio: function cutAudio(audio,res) {
+var x = 1
+const fileName = audio.body.fname;
+const stime = audio.body.stime;
+const etime = audio.body.etime;
+// console.log('stime:' + stime)
+// console.log('etime:' + etime)
+
+const newPath = __dirname + '/users/';
+const filePath = newPath + fileName;
+fs.writeFileSync(filePath, audio.file.buffer, error => {
+  if (error) {
+    console.error(error)
+    res.end()
+  } else {
+    res.end(fileName)
+    //here you can save the file name to db, if needed
+  }
+})
+
+if(fileName.includes('Origin')){
+console.log("E arrivato il file originale e lo salvo")
+const origin = new ffmpeg({ source: filePath  });
+origin
+     .on("start", function(commandLine) {
+       console.log("Spawned FFmpeg with command: " + commandLine);
+     })
+     .on("error", function(err) {
+       console.log("errorp: ", +err);
+     })
+     .on("end", function(err) {
+       if (!err) {
+         console.log("conversion Done");
+       }
+     })
+     .saveToFile(newPath + "1"+fileName);
 }
+
+const conv = new ffmpeg({ source: filePath  });
+conv
+     .setStartTime(stime) //Can be in "HH:MM:SS" format also
+     .setDuration(etime-stime)
+     .on("start", function(commandLine) {
+       console.log("Spawned FFmpeg with command: " + commandLine);
+     })
+     .on("error", function(err) {
+       console.log("error: ", +err);
+     })
+     .on("end", function(err) {
+       if (!err) { console.log("conversion Done"); }
+
+       x = 0;
+       res.send("https://localhost:8000" +newPath + 'new' + fileName);
+
+     })
+     .saveToFile(newPath + 'new' + fileName);
+},
+save: function save(req, res) {
+  console.log("in uploadAvatar");
+//
+mkdirp('./user/userid' , function (err) {
+  console.log("dentro mkdirp");
+  var storage = multer.diskStorage({
+        destination: function(req, file, cb) {
+            cb(null, './user/userid');
+        },
+        filename: function (req, file, cb) {
+          cb(null , file.originalname);
+        }
+      });
+    var upload = multer({ storage: storage }).array('multiAudio', 4)
+    upload(req, res, function(err) {
+    console.log(req.body);
+    console.log(req.file);
+
+    if(err) {
+        return res.end("Error uploading file.");
+    }
+    res.end("File is uploaded");
+});
+
+});
 // ,
 //   url: function url(id){
 //     var url = 'https://www.youtube.com/watch?v=' + id;

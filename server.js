@@ -6,9 +6,13 @@ var toWav = require('audiobuffer-to-wav')
 const app = express();
 const path = require('path');
 const youtubeSearch = require('youtube-search');
-const f = require('./serverSideUtils.js');
+const utils = require('./serverSideUtils.js');
 var client = require('mongodb').MongoClient;
 var parseString = require('xml2js').parseString;
+var https = require('https')
+const uploadAudio = require('./saveAudio.js')
+var bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded());
 
 const rickyKey = "AIzaSyBEpETjNZc18OP9L603YkzOvotslkQiBGI";
 const rickykey_second = "AIzaSyB5PLURpl92Ix6gBHvgBMJ9s1JC7m69b2c";
@@ -16,17 +20,6 @@ const guiKey = "AIzaSyBFXSS4CBQKDc8yJtAdEruvXgAEHNwg8ko";
 const maxKey = "AIzaSyD5gNJnmZJlz4DsDcD1cFjgpqLfzX0LsFk";
 
 app.use(express.static('public')); // for serving the HTML file
-
-const storage = multer.diskStorage({
-  destination: './public/uploads',
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname)
-  }
-})
-var upload = multer({
-  destination: storage
-});
-var type = upload.single('upl');
 
 
 app.get('/', (req, res) => {
@@ -166,12 +159,12 @@ return new Promise(async (resolve,reject) => {
   var list = [];
   for (var key in results) {
     var item = results[key];
-    if ((val = f.validator(item.description)) !== false) {
+    if ((val = utils.validator(item.description)) !== false) {
       if (list.indexOf(val.plusCode) === -1) {
         list.push(val.plusCode);
         POIs[item.title] = val.coords;
         POIs[item.title].videoId = item.id;
-        var json = await f.getDescription(client,POIs, item.title,f);
+        var json = await utils.getDescription(client,POIs, item.title,f);
         POIs[item.title].description = json["desc"];
         POIs[item.title].img = json["img"];
       }
@@ -181,6 +174,18 @@ return new Promise(async (resolve,reject) => {
 });
 }
 
+// app.post('/uploadFile',upload.array('multiAudio', 4), function(req, res) {
+//   console.log(req.files);
+//     res.send("files uploaded");
+//
+// })
+app.post('/uploadFile',function(req,res){
+  utils.save(req,res);
+});
+
+app.post('/cutAudio', upload.single('file'), function (req, res) { //upload.single() is still necessary to upload file?
+    utils.cutAudio(req,res);
+});
 app.get('*', (req, res) => {
   var ext = path.extname(req.url);
   if (ext === ".css" || ext === ".html" || ext === ".js" || ext === ".jpg" || ext === ".png" || ext === ".woff" || ext === ".woff2" || ext === ".ttf" || ext === ".svg" || ext === ".eot") {
@@ -192,4 +197,8 @@ app.get('*', (req, res) => {
   }
 });
 
+// https.createServer({
+//   key: fs.readFileSync('server.key'),
+//   cert: fs.readFileSync('server.cert')
+// }, app)
 app.listen(8000, () => console.log('Gator app listening on port 8000!'))

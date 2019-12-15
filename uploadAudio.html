@@ -1,0 +1,39 @@
+<html>
+  <head>
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="https://unpkg.com/wavesurfer.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.2.2/jquery.form.min.js"></script>
+    <!-- wavesurfer.js -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/wavesurfer.js/1.4.0/wavesurfer.min.js"></script>
+
+    <!-- wavesurfer.js regions -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wavesurfer.js/1.2.3/plugin/wavesurfer.regions.min.js"></script>
+
+    </head>
+  <body>
+
+    <form id="uploadForm"
+        enctype="multipart/form-data"
+        action="/uploadFile"
+        method="post"
+  >
+  <div>
+      <label>Select multiple images:</label>
+      <input id="files" type="file" name="multiAudio" multiple  />
+  </div>
+  <div>
+      <input type="submit" name="btn_upload_multiple_images" value="Upload" />
+  </div>
+  </form>
+      <span id = "status"></span>
+      <ol id="waveList">
+      </ol>
+      <div id="waveform"></div>
+      <button id="upload">
+          Upload to youtube
+      </button>
+  </body>
+  <script src="draw.js"></script>
+  <script src="uploadAudio.js"></script>
+</html>

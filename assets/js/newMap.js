@@ -51,6 +51,9 @@ $(document).ready(async function() {
   loadMarker();
 });
 
+
+//____________CREATEMAP FUNCTIONS_______________________________________
+
 function createMap() {
   return new Promise((resolve, reject) => {
     $("#mapid").show();
@@ -87,10 +90,6 @@ function createMap() {
   });
 }
 
-function onError(err) {
-  $("#noGeo").modal();
-}
-
 function onLocationFound(position) {
   var popup = '<p class="text-center" style="margin: 1em;">Sei qui!</p>';
   lat = position.coords.latitude;
@@ -109,38 +108,10 @@ function onLocationFound(position) {
   }
 }
 
-//____________CREATEMAP FUNCTIONS_______________________________________
-function addRouting() {
-  if (control !== null) return;
-  control = L.routing
-    .control({
-      createMarker: function() {
-        return null;
-      },
-      addWaypoints: false,
-      waypoints: [L.latLng(lat, lon)],
-      router: L.Routing.graphHopper("a0695b22-2381-4b66-8330-9f213b610d8f", {
-        urlParameters: {
-          vehicle: routingMode
-        }
-      })
-    })
-    .addTo(mymap);
-  control.spliceWaypoints(0, 1, L.latLng(lat, lon));
-  control.on("routesfound", function(e) {
-    var distance = e.routes[0].summary.totalDistance;
-    var instruction = e.routes[0].instructions[0].text;
-    var distanceChange = e.routes[0].instructions[0].distance;
-    if (distanceChange <= 10) {
-      try {
-        instruction = e.routes[0].instructions[1].text;
-      } catch (err) {
-        console.log(err);
-      }
-    }
-    checkDistance(distance, instruction);
-  });
-}
+//____________END OF CREATEMAP FUNCTIONS_______________________________________
+
+
+//____________CONTROL ROUTING FUNCTIONS_______________________________________
 
 function checkDistance(distance, instruction) {
   if (instruction.includes("Waypoint")) {
@@ -193,6 +164,11 @@ function addNewWaypoint() {
   updateCurrentDestination(key);
 }
 
+//____________END OF CONTROL ROUTING FUNCTIONS_______________________________________
+
+
+//____________LOADMARKER FUNCTIONS_______________________________________
+
 function loadMarker() {
   if (typeof lat !== "undefined") {
     var q = OpenLocationCode.encode(lat, lon, 4);
@@ -227,6 +203,7 @@ function loadMarker() {
             }
           ]
         }).addTo(mymap);
+        console.log(POIs);
         updateCustomRouting();
         customdirection.state("start");
       }
@@ -235,8 +212,6 @@ function loadMarker() {
     setTimeout(loadMarker, 1000);
   }
 }
-
-//____________LOADMARKER FUNCTIONS_______________________________________
 
 function createPlayer() {
   var timer = null;
@@ -251,138 +226,13 @@ function createPlayer() {
   }
 }
 
-function populatePopup(key) {
-  $("#popupTitle").text(key);
-  $("#popupDescription").text(
-    POIs[key].description.en !== "NOT FOUND"
-      ? POIs[key].description.en
-      : "No description available"
-  );
-  if (POIs[key].img) {
-    $("#popupImg").attr(
-      "src",
-      POIs[key].img !== "NF"
-        ? POIs[key].img
-        : "https://cdn.shopify.com/s/files/1/1552/7487/products/good_game_gg-smiley_fornite_spray_emote_printed_sticker_grfxp_grafixpressions_720x.jpg?v=1525975056"
-    );
-  }
-  $("#popupImg").attr("style", "width: 50%;height: auto; float: right;");
-  $("#popupContainer").css("width", "calc(100% - 2em)");
-}
+//____________END OF LOADMARKER FUNCTIONS_______________________________________
 
-function elaborateDistance() {
-  var count = 0;
-  calculateDistance(lat, lon, 0);
-  for (var i in POIs) {
-    referenceTable[count] = i;
-    count++;
-    console.log(i);
-    calculateDistance(POIs[i].latitudeCenter, POIs[i].longitudeCenter, count, i);
-  }
-  console.log(POIs);
-  count = -1;
-  minIndexes = [];
-  do {
-    count = createRoute(count + 1);
-  } while (count != -1);
-  currentDestination = 0;
-  populatePopup(referenceTable[minIndexes[currentDestination]]);
-}
 
-function calculateDistance(slat, slon, index, t) {
-  var x = L.latLng(slat, slon);
-  DSTs[index] = {};
-  for (var i in POIs) {
-    var dist = x.distanceTo(
-      L.latLng(POIs[i].latitudeCenter, POIs[i].longitudeCenter)
-    );
-    DSTs[index][i] = {};
-    DSTs[index][i] = dist;
-    console.log(t);
-    POIs[t]["distance"] = dist;
-  }
+//____________DEVELOPERS UTILS FUNCTIONS_______________________________________
 
-}
-
-function createRoute(i) {
-  var min = 40075000;
-  var minIndex = -1;
-  var count = 0;
-  for (var index in DSTs[i]) {
-    if (
-      DSTs[i][index] > 0 &&
-      DSTs[i][index] <= min &&
-      !minIndexes.includes(count)
-    ) {
-      minIndex = count;
-      min = DSTs[i][index];
-    }
-    count++;
-  }
-  if (minIndex != -1) {
-    minIndexes.push(Number(minIndex));
-  }
-  return minIndex;
-}
-function getDistance(q) {
-  return $.ajax({
-    type: "get",
-    url: q,
-    success: function(data) {
-      console.lof;
-      DSTs = data;
-    }
-  });
-}
-
-function routingTo(p) {
-  control.spliceWaypoints(0, 1, L.latLng(lat, lon));
-  control.spliceWaypoints(
-    control.getWaypoints().length - 1,
-    1,
-    L.latLng(p.latitudeCenter, p.longitudeCenter)
-  );
-}
-
-$("#prev").on("click", function() {
-  if (currentDestination > 0) {
-    currentDestination--;
-    populatePopup(referenceTable[minIndexes[currentDestination]]);
-  }
-});
-
-$("#next").on("click", function() {
-  if (currentDestination < minIndexes.length - 1) {
-    currentDestination++;
-    populatePopup(referenceTable[minIndexes[currentDestination]]);
-  }
-});
-
-//____________CREATEPLAYER FUNCTIONS_______________________________________
-
-function customRouting() {
-  var cont = 0;
-  var lastPoi;
-  var latlng = L.latLng(lat, lon);
-  var list = document.getElementById("A").children,
-    child;
-  console.log(list);
-  if (control == null) addRouting();
-  while (cont < list.length) {
-    child = list[cont].childNodes[2].data;
-    routing[cont] = child;
-    if (cont < 4) {
-      latlng = L.latLng(
-        POIs[child].latitudeCenter,
-        POIs[child].longitudeCenter
-      );
-      control.spliceWaypoints(cont + 1, 1, latlng);
-      lastPoi = cont;
-    }
-    cont++;
-  }
-  updateCurrentDestination(routing[lastPoi]);
-  customdirection.state("started");
+function onError(err) {
+  $("#noGeo").modal();
 }
 
 async function onClickMarker(instruction, distance) {
@@ -439,6 +289,86 @@ function createButton(label) {
   return btn;
 }
 
+//____________END OF DEVELOPERS UTILS FUNCTIONS_______________________________________
+
+
+//____________AJAX REQUEST_______________________________________
+
+function getDistance(q) {
+  return $.ajax({
+    type: "get",
+    url: q,
+    success: function(data) {
+      DSTs = data;
+    }
+  });
+}
+
+//____________END AJAX FUNCTIONS_______________________________________
+
+
+//____________CUSTOMROUTING FUNCTIONS_______________________________________
+
+function customRouting() {
+  var cont = 0;
+  var lastPoi;
+  var latlng = L.latLng(lat, lon);
+  var list = document.getElementById("A").children,
+  child;
+  console.log(list);
+  if (control == null) addRouting();
+  while (cont < list.length) {
+    child = list[cont].childNodes[2].data;
+    routing[cont] = child;
+    if (cont < 4) {
+      latlng = L.latLng(
+        POIs[child].latitudeCenter,
+        POIs[child].longitudeCenter
+      );
+      control.spliceWaypoints(cont + 1, 1, latlng);
+      lastPoi = cont;
+    }
+    cont++;
+  }
+  updateCurrentDestination(routing[lastPoi]);
+  customdirection.state("started");
+}
+
+function updateCustomRouting() {
+  if (Object.keys(POIs).length !== 0) {
+    var list = document.getElementById("B");
+    var child = list.lastElementChild;
+    while (child) {
+      list.removeChild(child);
+      child = list.lastElementChild;
+    }
+    elaborateDistance();
+    var cont = 0,
+    place = "";
+    console.log(referenceTable);
+    console.log(DSTs);
+    for (var i in referenceTable){
+
+    }
+    for (var i in referenceTable) {
+      place +=
+      "<div class='list-group-item'>" +
+      "  <span class='glyphicon glyphicon-move' aria-hidden='true' id='route" +
+      cont +
+      "' title='" +
+      referenceTable[minIndexes[cont]] +
+      "'></span>" +
+      referenceTable[minIndexes[cont]] +
+      "<span class='badge'>" +
+      DSTs[0][referenceTable[minIndexes[cont]]].toFixed(0) +
+      "</span>" +
+      "</div>";
+      cont++;
+    }
+    $("#B").append(place);
+  }
+}
+
 function updateCurrentDestination(lastPoi) {
   var i;
   for (key in referenceTable) {
@@ -453,37 +383,143 @@ function updateCurrentDestination(lastPoi) {
   }
 }
 
-function updateCustomRouting() {
-  if (Object.keys(POIs).length !== 0) {
-    var list = document.getElementById("B");
-    var child = list.lastElementChild;
-    while (child) {
-      list.removeChild(child);
-      child = list.lastElementChild;
-    }
-    elaborateDistance();
-    var cont = 0,
-      place = "";
-    console.log(referenceTable);
-    console.log(DSTs);
-    for (var i in referenceTable){
+//____________END CUSTOMROUTING FUNCTIONS_______________________________________
 
+
+//____________ROUTING FUNCTIONS_______________________________________
+
+function addRouting() {
+  if (control !== null) return;
+  control = L.routing
+    .control({
+      createMarker: function() {
+        return null;
+      },
+      addWaypoints: false,
+      waypoints: [L.latLng(lat, lon)],
+      router: L.Routing.graphHopper("a0695b22-2381-4b66-8330-9f213b610d8f", {
+        urlParameters: {
+          vehicle: routingMode
+        }
+      })
+    })
+    .addTo(mymap);
+  control.spliceWaypoints(0, 1, L.latLng(lat, lon));
+  control.on("routesfound", function(e) {
+    var distance = e.routes[0].summary.totalDistance;
+    var instruction = e.routes[0].instructions[0].text;
+    var distanceChange = e.routes[0].instructions[0].distance;
+    if (distanceChange <= 10) {
+      try {
+        instruction = e.routes[0].instructions[1].text;
+      } catch (err) {
+        console.log(err);
+      }
     }
-    for (var i in referenceTable) {
-      place +=
-        "<div class='list-group-item'>" +
-        "  <span class='glyphicon glyphicon-move' aria-hidden='true' id='route" +
-        cont +
-        "' title='" +
-        referenceTable[minIndexes[cont]] +
-        "'></span>" +
-        referenceTable[minIndexes[cont]] +
-        "<span class='badge'>" +
-        DSTs[0][referenceTable[minIndexes[cont]]].toFixed(0) +
-        "</span>" +
-        "</div>";
-      cont++;
+    checkDistance(distance, instruction);
+  });
+}
+
+function elaborateDistance() {
+  var count = 0;
+  calculateDistance(lat, lon, 0,null);
+  for (var i in POIs) {
+    referenceTable[count] = i;
+    count++;
+    console.log(i);
+    calculateDistance(POIs[i].latitudeCenter, POIs[i].longitudeCenter, count, i);
+  }
+  console.log(POIs);
+  count = -1;
+  minIndexes = [];
+  do {
+    count = createRoute(count + 1);
+  } while (count != -1);
+  currentDestination = 0;
+  populatePopup(referenceTable[minIndexes[currentDestination]]);
+}
+
+function calculateDistance(slat, slon, index, t) {
+  var x = L.latLng(slat, slon);
+  DSTs[index] = {};
+  for (var i in POIs) {
+    var dist = x.distanceTo(
+      L.latLng(POIs[i].latitudeCenter, POIs[i].longitudeCenter)
+    );
+    DSTs[index][i] = {};
+    DSTs[index][i] = dist;
+    if(t != null){
+      POIs[t]["distance"] = dist; //inutile?
     }
-    $("#B").append(place);
   }
 }
+
+function createRoute(i) {
+  var min = 40075000;
+  var minIndex = -1;
+  var count = 0;
+  for (var index in DSTs[i]) {
+    if (
+      DSTs[i][index] > 0 &&
+      DSTs[i][index] <= min &&
+      !minIndexes.includes(count)
+    ) {
+      minIndex = count;
+      min = DSTs[i][index];
+    }
+    count++;
+  }
+  if (minIndex != -1) {
+    minIndexes.push(Number(minIndex));
+  }
+  return minIndex;
+}
+
+function routingTo(p) {
+  control.spliceWaypoints(0, 1, L.latLng(lat, lon));
+  control.spliceWaypoints(
+    control.getWaypoints().length - 1,
+    1,
+    L.latLng(p.latitudeCenter, p.longitudeCenter)
+  );
+}
+
+//____________END OF ROUTING FUNCTIONS_______________________________________
+
+
+//____________INFORMATION FUNCTIONS_______________________________________
+
+function populatePopup(key) {
+  $("#popupTitle").text(key);
+  $("#popupDescription").text(
+    POIs[key].description.en !== "NOT FOUND"
+      ? POIs[key].description.en
+      : "No description available"
+  );
+  if (POIs[key].img) {
+    $("#popupImg").attr(
+      "src",
+      POIs[key].img !== "NF"
+        ? POIs[key].img
+        : "https://cdn.shopify.com/s/files/1/1552/7487/products/good_game_gg-smiley_fornite_spray_emote_printed_sticker_grfxp_grafixpressions_720x.jpg?v=1525975056"
+    );
+  }
+  $("#popupImg").attr("style", "width: 50%;height: auto; float: right;");
+  $("#popupContainer").css("width", "calc(100% - 2em)");
+}
+
+$("#prev").on("click", function() {
+  if (currentDestination > 0) {
+    currentDestination--;
+    populatePopup(referenceTable[minIndexes[currentDestination]]);
+  }
+});
+
+$("#next").on("click", function() {
+  if (currentDestination < minIndexes.length - 1) {
+    currentDestination++;
+    populatePopup(referenceTable[minIndexes[currentDestination]]);
+  }
+});
+
+//____________END OF INFORMATION FUNCTIONS_______________________________________
