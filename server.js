@@ -164,7 +164,7 @@ return new Promise(async (resolve,reject) => {
         list.push(val.plusCode);
         POIs[item.title] = val.coords;
         POIs[item.title].videoId = item.id;
-        var json = await utils.getDescription(client,POIs, item.title,f);
+        var json = await utils.getDescription(client,POIs, item.title,utils);
         POIs[item.title].description = json["desc"];
         POIs[item.title].img = json["img"];
       }
@@ -183,7 +183,7 @@ app.post('/uploadFile',function(req,res){
   utils.save(req,res);
 });
 
-app.post('/cutAudio', upload.single('file'), function (req, res) { //upload.single() is still necessary to upload file?
+app.post('/cutAudio',  function (req, res) { //upload.single('file'), is still necessary to upload file?
     utils.cutAudio(req,res);
 });
 app.get('*', (req, res) => {
