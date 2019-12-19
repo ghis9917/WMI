@@ -12,7 +12,9 @@ var parseString = require('xml2js').parseString;
 var https = require('https')
 const uploadAudio = require('./saveAudio.js')
 var bodyParser = require('body-parser');
-app.use(bodyParser.urlencoded());
+const upload = multer();
+
+// app.use(bodyParser.urlencoded());
 
 const rickyKey = "AIzaSyBEpETjNZc18OP9L603YkzOvotslkQiBGI";
 const rickykey_second = "AIzaSyB5PLURpl92Ix6gBHvgBMJ9s1JC7m69b2c";
@@ -183,17 +185,20 @@ app.post('/uploadFile',function(req,res){
   utils.save(req,res);
 });
 
-app.post('/cutAudio',  function (req, res) { //upload.single('file'), is still necessary to upload file?
+app.post('/cutAudio', upload.single('file'), function (req, res) { //, is still necessary to upload file?
     utils.cutAudio(req,res);
 });
 app.get('*', (req, res) => {
   var ext = path.extname(req.url);
-  if (ext === ".css" || ext === ".html" || ext === ".js" || ext === ".jpg" || ext === ".png" || ext === ".woff" || ext === ".woff2" || ext === ".ttf" || ext === ".svg" || ext === ".eot") {
+  if (ext === ".css" || ext === ".html" || ext === ".js" || ext === ".jpg" || ext === ".png" || ext === ".woff" || ext === ".woff2" || ext === ".ttf" || ext === ".svg" || ext === ".eot" ) {
     res.sendFile(path.join(__dirname, './' + req.url));
   } else if (ext === ".ico") {
     res.status(204).json({ nope: true });
-  } else {
-    //TODO
+  } else if (ext === ".mp3") {
+    //audio
+    console.log("send file");
+    console.log(req.url);
+    res.sendFile(path.join(__dirname, './' + req.url));
   }
 });
 

@@ -1,8 +1,13 @@
 const OpenLocationCode = require('open-location-code').OpenLocationCode;
 const openLocationCode = new OpenLocationCode();
 const axios = require('axios');
+const fs = require('fs')
 var parseString = require('xml2js').parseString;
-
+var mkdirp = require('mkdirp');
+var multer = require('multer');
+const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
+const ffmpeg = require('fluent-ffmpeg');
+ffmpeg.setFfmpegPath(ffmpegPath);
 module.exports = {
   validator: function validator(d) {
     var list = d.split(":")
@@ -113,10 +118,8 @@ var x = 1
 const fileName = audio.body.fname;
 const stime = audio.body.stime;
 const etime = audio.body.etime;
-// console.log('stime:' + stime)
-// console.log('etime:' + etime)
 
-const newPath = __dirname + '/users/';
+const newPath = __dirname + '/user/userid/';
 const filePath = newPath + fileName;
 fs.writeFileSync(filePath, audio.file.buffer, error => {
   if (error) {
@@ -136,7 +139,7 @@ origin
        console.log("Spawned FFmpeg with command: " + commandLine);
      })
      .on("error", function(err) {
-       console.log("errorp: ", +err);
+       console.log("errorp: ", +err.message);
      })
      .on("end", function(err) {
        if (!err) {
@@ -154,22 +157,21 @@ conv
        console.log("Spawned FFmpeg with command: " + commandLine);
      })
      .on("error", function(err) {
-       console.log("error: ", +err);
+       console.log("error: ", +err.message);
      })
      .on("end", function(err) {
        if (!err) { console.log("conversion Done"); }
 
        x = 0;
-       res.send("https://localhost:8000" +newPath + 'new' + fileName);
+       res.send("http://localhost:8000/" +'user/userid/new' + fileName);
 
      })
      .saveToFile(newPath + 'new' + fileName);
+
 },
 save: function save(req, res) {
-  console.log("in uploadAvatar");
 //
-mkdirp('./user/userid' , function (err) {
-  console.log("dentro mkdirp");
+mkdirp('/user/userid' , function (err) {
   var storage = multer.diskStorage({
         destination: function(req, file, cb) {
             cb(null, './user/userid');
@@ -180,8 +182,6 @@ mkdirp('./user/userid' , function (err) {
       });
     var upload = multer({ storage: storage }).array('multiAudio', 4)
     upload(req, res, function(err) {
-    console.log(req.body);
-    console.log(req.file);
 
     if(err) {
         return res.end("Error uploading file.");

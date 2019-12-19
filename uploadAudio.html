@@ -1,9 +1,12 @@
 <html>
   <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
     <script src="assets/js/jquery.min.js"></script>
     <script src="https://unpkg.com/wavesurfer.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.2.2/jquery.form.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <!-- wavesurfer.js -->
     <script src="//cdnjs.cloudflare.com/ajax/libs/wavesurfer.js/1.4.0/wavesurfer.min.js"></script>
 
@@ -29,10 +32,28 @@
       <span id = "status"></span>
       <ol id="waveList">
       </ol>
-      <div id="waveform"></div>
       <button id="upload">
           Upload to youtube
       </button>
+      <div>
+      <div class="modal" id="typeAudioSelect" class="modal fade" tabindex="-1">
+
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" >Please select the type of the clip</h5>
+            </div>
+            <div id="typeAudioSelectBody" class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="showWave()">Finish</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="resetForm(1)">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
   <script src="draw.js"></script>
   <script src="uploadAudio.js"></script>
