@@ -182,6 +182,7 @@ return new Promise(async (resolve,reject) => {
 //
 // })
 app.post('/uploadFile',function(req,res){
+  console.log("upload file");
   utils.save(req,res);
 });
 

@@ -171,6 +171,7 @@ conv
 },
 save: function save(req, res) {
 //
+console.log("in save");
 mkdirp('/user/userid' , function (err) {
   var storage = multer.diskStorage({
         destination: function(req, file, cb) {
@@ -180,7 +181,7 @@ mkdirp('/user/userid' , function (err) {
           cb(null , file.originalname);
         }
       });
-    var upload = multer({ storage: storage }).array('multiAudio', 4)
+    var upload = multer({ storage: storage }).array('file', 4)
     upload(req, res, function(err) {
 
     if(err) {

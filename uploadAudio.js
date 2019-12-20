@@ -38,18 +38,12 @@ function setNewId(fileId){
   var div = document.getElementById(fileId+"_wave");
   var listId = document.getElementById(fileId+"_list");
   var waveList = document.getElementById("waveList");
-
-  var type="",trashCut;
+  var type="";
 
   for (var i = 0, length = radios.length; i < length; i++){
     if (radios[i].checked){
-
     type = radios[i].id.replace(fileId,"");
     type = type.replace("Input","");
-    // div.setAttribute("id",type+ "-" + fileId+"_wave");
-    // trashCut = $("#"+div.id).children();
-    // trashCut[0].id = type+ "-" +fileId+"_trash";
-    // trashCut[1].id = type+ "-" +fileId+"_cut";
     break;
  }
 }
@@ -89,10 +83,10 @@ function loadModal(file,id){
   var whyLabel = document.createElement('label');
   var whatLabel = document.createElement('label');
   var nameLabel = document.createElement('label');
-
-  howInput.setAttribute('id', id+"howInput");
-  whyInput.setAttribute('id', id+"whyInput");
-  whatInput.setAttribute('id', id+"whatInput");
+  var list = document.getElementById('waveList');
+  howInput.setAttribute('id', id+"HowInput");
+  whyInput.setAttribute('id', id+"WhyInput");
+  whatInput.setAttribute('id', id+"WhatInput");
 
   // howInput.setAttribute('value', "How");
   // whyInput.setAttribute('value', "Why");
@@ -119,22 +113,24 @@ function loadModal(file,id){
   nameLabel.innerHTML = file.name;
 
 
-  whatInput.checked = true;
+  whyInput.checked = true;
   clipForm.setAttribute("id",id+"method")
 
   nameLabel.setAttribute("style","text-align: left; display: block;")
 
   clipForm.appendChild(nameLabel);
 
-
-  clipForm.appendChild(howInput);
-  clipForm.appendChild(howLabel);
-
+  if(controlClip(list,"How") == 1){
+    clipForm.appendChild(howInput);
+    clipForm.appendChild(howLabel);
+  }
   clipForm.appendChild(whyInput);
   clipForm.appendChild(whyLabel);
 
-  clipForm.appendChild(whatInput);
-  clipForm.appendChild(whatLabel);
+  if(controlClip(list,"What") == 1){
+    clipForm.appendChild(whatInput);
+    clipForm.appendChild(whatLabel);
+  }
 
   $('#typeAudioSelectBody').append(clipForm);
   // $('#typeAudioSelectBody').append(nameLabel);
@@ -225,7 +221,6 @@ async function loadFile(file){
              error: function(xhr) {
          status('Error: ' + xhr.status);
              },
-
              success: function(response) {
          $("#status").empty().text(response);
                  console.log(response);

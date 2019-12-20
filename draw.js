@@ -3,12 +3,12 @@ var cont_why = 0, struct =[], time, url,stime,etime, wavesurfer = [];
 
   function get_originaudio(id){
     if(!id.includes('Origin')){
-      const audioURL = 'https://localhost:8000/home/blacksmog/WMI/users/1Origin' + id + '.mp3';
+      const audioURL = 'https://localhost:8000/user/userid/1Origin' + id + '.mp3';
       remove(id);
       getReady(id, audioURL,0);
     }
     else{
-      const audioURL = 'https://localhost:8000/home/blacksmog/WMI/users/1' + id + '.mp3';
+      const audioURL = 'https://localhost:8000/user/userid/1' + id + '.mp3';
       remove(id.substring(6,id.length));
       getReady(id.substring(6,id.length), audioURL,0);
     }
@@ -19,13 +19,18 @@ var cont_why = 0, struct =[], time, url,stime,etime, wavesurfer = [];
 
     var index, ide;
     ide = id.split("_");
+    console.log("ide");
+    console.log(ide[0]);
+    console.log(struct);
     struct.forEach(function (item, ind, array) {
       if(item.id == ide[0]) {
         index = ind;
         return;
       }
     });
+    if(stime == 0 && etime == wavesurfer[ide[0]+"_wave"].getDuration()) return;
     var fd = new FormData();
+
     fd.append('fname',ide[0] + '.mp3' );
     fd.append('file', struct[index].blob);
     fd.append('stime',stime );
@@ -38,11 +43,11 @@ var cont_why = 0, struct =[], time, url,stime,etime, wavesurfer = [];
       contentType: false
     }).done(function(data) {
       var newid = id.split("_")
-      remove(newid[0])
+      remove(newid[0]);
       if(id.includes('Origin')){
         id = id.substring(6,id.length)
       }
-      console.log("id nuovo da slavare " + newid[0]);
+
       getReady(newid[0],data,1);
   });
 }
@@ -53,19 +58,16 @@ function remove(id){
   var listItem = document.getElementById(id+"_list");
   var index,ide = id + "_list";
   struct.forEach(function (item, ind, array) {
-    if(item.id == ide) {
+    if(item.id == id) {
       index = ind;
       return;
     }
   });
   var cont = 0;
   for(var i in wavesurfer){
-    if(i == id){
-      console.log("splittato");
+    if(i == id+"_wave"){
       wavesurfer[i].destroy();
-      wavesurfer[i].empty();
       wavesurfer = wavesurfer.splice(cont,1);
-      console.log(wavesurfer);
       break;
     }
     cont++;
@@ -84,7 +86,9 @@ function getReady(id,data,ifOrigin){
   var div =  document.createElement('div');
   var audioList = document.getElementById("waveList");
   var radioValue = $("input[name='clip']:checked").val();
+  var label = document.createElement('label');
   console.log("id passed to getready " + id);
+  label.innerHTML = id + '.mp3';
 
   if(radioValue == "Why"){
     if(cont_why == 0){
@@ -112,20 +116,21 @@ function getReady(id,data,ifOrigin){
 
   }
   trash.setAttribute('class', "oi oi-trash");
-  trash.setAttribute('onclick', "remove(this.id)");
+  trash.setAttribute('onclick', "remove(this.id,1)");
   trash.setAttribute('style', "width:100%; text-align:right;position: relative;right:0px;");
 
-  cut_button.setAttribute('onclick', "edit(this.id)");
+  cut_button.setAttribute('onclick', "edit(this.id,1)");
   cut_button.setAttribute('style', "width:100%;position: relative;right:0px;");
 
-  origin_button.setAttribute('onclick', "get_originaudio(this.id)");
+  origin_button.setAttribute('onclick', "get_originaudio(this.id,1)");
   origin_button.setAttribute('style', "width:100%;position: relative;right:0px;");
 
   cut_button.innerHTML = "Cut";
   origin_button.innerHTML = "Origin Audio";
 
   //add the new audio and a elements to the li element
-  div.appendChild(trash);
+  li.appendChild(label);
+  li.appendChild(trash);
   div.appendChild(cut_button);
   li.appendChild(div);
   li.appendChild(document.createElement('br'));
@@ -147,51 +152,39 @@ function getReady(id,data,ifOrigin){
     }
     else children[children.length-1].id = id + "_list";
   }
-  // var xhr = new XMLHttpRequest();
-  //
-  // $.ajax({
-  //             url:data,
-  //             cache:false,
-  //             type:"get",
-  //             xhrFields: {
-  //               responseType: 'blob'
-  //             },
-  //             success: function(blob){
-  //               console.log("blob ");
-  //               console.log(blob);
-  //               struct.push({
-  //                 blob : blob,
-  //                 id : id
-  //               });
-  //               loadWave(div.id,data)
-  //
-  //               if(ifOrigin) div.appendChild(origin_button);
-  //             },
-  //             error:function(err){
-  //                 console.log("some err " + err);
-  //             }
-  //         });
-  //
-  //
   var request = new XMLHttpRequest();
   request.open('GET', data, true);
   request.responseType = 'blob';
+  request.header= {Range: "bytes=0-500000"};
   request.onload = function() {
       struct.push({
         blob : request.response,
         id : id
       });
-      console.log("rima di load wave " + div.id);
-      loadWave(div.id,data)
+      console.log("response ");
+      console.log(request.response);
+      loadWave(div.id,request.response)
       console.log(struct);
       if(ifOrigin) div.appendChild(origin_button);
   };
+  console.log(request);
   request.send();
 }
-
+var getDuration = function (url, next) {
+  var _player = new Audio(url);
+  _player.addEventListener("durationchange", function (e) {
+  if (this.duration!=Infinity) {
+     var duration = this.duration
+     next(duration);
+  };
+}, false);
+_player.currentTime = 24*60*60; //fake big time
+};
 function loadWave(id,data){
 
   var div;
+  console.log("id");
+  console.log(id);
   wavesurfer[id] = WaveSurfer.create({
     container: '#' + id,
     scrollParent : false,
@@ -211,9 +204,14 @@ function loadWave(id,data){
   });
   div = document.getElementById(id)
 
-  wavesurfer[id].on('ready', function () {
+  wavesurfer[id].on('ready', async function () {
     stime = 0
     etime = wavesurfer[id].getDuration();
+    while(etime === Infinity) {
+      await new Promise(r => setTimeout(r, 1000));
+      etime= 10000000*Math.random();
+    }
+    console.log(etime);
     wavesurfer[id].addRegion({
       id:'#' + id + 'region',
       start: 0,
@@ -235,7 +233,7 @@ function loadWave(id,data){
   if(data instanceof Blob) {
     console.log("upload blob");
     console.log(data);
-    wavesurfer[id].loadBlob(data);
+    wavesurfer[id].load( URL.createObjectURL(data));
   }
   else {
     console.log("url");

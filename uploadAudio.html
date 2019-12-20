@@ -12,17 +12,27 @@
 
     <!-- wavesurfer.js regions -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/wavesurfer.js/1.2.3/plugin/wavesurfer.regions.min.js"></script>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 
     </head>
   <body>
+    <div id="controls" align="center">
+        <button id="recordButton" >Record</button>
+        <button id="stopButton" disabled>Stop</button>
 
+    </div>
+    <div id="methode" align="center">
+        <input type="radio" name="clip" value="What" id="what" checked="true"> What
+        <input type="radio" name="clip" value="How" id="how"> How
+        <input type="radio" name="clip" value="Why" id="why" > Why
+    </div>
     <form id="uploadForm"
         enctype="multipart/form-data"
         action="/uploadFile"
         method="post"
   >
   <div>
-      <label>Select multiple images:</label>
+      <label>Select multiple audio:</label>
       <input id="files" type="file" name="multiAudio" multiple  />
   </div>
   <div>
@@ -30,8 +40,7 @@
   </div>
   </form>
       <span id = "status"></span>
-      <ol id="waveList">
-      </ol>
+      <ol id="waveList"></ol>
       <button id="upload">
           Upload to youtube
       </button>
@@ -56,5 +65,6 @@
     </div>
   </body>
   <script src="draw.js"></script>
+  <script src="recorder.js"></script>
   <script src="uploadAudio.js"></script>
 </html>
