@@ -1,3 +1,5 @@
+var toServer=[];
+
 function resetForm(check){
   document.getElementById("uploadForm").reset();
   var modalBody = document.getElementById("typeAudioSelectBody");
@@ -33,6 +35,7 @@ function showWave(){
 }
 
 function setNewId(fileId){
+  var url,index,cont = 0;
 
   var radios = document.getElementsByName(fileId+'clip');
   var div = document.getElementById(fileId+"_wave");
@@ -42,33 +45,27 @@ function setNewId(fileId){
 
   for (var i = 0, length = radios.length; i < length; i++){
     if (radios[i].checked){
-    type = radios[i].id.replace(fileId,"");
-    type = type.replace("Input","");
-    break;
- }
-}
-var url;
-struct.forEach(function (item, ind, array) {
-  if(item.id == fileId) {
-    struct.splice(ind, 1);
-    url = URL.createObjectURL(item.blob);
-    return;
+      type = radios[i].id.replace(fileId,"");
+      type = type.replace("Input","");
+      break;
+    }
   }
-});
-var cont = 0;
-for(var i in wavesurfer){
-  if(i == fileId+"_wave"){
-    console.log("splittato");
-    wavesurfer[i].destroy();
-    wavesurfer = wavesurfer.splice(cont,1);
-    console.log(wavesurfer);
-    break;
+  index = controlStruct(fileId);
+  url = URL.createObjectURL(struct[index].blob);
+  struct.splice(index,1);
+  for(var i in wavesurfer){
+    if(i == fileId+"_wave"){
+      console.log("splittato");
+      wavesurfer[i].destroy();
+      wavesurfer = wavesurfer.splice(cont,1);
+      console.log(wavesurfer);
+      break;
+    }
+    cont++;
   }
-  cont++;
-}
 
-waveList.removeChild(listId);
-getReady(type+ "-" +fileId,url,0);
+  waveList.removeChild(listId);
+  getReady(type+ "-" +fileId,url,0);
 }
 $(document).ready(function () {
 
@@ -214,6 +211,65 @@ async function loadFile(file){
     }
   // });
 }
+function uploadAjax(){
+  return new Promise(async (resolve,reject) => {
+    toServer.forEach(function (item, ind, array) {
+      var fd = new FormData();
+      fd.append("fname",item.name);
+      fd.append("file",item.blob);
+      console.log(item);
+      $.ajax({
+        url: "/uploadFile", //Need to adapt for audio in input
+        method: "POST",
+        data:fd,
+        processData: false,
+        contentType: false
+      }).done(function(data) {
+        console.log("uploaded");
+  //other ajax
+      });
+    })
+    resolve();
+  })
+}
+
+  $('#upload').on("click", async function(){
+    console.log("clicked upload");
+    var checkedValue = null,index,cont = 0;
+    var inputElements = document.getElementsByClassName('toUpload');
+    toServer = []
+    for(var i=0; inputElements[i]; ++i){
+          if(inputElements[i].checked){
+               checkedValue = inputElements[i].id;
+               index = controlStruct(checkedValue);
+               console.log(checkedValue);
+               console.log(index);
+               console.log(struct[index]);
+               toServer[cont] = {}
+               toServer[cont].blob = struct[index].blob;
+               toServer[cont].name = struct[index].id;
+               cont++;
+          }
+    }
+    console.log(toServer);
+
+
+    await uploadAjax();
+    console.log("dopo chiamata");
+
+    // $.ajax({
+    //   url: "/oauth2callback?token="+token+"&refresh="+refresh,
+    //   type:"post",
+    //   success: function (data){
+    //     console.log(data);
+    //   },
+    //   error: function (err){
+    //     console.log(err);
+    //   }
+    // })
+
+  })
+
       $('#uploadForm').submit(function(event) {
          $("#status").empty().text("File is uploading...");
           event.preventDefault();

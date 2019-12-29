@@ -1,10 +1,24 @@
 var profile = null;
-
+var token,refresh;
 function onSignIn(googleUser) {
+  token = googleUser["Zi"].access_token;
+  refresh = googleUser["Zi"].id_token;
   profile = googleUser.getBasicProfile();
+  $.ajax({
+    url: "/saveToken?token="+token+"&refresh="+refresh,
+    type:"post",
+    success: function (data){
+      console.log(data);
+    },
+    error: function (err){
+      console.log(err);
+    }
+  })
+
   window.localStorage.removeItem('check');
   window.localStorage.setItem('check', true);
-  if ("http://localhost:8000/profile.html" == window.location.href || "http://localhost:8000/profile.html#" == window.location.href) {
+  if ("https://localhost:8000/profile.html" == window.location.href || "https://localhost:8000/profile.html#" == window.location.href) {
+    console.log("profile mode");
     $('#loginModal').modal('hide');
     $("h4").html("");
     $("h4").html(profile.getName());
@@ -15,7 +29,8 @@ function onSignIn(googleUser) {
     $("#spinner").remove();
     $("#display").show();
   }
-  if ("http://localhost:8000/" == window.location.href || "http://localhost:8000/index.html" == window.location.href) {
+  if ("https://localhost:8000/" == window.location.href || "https://localhost:8000/index.html" == window.location.href) {
+    console.log("index");
     $('#loginModal').modal('hide');
     $('#profile').show();
     $('#profile > a').html(profile.getName());
@@ -23,7 +38,8 @@ function onSignIn(googleUser) {
     $('#logbtn').hide();
     $('.close').click();
   }
-  if ("http://localhost:8000/editorMode.html" == window.location.href || "http://localhost:8000/editorMode.html/" == window.location.href || "http://localhost:8000/editorMode.html#" == window.location.href) {
+  if ("https://localhost:8000/editorMode.html" == window.location.href || "https://localhost:8000/editorMode.html/" == window.location.href || "https://localhost:8000/editorMode.html#" == window.location.href) {
+      console.log("editor mode");
       $("#profileText").html(profile.getName());
       $('#loginModal').modal('hide');
       createMap();
@@ -35,7 +51,7 @@ function signOut() {
   auth2.signOut().then(function () {
     console.log('User signed out.');
     window.localStorage.removeItem('check');
-    url = "http://localhost:8000/";
+    url = "https://localhost:8000/";
     window.open(url, "_self");
   });
 }

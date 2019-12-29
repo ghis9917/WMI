@@ -1,0 +1,9 @@
+{
+    "1" : {
+        "title" : "video1",
+        "description" : "upload video 1",
+        "tags" : ["upload", "video", "1"],
+        "fileName" : "./user/userid/nuovaprova.mp4"
+
+    }
+}

@@ -31,11 +31,33 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.1.1/aos.css">
 
 
+
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+          <script src="assets/js/jquery.min.js"></script>
+      <script src="https://unpkg.com/wavesurfer.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+      <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.2.2/jquery.form.min.js"></script> -->
+      <!-- <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script> -->
+      <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.3/js/bootstrap.min.js"></script>
+      <link href="https://cdn.rawgit.com/davidstutz/bootstrap-multiselect/master/dist/css/bootstrap-multiselect.css" rel="stylesheet" type="text/css" />
+      <script src="https://cdn.rawgit.com/davidstutz/bootstrap-multiselect/master/dist/js/bootstrap-multiselect.js" type="text/javascript"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://code.iconify.design/1/1.0.3/iconify.min.js"></script>
+      <!-- wavesurfer.js -->
+      <script src="//cdnjs.cloudflare.com/ajax/libs/wavesurfer.js/1.4.0/wavesurfer.min.js"></script>
+
+      <!-- wavesurfer.js regions -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/wavesurfer.js/1.2.3/plugin/wavesurfer.regions.min.js"></script>
+      <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+
     <meta name="google-signin-scope" content="profile email">
     <meta name="google-signin-client_id"
-        content="96653811721-8oobhsk5dh915ctggai3amn5n6nb2sm5.apps.googleusercontent.com">
+        content="114712511052-o00pbvnd01mt0jfl946p61k2vtjfk6m8.apps.googleusercontent.com">
     <script src="https://apis.google.com/js/api.js"></script>
     <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="assets/js/UserModeUtils.js"></script>
     <script src="assets/js/googleSignIn.js"></script>
     <script>
         $(document).ready(function () {
@@ -62,6 +84,7 @@
                 id="navcol-1">
                 <ul class="nav navbar-nav ml-auto">
                     <li class="nav-item" role="presentation"><a class="nav-link " href="/userMode.html">User Mode</a></li>
+                    <button onclick="$('#audio').modal();">AUDIO</button>
                     <li class="nav-item" role="presentation"><a id="profileText" class="nav-link" href="/profile.html"></a></li>
                 </ul>
             </div>
@@ -88,11 +111,11 @@
                             <div class="g-signin2" data-onsuccess="onSignIn"></div>
                           </div>
                 </div>
-                <div class="modal-footer"><button class="btn btn-light" type="button" onclick="window.open('http://localhost:8000/', '_self')">Close</button></div>
+                <div class="modal-footer"><button class="btn btn-light" type="button" onclick="window.open('https://localhost:8000/', '_self')">Close</button></div>
             </div>
         </div>
     </div>
-    <div class="modal fade" id="noGeo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    <!-- <div class="modal fade" id="noGeo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -109,6 +132,78 @@
         </div>
       </div>
     </div>
+ --><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+  Launch demo modal
+</button>
+
+<!-- Modal -->
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+          <div id="controls" align="center">
+              <button id="recordButton" >Record</button>
+              <button id="stopButton" disabled>Stop</button>
+
+          </div>
+          <div id="methode" align="center">
+              <input type="radio" name="clip" value="What" id="what" checked="true"> What
+              <input type="radio" name="clip" value="How" id="how"> How
+              <input type="radio" name="clip" value="Why" id="why" > Why
+          </div>
+          <form id="uploadForm"
+              enctype="multipart/form-data"
+              action="/uploadFile"
+              method="post"
+        >
+        <div>
+            <label>Select multiple audio:</label>
+            <input id="files" type="file" name="multiAudio" multiple  />
+        </div>
+        <div>
+            <input type="submit" name="btn_upload_multiple_images" value="Upload" />
+        </div>
+        </form>
+            <span id = "status"></span>
+            <ol id="waveList"></ol>
+            <button id="upload">
+                Upload to youtube
+            </button>
+            <div>
+            <div class="modal" id="typeAudioSelect" class="modal fade" tabindex="-5">
+
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" >Please select the type of the clip</h5>
+                  </div>
+                  <div id="typeAudioSelectBody" class="modal-body">
+
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="showWave()">Finish</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="resetForm(1)">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+
+
+
+
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="assets/js/bs-animation.js"></script>
     <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
@@ -126,6 +221,9 @@
     <script src="https://cdn.jsdelivr.net/npm/places.js@1.16.6"></script>
     <script src="assets/js/lrm-graphhopper.js"></script>
      <script src="assets/js/googleSignIn.js"></script>
+     <script src="draw.js"></script>
+     <script src="recorder.js"></script>
+     <script src="uploadAudio.js"></script>
 </body>
 
 </html>

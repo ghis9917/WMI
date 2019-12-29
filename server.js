@@ -13,6 +13,12 @@ var https = require('https')
 const uploadAudio = require('./saveAudio.js')
 var bodyParser = require('body-parser');
 const upload = multer();
+const Youtube = require("youtube-api"),
+      readJson = require("r-json"),
+      opn = require("opn"),
+      prettyBytes = require("pretty-bytes");
+      const ffmpeg = require('fluent-ffmpeg');
+
 
 // app.use(bodyParser.urlencoded());
 
@@ -181,14 +187,50 @@ return new Promise(async (resolve,reject) => {
 //     res.send("files uploaded");
 //
 // })
-app.post('/uploadFile',function(req,res){
-  console.log("upload file");
-  utils.save(req,res);
+app.post('/uploadFile',upload.single('file'),function(req,res){
+  const fileName = req.body.fname;
+  console.log( req.body.fname);
+  const newPath = 'user/userid/upload/';
+  const filePath = newPath + fileName+".mp3";
+  console.log("pruika");
+  fs.writeFileSync(filePath, req.file.buffer, error => {
+    if (error) {
+      console.error(error)
+      res.send("err");
+    } else {
+      res.send("end");
+      //here you can save the file name to db, if needed
+    }
+  })
+ var  proc = new ffmpeg({source:filePath})
+    .addInputOption('-loop', '1')
+    .addInputOption('-i', 'firma.jpg')
+    .addOptions(['-c:v libx264','-tune stillimage','-c:a aac','-b:a 192k','-pix_fmt yuv420p','-shortest'])
+    .on("start", function(commandLine) {
+      console.log("Spawned FFmpeg with command: " + commandLine);
+    })
+    .on("error", function(err) {
+      console.log("error: ")
+      console.log(err);
+    })
+    .on("end", function(err) {
+      if (!err) { console.log("conversion Done"); }
+      utils.upload();
+      res.send("end")
+
+    })
+    .saveToFile(newPath + fileName+".mkv");
 });
 
 app.post('/cutAudio', upload.single('file'), function (req, res) { //, is still necessary to upload file?
     utils.cutAudio(req,res);
 });
+
+app.post('/saveToken',function(req,res){
+  console.log("entrato in ouath");
+  utils.reload(req)
+});
+
 app.get('*', (req, res) => {
   var ext = path.extname(req.url);
   if (ext === ".css" || ext === ".html" || ext === ".js" || ext === ".jpg" || ext === ".png" || ext === ".woff" || ext === ".woff2" || ext === ".ttf" || ext === ".svg" || ext === ".eot" ) {
@@ -203,8 +245,7 @@ app.get('*', (req, res) => {
   }
 });
 
-// https.createServer({
-//   key: fs.readFileSync('server.key'),
-//   cert: fs.readFileSync('server.cert')
-// }, app)
-app.listen(8000, () => console.log('Gator app listening on port 8000!'))
+https.createServer({
+  key: fs.readFileSync('server.key'),
+  cert: fs.readFileSync('server.cert')
+}, app).listen(8000, () => console.log('Gator app listening on port 8000!'))

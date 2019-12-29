@@ -108,8 +108,10 @@
       var li = document.createElement('li');
       var label = document.createElement('label');
       var trash = document.createElement('span');
-      var button = document.createElement('button');
+      var cut = document.createElement('span');
       var div =  document.createElement('div');
+      var input =  document.createElement('input');
+
       var c = document.getElementById("waveList");
       var radioValue = $("input[name='clip']:checked").val();
       var id = radioValue + cont_why;
@@ -118,7 +120,7 @@
       if(radioValue == "Why"){
         if(cont_why == 0){
           trash.setAttribute('id',radioValue+"_trash");
-          button.setAttribute('id', radioValue+"_cut");
+          cut.setAttribute('id', radioValue+ '_cut');
 
           div.setAttribute('id', radioValue + '_wave');
 
@@ -127,7 +129,7 @@
           label.innerHTML = id + '.mp3';
 
           trash.setAttribute('id', id+"_trash");
-          button.setAttribute('id', id+"_cut");
+          cut.setAttribute('id', id+ '_cut');
 
           div.setAttribute('id', id + '_wave');
         }
@@ -135,7 +137,7 @@
       else {
 
         trash.setAttribute('id', radioValue+"_trash");
-        button.setAttribute('id',radioValue+"_cut");
+        cut.setAttribute('id', radioValue+ '_cut');
 
         div.setAttribute('id', radioValue + '_wave');
 
@@ -143,16 +145,19 @@
       trash.setAttribute('class', "oi oi-trash");
       trash.setAttribute('onclick', "remove(id)");
       trash.setAttribute('style', "width:100%; text-align:right;position: relative;right:0px;color:red;");
-      button.setAttribute('onclick', "edit(id)");
-      button.setAttribute('style', "width:100%;position: relative;right:0px;color:red;");
-      button.innerHTML = "Cut";
+      cut.setAttribute('class', "glyphicon glyphicon-pencil");
+      cut.setAttribute('onclick', "edit(this.id,1)");
+      cut.setAttribute('style', "width:100%; text-align:left; position: relative;left:50px;");
 
-
+      input.setAttribute('class', "toUpload");
+      input.setAttribute('id', radioValue);
+      input.setAttribute('type',"checkbox")
       //add the new audio and a elements to the li element
       li.appendChild(label);
       li.appendChild(trash);
-      div.appendChild(button);
+      li.appendChild(cut);
       li.appendChild(div);
+      li.appendChild(input);
       li.appendChild(document.createElement('br'));
       //add the li element to the ordered list
       waveList.appendChild(li);
@@ -174,7 +179,22 @@
         blob : data,
         id : radioValue
       });
+      var fd = new FormData();
 
+      fd.append('fname', "Origin"+label.innerHTML);
+      fd.append('file', data);
+      console.log("ddata");
+      console.log(data);
+      $.ajax({
+        url: "/cutAudio", //Need to adapt for audio in input
+        method: "POST",
+        data: fd,
+        processData: false,
+        contentType: false
+      }).done(function(data) {
+        console.log("uploaded");
+        console.log(data);
+      });
       loadWave(div.id,url)
 
     }

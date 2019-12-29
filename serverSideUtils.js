@@ -7,7 +7,83 @@ var mkdirp = require('mkdirp');
 var multer = require('multer');
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 const ffmpeg = require('fluent-ffmpeg');
+var readJson = require("r-json");
+const Youtube = require("youtube-api"),
+opn = require("opn"),
+prettyBytes = require("pretty-bytes");
 ffmpeg.setFfmpegPath(ffmpegPath);
+
+const CREDENTIALS = readJson("./credential.json");
+var auth = Youtube.authenticate({
+  type: 'key',
+  key: 'AIzaSyCAXQP_4KlAztXqWzAOvjv7Pa7DWIUb42U'
+});
+
+//
+// var youtube = Youtube({
+//   video: {
+//     part: 'status,snippet'
+//   }
+
+// })
+
+
+// Authenticate
+// You can access the Youtube resources via OAuth2 only.
+// https://developers.google.com/youtube/v3/guides/moving_to_oauth#service_accounts
+//
+let oauth = Youtube.authenticate({
+    type: "oauth"
+  , client_id: CREDENTIALS.web.client_id
+  , client_secret: CREDENTIALS.web.client_secret
+  , redirect_url: CREDENTIALS.web.redirect_uris[0]
+});
+
+
+
+
+opn(oauth.generateAuthUrl({
+    access_type: "offline"
+  , scope: ["https://www.googleapis.com/auth/youtube.upload"]
+}));
+
+
+
+function UploadYoutube (myTitle, myDescription, myTags, myFileLocation) {
+    var req = Youtube.videos.insert({
+            resource: {
+                // Video title and description
+                snippet: {
+                    title: myTitle
+                  , description: myDescription
+                  , tags: myTags
+
+                }
+                // I don't want to spam my subscribers
+              , status: {
+                    privacyStatus: "public"
+
+                }
+            }
+
+
+            // This is for the callback function
+          , part: "snippet,status"
+
+            // Create the readable stream to upload the video
+          , media: {
+                body: fs.createReadStream(myFileLocation)
+            }
+        }, (err, data) => {
+            if(err){
+              console.log(err);
+            }
+            else console.log(data);
+            process.exit();
+        });
+        return req;
+}
+
 module.exports = {
   validator: function validator(d) {
     var list = d.split(":")
@@ -120,7 +196,7 @@ const stime = audio.body.stime;
 const etime = audio.body.etime;
 
 const newPath = __dirname + '/user/userid/';
-const filePath = newPath + fileName;
+const filePath = newPath + fileName.replace("Origin","");
 fs.writeFileSync(filePath, audio.file.buffer, error => {
   if (error) {
     console.error(error)
@@ -148,7 +224,10 @@ origin
      })
      .saveToFile(newPath + "1"+fileName);
 }
-
+if(stime != undefined && etime != undefined){
+  console.log("posso tagliare");
+  console.log(stime);
+  console.log(etime);
 const conv = new ffmpeg({ source: filePath  });
 conv
      .setStartTime(stime) //Can be in "HH:MM:SS" format also
@@ -163,25 +242,27 @@ conv
        if (!err) { console.log("conversion Done"); }
 
        x = 0;
-       res.send("http://localhost:8000/" +'user/userid/new' + fileName);
+       res.send("https://localhost:8000/" +'user/userid/new' + fileName);
 
      })
      .saveToFile(newPath + 'new' + fileName);
-
+}
 },
 save: function save(req, res) {
 //
 console.log("in save");
-mkdirp('/user/userid' , function (err) {
+mkdirp('/user/userid/upload' , function (err) {
   var storage = multer.diskStorage({
         destination: function(req, file, cb) {
-            cb(null, './user/userid');
+            cb(null, './user/userid/upload');
         },
         filename: function (req, file, cb) {
-          cb(null , file.originalname);
+          console.log(file);
+          console.log(file.originalname);
+          cb(null , "Origin"+file.originalname);
         }
       });
-    var upload = multer({ storage: storage }).array('file', 4)
+    var upload = multer({ storage: storage }).array('file', 6)
     upload(req, res, function(err) {
 
     if(err) {
@@ -189,20 +270,28 @@ mkdirp('/user/userid' , function (err) {
     }
     res.end("File is uploaded");
 });
-
 });
-// ,
-//   url: function url(id){
-//     var url = 'https://www.youtube.com/watch?v=' + id;
-//
-//  // Audio format header (OPTIONAL)
-//     res.set({ "Content-Type": "audio/mpeg" });
-//
-//  // Send compressed audio mp3 data
-//     ffmpeg()
-//     .input(ytdl(url))
-//     .toFormat('mp3')
-//     .pipe(res);
-//   }
+},
+upload: function upload() {
+  const newPath = __dirname + '/user/userid/upload/';
+  console.log("oauth");
+  fs.readdir(newPath,(err,files)=>{
+    for(var file in files){
+      if(files[file].includes(".mkv"))  {
+        var result = UploadYoutube("prova2 title", "prova2 description", ["upload","prove2"],newPath+files[file]);
+      }
+    }
+    if (err) {
+      throw err;
+    }
+  })
+},
+reload: function reload(base){
+
+  oauth.setCredentials({
+    access_token: base.query.token,
+    refresh_token :base.query.refresh
+  });
 }
+
 }
