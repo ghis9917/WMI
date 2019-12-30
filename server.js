@@ -215,7 +215,7 @@ app.post('/uploadFile',upload.single('file'),function(req,res){
     })
     .on("end", function(err) {
       if (!err) { console.log("conversion Done"); }
-      utils.upload();
+      utils.upload(fileName);
       res.send("end")
 
     })

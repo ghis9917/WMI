@@ -75,11 +75,12 @@ function UploadYoutube (myTitle, myDescription, myTags, myFileLocation) {
                 body: fs.createReadStream(myFileLocation)
             }
         }, (err, data) => {
+          console.log("this data");
             if(err){
               console.log(err);
             }
             else console.log(data);
-            process.exit();
+            // process.exit();
         });
         return req;
 }
@@ -272,19 +273,13 @@ mkdirp('/user/userid/upload' , function (err) {
 });
 });
 },
-upload: function upload() {
+upload: function upload(fileName) {
   const newPath = __dirname + '/user/userid/upload/';
+  const absolute = newPath + fileName + '.mkv';
   console.log("oauth");
-  fs.readdir(newPath,(err,files)=>{
-    for(var file in files){
-      if(files[file].includes(".mkv"))  {
-        var result = UploadYoutube("prova2 title", "prova2 description", ["upload","prove2"],newPath+files[file]);
-      }
-    }
-    if (err) {
-      throw err;
-    }
-  })
+  console.log(absolute)
+  var result = UploadYoutube("prova2 title"+fileName, "prova2 description"+fileName, ["upload"+fileName,"prove2"+fileName],absolute);
+
 },
 reload: function reload(base){
 

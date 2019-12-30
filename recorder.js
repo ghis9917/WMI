@@ -197,6 +197,45 @@
       });
       loadWave(div.id,url)
 
+
+        var text ='<label>Content</label>'+
+        '<select id="Content'+id+'" multiple="multiple">'+
+        '  <option value="1" selected>None</option>'+
+        '  <option value="2">natura</option>'+
+        '  <option value="3">arte</option>'+
+        '  <option value="4">storia</option>'+
+        '  <option value="5">folklore</option>'+
+        '  <option value="6">cultura moderna</option>'+
+        '  <option value="7">religione</option>'+
+        '   <option value="8">cucina e drink</option>'+
+        '   <option value="9">sport</option>'+
+        '   <option value="10">folklore</option>'+
+        '   <option value="11">musica</option>'+
+        '   <option value="12">film</option>'+
+        '   <option value="13">moda</option>'+
+        '   <option value="14">shopping</option>'+
+        '  <option value="15">tecnologia</option>'+
+        '   <option value="16">cult. pop. e gossip</option>'+
+        '   <option value="17">esperienze personali</option>'+
+        '   <option value="18">altro</option>'+
+        ' </select>'+
+        ' <label>Audience</label>'+
+
+        ' <select id="Audience'+id+'" multiple="multiple">'+
+        '   <option value="1" selected>pubblico generico</option>'+
+        '   <option value="2">pre-scuola</option>'+
+        '   <option value="3">scuola primaria</option>'+
+        '   <option value="4">scuola media</option>'+
+        '   <option value="5">specialisti del settore</option>'+
+        ' </select>'
+        $("#"+li.id).append(text);
+        $("#Content"+id).multiselect({
+          hideOptgroupCheckboxes:true
+          });
+        $("#Audience"+id).multiselect({
+          hideOptgroupCheckboxes:true
+        });
+
     }
 
     function check(){
