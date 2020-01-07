@@ -8,9 +8,7 @@ const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 const ffmpeg = require('fluent-ffmpeg');
 var readJson = require("r-json");
 const Youtube = require("youtube-api"),
-path = require("path"),
-opn = require("opn"),
-prettyBytes = require("pretty-bytes");
+path = require("path");
 ffmpeg.setFfmpegPath(ffmpegPath);
 
 const CREDENTIALS = readJson("./credential.json");
@@ -38,11 +36,8 @@ function UploadYoutube (myTitle, myDescription, myTags, myFileLocation) {
                 // I don't want to spam my subscribers
               , status: {
                     privacyStatus: "public"
-
                 }
             }
-
-
             // This is for the callback function
           , part: "snippet,status"
 
@@ -229,10 +224,9 @@ upload: function upload(fileName,id) {
   const newPath = __dirname + '/user/'+id+'/upload/';
   const absolute = newPath + fileName + '.mkv';
    var result = UploadYoutube("prova2 title"+fileName, "prova2 description"+fileName, ["upload"+fileName,"prove2"+fileName],absolute);
-
 },
 reload: function reload(base){
- if(oauth != null){
+ if(oauth.credentials.access_token != undefined && oauth.credentials.refresh_token != undefined){
   oauth.setCredentials({
     access_token: base.query.token,
     refresh_token :base.query.refresh

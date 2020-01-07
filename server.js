@@ -229,6 +229,7 @@ app.post('/cutAudio', upload.single('file'), function (req, res) { //, is still 
 
 app.post('/saveToken',function(req,res){
   utils.reload(req);
+  res.send("end");
 });
 
 app.post('/removeDir',function(req,res){
