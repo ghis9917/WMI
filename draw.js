@@ -1,4 +1,4 @@
-var cont_why = 0, struct =[], time, url,stime,etime, wavesurfer = [];
+var cont_why = 0, struct =[], time, url,stime,etime = [], wavesurfer = [];
 
 
   function controlStruct(id){
@@ -26,13 +26,14 @@ var cont_why = 0, struct =[], time, url,stime,etime, wavesurfer = [];
     var index, ide;
     ide = id.split("_");
     index = controlStruct(ide[0]);
-    if(!(stime == 0 && etime.toFixed(0) == wavesurfer[ide[0]+"_wave"].getDuration().toFixed(0) )) {
+    if(!(stime == 0 && etime[ide[0]+"_wave"].toFixed(0) == wavesurfer[ide[0]+"_wave"].getDuration().toFixed(0) )) {
     var fd = new FormData();
 
     fd.append('fname',ide[0] + '.mp3' );
     fd.append('file', struct[index].blob);
     fd.append('stime',stime );
-    fd.append('etime', etime);
+    fd.append('etime', etime[ide[0]+"_wave"]);
+    fd.append('id',profile.getId());
     $.ajax({
       url: "/cutAudio", //Need to adapt for audio in input
       method: "POST",
@@ -79,7 +80,6 @@ function getReady(id,data,ifOrigin){
   var audioList = document.getElementById("waveList");
   var radioValue = $("input[name='clip']:checked").val();
   var label = document.createElement('label');
-  console.log("id passed to getready " + id);
   label.innerHTML = id + '.mp3';
 
   if(radioValue == "Why"){
@@ -162,14 +162,10 @@ function getReady(id,data,ifOrigin){
         blob : request.response,
         id : id
       });
-
       loadWave(div.id,request.response)
-      console.log(struct);
       if(ifOrigin) div.appendChild(origin_button);
   };
-  console.log(request);
   request.send();
-
   var text ='<label>Content</label>'+
   '<select id="Content'+id+'" multiple="multiple">'+
   '  <option value="1" selected>None</option>'+
@@ -221,8 +217,6 @@ _player.currentTime = 24*60*60; //fake big time
 function loadWave(id,data){
 
   var div;
-  console.log("id");
-  console.log(id);
   wavesurfer[id] = WaveSurfer.create({
     container: '#' + id,
     scrollParent : false,
@@ -244,16 +238,16 @@ function loadWave(id,data){
 
   wavesurfer[id].on('ready', async function () {
     stime = 0
-    etime = wavesurfer[id].getDuration();
-    while(etime === Infinity) {
+    etime[id] = wavesurfer[id].getDuration();
+    while(etime[id] === Infinity) {
       await new Promise(r => setTimeout(r, 1000));
-      etime= 10000000*Math.random();
+      etime[id]= 10000000*Math.random();
     }
-    console.log(etime);
+    // console.log(etime[id]);
     wavesurfer[id].addRegion({
       id:'#' + id + 'region',
       start: 0,
-      end: etime,
+      end: etime[id] ,
       color: 'hsl(231, 100%, 90%,0.4)',
       resize:true,
       drag:true
@@ -261,7 +255,7 @@ function loadWave(id,data){
   });
   wavesurfer[id].on('region-update-end', function (region) {
     stime = region.start;
-    etime = region.end;
+    etime[id] = region.end;
   });
 
   wavesurfer[id].on("seek", function(){
@@ -269,13 +263,9 @@ function loadWave(id,data){
 
   });
   if(data instanceof Blob) {
-    console.log("upload blob");
-    console.log(data);
     wavesurfer[id].load( URL.createObjectURL(data));
   }
   else {
-    console.log("url");
-    console.log(data);
     wavesurfer[id].load(data); // load audio
   }
   div.style = "width:800;background-color:#0060DF";

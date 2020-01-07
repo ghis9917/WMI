@@ -51,7 +51,6 @@ $(document).ready(async function() {
   loadMarker();
 });
 
-
 //____________CREATEMAP FUNCTIONS_______________________________________
 
 function createMap() {

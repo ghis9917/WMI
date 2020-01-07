@@ -1,4 +1,4 @@
-var toServer=[];
+var toServer=[],length;
 
 function resetForm(check){
   document.getElementById("uploadForm").reset();
@@ -6,11 +6,11 @@ function resetForm(check){
   var waveList = document.getElementById("waveList");
   var childBody = modalBody.lastElementChild;
   var childList = waveList.lastElementChild;
-
   while (childBody) {
     modalBody.removeChild(childBody);
     childBody = modalBody.lastElementChild;
   }
+
   if(check == 1){
     while (childList) {
       waveList.removeChild(childList);
@@ -25,8 +25,6 @@ function showWave(){
   for (var child in modalBody) {
     if(modalBody[child].id !== undefined){
       fileId = modalBody[child].id.replace("method","");
-      console.log("file id");
-      console.log(fileId);
       setNewId(fileId);
     }
   }
@@ -55,10 +53,8 @@ function setNewId(fileId){
   struct.splice(index,1);
   for(var i in wavesurfer){
     if(i == fileId+"_wave"){
-      console.log("splittato");
       wavesurfer[i].destroy();
       wavesurfer = wavesurfer.splice(cont,1);
-      console.log(wavesurfer);
       break;
     }
     cont++;
@@ -149,7 +145,6 @@ $('#files').on('input',async function() {
 
 
 async function loadFile(file){
-  // return new Promise(async (resolve,reject) => {
   if(file instanceof File){
   var reader = new FileReader();
   var fileSize = file.size;
@@ -159,65 +154,32 @@ async function loadFile(file){
         audioElement.src = e.target.result;
         var timer = setInterval(function() {
           if (audioElement.readyState === 4) {
-            // switch (tipo) {
-            //     case "why":
-            //     console.log("whyyyyy")
-            //     if(audioElement.duration > 15){
-            //       //TODO UPLOAD NEW AUDIO
-            //       $('#'+id).val("");
-            //     }else{
-            //       //TODO CUT OR REJECT AUDIO
-            //     };break;
-            //     case "how":
-            //     console.log("howwwww")
-            //     carica(file);
-            //     if(audioElement.duration > 30 && audioElement.duration < 15){
-            //       //TODO UPLOAD NEW AUDIO
-            //       //$('#'+id).val("");
-            //     }else{
-            //       //TODO CUT OR REJECT AUDIO
-            //     };break;
-            //     case "what":
-            //     console.log("whaaattttt")
-            //     if(audioElement.duration > 15){
-            //       //TODO UPLOAD NEW AUDIO
-            //       $('#'+id).val("");
-            //     }else{
-            //       //TODO CUT OR REJECT AUDIO
-            //     };break;
-            //     default:
-            //     console.log("Bah, qualcosa è andato storto, mi disp")
-            //   }
               clearInterval(timer);
               var id = file.name.split(".");
               var url = URL.createObjectURL(file);
-
               loadModal(file,id[0],e.target.result);
               getReady(id[0],url,0);
-              // div.setAttribute('id', 'wave' + id[0] );
-              // li.appendChild(div);
-              // li.appendChild(document.createElement('br'))
-              // audioList.appendChild(li);
-              // resolve(loadWave(div.id,url));
-            }
-          }, 500);
-        }
-      };
-      if (file) {
-        reader.readAsDataURL(file);
-      } else {
-        alert('nofile');
+          }
+        }, 500);
       }
+    };
+    if (file) {
+      reader.readAsDataURL(file);
+    } else {
+      alert('nofile');
     }
-  // });
+  }
 }
+
 function uploadAjax(){
   return new Promise(async (resolve,reject) => {
     toServer.forEach(function (item, ind, array) {
       var fd = new FormData();
       fd.append("fname",item.name);
       fd.append("file",item.blob);
-      console.log(item);
+      fd.append("id",profile.getId());
+      fd.append("etime",etime[item.name + "_wave"]);
+
       $.ajax({
         url: "/uploadFile", //Need to adapt for audio in input
         method: "POST",
@@ -225,7 +187,7 @@ function uploadAjax(){
         processData: false,
         contentType: false
       }).done(function(data) {
-        console.log("uploaded");
+        length--;
   //other ajax
       });
     })
@@ -233,41 +195,43 @@ function uploadAjax(){
   })
 }
 
+  function cancelDir(){
+    var timer = null;
+    if (length == 0) {
+      var fd = new FormData();
+      fd.append("id",profile.getId());
+      $.ajax({
+        url: "/removeDir?id="+profile.getId(), //Need to adapt for audio in input
+        method: "POST",
+        processData: false,
+        contentType: false
+      }).done(function(data) {
+        clearTimeout(timer);
+        resetForm(1);
+      });
+    }
+    else{
+        timer = setTimeout(cancelDir, 1000);
+    }
+  }
+
   $('#upload').on("click", async function(){
-    console.log("clicked upload");
     var checkedValue = null,index,cont = 0;
     var inputElements = document.getElementsByClassName('toUpload');
-    toServer = []
-    for(var i=0; inputElements[i]; ++i){
+    toServer = [];
+    for(var i=0; inputElements[i]; i++){
           if(inputElements[i].checked){
                checkedValue = inputElements[i].id;
                index = controlStruct(checkedValue);
-               console.log(checkedValue);
-               console.log(index);
-               console.log(struct[index]);
                toServer[cont] = {}
                toServer[cont].blob = struct[index].blob;
                toServer[cont].name = struct[index].id;
                cont++;
           }
     }
-    console.log(toServer);
-
-
+    length = cont;
     await uploadAjax();
-    console.log("dopo chiamata");
-
-    // $.ajax({
-    //   url: "/oauth2callback?token="+token+"&refresh="+refresh,
-    //   type:"post",
-    //   success: function (data){
-    //     console.log(data);
-    //   },
-    //   error: function (err){
-    //     console.log(err);
-    //   }
-    // })
-
+    cancelDir();
   })
 
       $('#uploadForm').submit(function(event) {
@@ -282,7 +246,6 @@ function uploadAjax(){
                  console.log(response);
              }
      });
-         //Very important line, it disable the page refresh.
      return false;
      });
 });

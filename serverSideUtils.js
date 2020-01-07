@@ -3,12 +3,12 @@ const openLocationCode = new OpenLocationCode();
 const axios = require('axios');
 const fs = require('fs')
 var parseString = require('xml2js').parseString;
-var mkdirp = require('mkdirp');
 var multer = require('multer');
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 const ffmpeg = require('fluent-ffmpeg');
 var readJson = require("r-json");
 const Youtube = require("youtube-api"),
+path = require("path"),
 opn = require("opn"),
 prettyBytes = require("pretty-bytes");
 ffmpeg.setFfmpegPath(ffmpegPath);
@@ -19,35 +19,11 @@ var auth = Youtube.authenticate({
   key: 'AIzaSyCAXQP_4KlAztXqWzAOvjv7Pa7DWIUb42U'
 });
 
-//
-// var youtube = Youtube({
-//   video: {
-//     part: 'status,snippet'
-//   }
-
-// })
-
-
-// Authenticate
-// You can access the Youtube resources via OAuth2 only.
-// https://developers.google.com/youtube/v3/guides/moving_to_oauth#service_accounts
-//
 let oauth = Youtube.authenticate({
     type: "oauth"
   , client_id: CREDENTIALS.web.client_id
   , client_secret: CREDENTIALS.web.client_secret
-  , redirect_url: CREDENTIALS.web.redirect_uris[0]
 });
-
-
-
-
-opn(oauth.generateAuthUrl({
-    access_type: "offline"
-  , scope: ["https://www.googleapis.com/auth/youtube.upload"]
-}));
-
-
 
 function UploadYoutube (myTitle, myDescription, myTags, myFileLocation) {
     var req = Youtube.videos.insert({
@@ -191,20 +167,23 @@ module.exports = {
 });
 },
 cutAudio: function cutAudio(audio,res) {
-var x = 1
 const fileName = audio.body.fname;
 const stime = audio.body.stime;
 const etime = audio.body.etime;
-
-const newPath = __dirname + '/user/userid/';
+const id = audio.body.id;
+const newPath = __dirname + '/user/'+id+'/';
 const filePath = newPath + fileName.replace("Origin","");
+
+if (!fs.existsSync(newPath)) {
+  fs.mkdirSync(newPath);
+}
+
 fs.writeFileSync(filePath, audio.file.buffer, error => {
   if (error) {
     console.error(error)
     res.end()
   } else {
     res.end(fileName)
-    //here you can save the file name to db, if needed
   }
 })
 
@@ -226,9 +205,6 @@ origin
      .saveToFile(newPath + "1"+fileName);
 }
 if(stime != undefined && etime != undefined){
-  console.log("posso tagliare");
-  console.log(stime);
-  console.log(etime);
 const conv = new ffmpeg({ source: filePath  });
 conv
      .setStartTime(stime) //Can be in "HH:MM:SS" format also
@@ -243,50 +219,28 @@ conv
        if (!err) { console.log("conversion Done"); }
 
        x = 0;
-       res.send("https://localhost:8000/" +'user/userid/new' + fileName);
+       res.send("https://localhost:8000/" +'user/'+id+'/new' + fileName);
 
      })
      .saveToFile(newPath + 'new' + fileName);
 }
 },
-save: function save(req, res) {
-//
-console.log("in save");
-mkdirp('/user/userid/upload' , function (err) {
-  var storage = multer.diskStorage({
-        destination: function(req, file, cb) {
-            cb(null, './user/userid/upload');
-        },
-        filename: function (req, file, cb) {
-          console.log(file);
-          console.log(file.originalname);
-          cb(null , "Origin"+file.originalname);
-        }
-      });
-    var upload = multer({ storage: storage }).array('file', 6)
-    upload(req, res, function(err) {
-
-    if(err) {
-        return res.end("Error uploading file.");
-    }
-    res.end("File is uploaded");
-});
-});
-},
-upload: function upload(fileName) {
-  const newPath = __dirname + '/user/userid/upload/';
+upload: function upload(fileName,id) {
+  const newPath = __dirname + '/user/'+id+'/upload/';
   const absolute = newPath + fileName + '.mkv';
-  console.log("oauth");
-  console.log(absolute)
-  var result = UploadYoutube("prova2 title"+fileName, "prova2 description"+fileName, ["upload"+fileName,"prove2"+fileName],absolute);
+   var result = UploadYoutube("prova2 title"+fileName, "prova2 description"+fileName, ["upload"+fileName,"prove2"+fileName],absolute);
 
 },
 reload: function reload(base){
-
+ if(oauth != null){
   oauth.setCredentials({
     access_token: base.query.token,
     refresh_token :base.query.refresh
   });
+}
+},
+remove: function remove(id){
+  fs.rmdir(__dirname + '/user/'+id, { recursive: true }, function (){});
 }
 
 }

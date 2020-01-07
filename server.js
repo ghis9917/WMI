@@ -182,17 +182,17 @@ return new Promise(async (resolve,reject) => {
 });
 }
 
-// app.post('/uploadFile',upload.array('multiAudio', 4), function(req, res) {
-//   console.log(req.files);
-//     res.send("files uploaded");
-//
-// })
 app.post('/uploadFile',upload.single('file'),function(req,res){
+  console.log("WELAAAAAAAAA")
+  console.log(req.body.etime)
   const fileName = req.body.fname;
-  console.log( req.body.fname);
-  const newPath = 'user/userid/upload/';
+  const id = req.body.id;
+  console.log(id);
+  const newPath = 'user/'+id+'/upload/';
   const filePath = newPath + fileName+".mp3";
-  console.log("pruika");
+  if (!fs.existsSync(newPath)) {
+    fs.mkdirSync(newPath);
+  }
   fs.writeFileSync(filePath, req.file.buffer, error => {
     if (error) {
       console.error(error)
@@ -203,6 +203,7 @@ app.post('/uploadFile',upload.single('file'),function(req,res){
     }
   })
  var  proc = new ffmpeg({source:filePath})
+
     .addInputOption('-loop', '1')
     .addInputOption('-i', 'firma.jpg')
     .addOptions(['-c:v libx264','-tune stillimage','-c:a aac','-b:a 192k','-pix_fmt yuv420p','-shortest'])
@@ -215,10 +216,10 @@ app.post('/uploadFile',upload.single('file'),function(req,res){
     })
     .on("end", function(err) {
       if (!err) { console.log("conversion Done"); }
-      utils.upload(fileName);
+      utils.upload(fileName,id);
       res.send("end")
-
     })
+    .setDuration(req.body.etime)
     .saveToFile(newPath + fileName+".mkv");
 });
 
@@ -227,8 +228,12 @@ app.post('/cutAudio', upload.single('file'), function (req, res) { //, is still 
 });
 
 app.post('/saveToken',function(req,res){
-  console.log("entrato in ouath");
-  utils.reload(req)
+  utils.reload(req);
+});
+
+app.post('/removeDir',function(req,res){
+  utils.remove(req.query.id);
+  res.send("deleted")
 });
 
 app.get('*', (req, res) => {
@@ -239,8 +244,6 @@ app.get('*', (req, res) => {
     res.status(204).json({ nope: true });
   } else if (ext === ".mp3") {
     //audio
-    console.log("send file");
-    console.log(req.url);
     res.sendFile(path.join(__dirname, './' + req.url));
   }
 });

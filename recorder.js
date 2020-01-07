@@ -1,5 +1,4 @@
-
-  var x,c, prova = 0, cont_why = 0, timeout = 15000, edit, time, url,stime,etime, wavesurfer = [];
+var x,c, prova = 0, cont_why = 0, timeout = 15000, edit, time, url,stime,etime, wavesurfer = [];
 
 
       function controlClip(list,radioValue){
@@ -183,22 +182,16 @@
 
       fd.append('fname', "Origin"+label.innerHTML);
       fd.append('file', data);
-      console.log("ddata");
-      console.log(data);
+      fd.append('id',profile.getId());
       $.ajax({
         url: "/cutAudio", //Need to adapt for audio in input
         method: "POST",
         data: fd,
         processData: false,
         contentType: false
-      }).done(function(data) {
-        console.log("uploaded");
-        console.log(data);
-      });
+      })
       loadWave(div.id,url)
-
-
-        var text ='<label>Content</label>'+
+      var text ='<label>Content</label>'+
         '<select id="Content'+id+'" multiple="multiple">'+
         '  <option value="1" selected>None</option>'+
         '  <option value="2">natura</option>'+

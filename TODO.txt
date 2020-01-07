@@ -20,7 +20,7 @@ Assignements:
     .
     .
     more infos and curiosities
-(From youtube done, there is a file that get video and convert directly in audio to play on browser)
+(From youtube done, there is a file that get video and convert directly in audio to play on browser, we have to add a graphic for homemade mp3 player and link it to the clip)
 
 Optional Features (Browser):
 -Directions to the place if not already there (10 pt.) (Leaflet Routing Machine) (DONE)
@@ -44,11 +44,11 @@ Optional Features (Browser):
 -Turist location filters based on opening hours and type of location (5 pt.)
 
 
--Option to check location as visited (5 pt.) (DONE Probably gonna use a database to save user infos on visited locations)
+-Option to check location as visited (5 pt.) (DONE)
 -Show content of DBPedia of the location and language requested by user and reproduced with speech synthesis (20 pt.) (DONE)
 -Ratings of each clip and location with feedback visualisation on map (10 pt.) (DONE need graphic)
 
 Optional Features (Editor):
 -Clip editing (resizing of clip, merging of multiple clips, volume modulation, etc.) (20 pt.) (DONE, smog has the zip)
--Uploading multiple clips with a single upload on YouTube (the browser must be able to view them separately) (20 pt.)
+-Uploading multiple clips with a single upload on YouTube (the browser must be able to view them separately) (20 pt.) (DONE)
 -List of feedback of users on your clip and views statistics (5 pt.) (Database to save clips infos)

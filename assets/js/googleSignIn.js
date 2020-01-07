@@ -8,7 +8,6 @@ function onSignIn(googleUser) {
     url: "/saveToken?token="+token+"&refresh="+refresh,
     type:"post",
     success: function (data){
-      console.log(data);
     },
     error: function (err){
       console.log(err);
@@ -18,7 +17,6 @@ function onSignIn(googleUser) {
   window.localStorage.removeItem('check');
   window.localStorage.setItem('check', true);
   if ("https://localhost:8000/profile.html" == window.location.href || "https://localhost:8000/profile.html#" == window.location.href) {
-    console.log("profile mode");
     $('#loginModal').modal('hide');
     $("h4").html("");
     $("h4").html(profile.getName());
@@ -30,7 +28,6 @@ function onSignIn(googleUser) {
     $("#display").show();
   }
   if ("https://localhost:8000/" == window.location.href || "https://localhost:8000/index.html" == window.location.href) {
-    console.log("index");
     $('#loginModal').modal('hide');
     $('#profile').show();
     $('#profile > a').html(profile.getName());
@@ -39,7 +36,6 @@ function onSignIn(googleUser) {
     $('.close').click();
   }
   if ("https://localhost:8000/editorMode.html" == window.location.href || "https://localhost:8000/editorMode.html/" == window.location.href || "https://localhost:8000/editorMode.html#" == window.location.href) {
-      console.log("editor mode");
       $("#profileText").html(profile.getName());
       $('#loginModal').modal('hide');
       createMap();
