@@ -11,9 +11,9 @@ function setApiKey() {
 
 function checkMode() {
   if (
-    "http://localhost:8000/userMode.html" == window.location.href ||
-    "http://localhost:8000/userMode.html/" == window.location.href ||
-    "http://localhost:8000/userMode.html#" == window.location.href
+    "https://localhost:8000/userMode.html" == window.location.href ||
+    "https://localhost:8000/userMode.html/" == window.location.href ||
+    "https://localhost:8000/userMode.html#" == window.location.href
   ) {
     return 1;
   } else return 0;

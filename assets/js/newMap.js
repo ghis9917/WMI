@@ -250,22 +250,43 @@ async function onClickMarker(instruction, distance) {
 }
 
 const onClick = () => {
-  mymap.on("click", function(e) {
-    var fakeBtn = createButton("fakePos");
+  if ("https://localhost:8000/editorMode.html" == window.location.href
+  || "https://localhost:8000/editorMode.html/" == window.location.href
+  || "https://localhost:8000/editorMode.html#" == window.location.href) {
+    mymap.on("click", function(e) {
+      var fakeBtn = createButton("add audio");
 
-    L.DomEvent.on(fakeBtn, "click", function() {
-      mymap.closePopup();
-      lat = e.latlng.lat;
-      lon = e.latlng.lng;
-      currentLocation.setLatLng(e.latlng);
-      if (control !== null) control.spliceWaypoints(0, 1, e.latlng);
-      updateCustomRouting();
+      L.DomEvent.on(fakeBtn, "click", function() {
+        mymap.closePopup();
+        var latx = e.latlng.lat;
+        var lonx = e.latlng.lng;
+        console.log("ciao max gay");
+        $("#uploadModal").modal();
+      });
+      L.popup("#ffffff")
+        .setContent(fakeBtn)
+        .setLatLng(e.latlng)
+        .openOn(mymap);
     });
-    L.popup("#ffffff")
-      .setContent(fakeBtn)
-      .setLatLng(e.latlng)
-      .openOn(mymap);
-  });
+  }
+  else{
+    mymap.on("click", function(e) {
+      var fakeBtn = createButton("fakePos");
+
+      L.DomEvent.on(fakeBtn, "click", function() {
+        mymap.closePopup();
+        lat = e.latlng.lat;
+        lon = e.latlng.lng;
+        currentLocation.setLatLng(e.latlng);
+        if (control !== null) control.spliceWaypoints(0, 1, e.latlng);
+        updateCustomRouting();
+      });
+      L.popup("#ffffff")
+        .setContent(fakeBtn)
+        .setLatLng(e.latlng)
+        .openOn(mymap);
+    });
+  }
 };
 
 function setSpeech() {

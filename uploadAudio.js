@@ -175,21 +175,24 @@ function uploadAjax(){
   return new Promise(async (resolve,reject) => {
     toServer.forEach(function (item, ind, array) {
       var fd = new FormData();
+
       fd.append("fname",item.name);
       fd.append("file",item.blob);
       fd.append("id",profile.getId());
       fd.append("etime",etime[item.name + "_wave"]);
 
-      $.ajax({
-        url: "/uploadFile", //Need to adapt for audio in input
-        method: "POST",
-        data:fd,
-        processData: false,
-        contentType: false
-      }).done(function(data) {
-        length--;
-  //other ajax
-      });
+      console.log($("#Content"+item.name).multiselect())
+
+  //     $.ajax({
+  //       url: "/uploadFile", //Need to adapt for audio in input
+  //       method: "POST",
+  //       data:fd,
+  //       processData: false,
+  //       contentType: false
+  //     }).done(function(data) {
+  //       length--;
+  // //other ajax
+  //     });
     })
     resolve();
   })

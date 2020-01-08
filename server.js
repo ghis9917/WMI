@@ -10,7 +10,6 @@ const utils = require('./serverSideUtils.js');
 var client = require('mongodb').MongoClient;
 var parseString = require('xml2js').parseString;
 var https = require('https')
-const uploadAudio = require('./saveAudio.js')
 var bodyParser = require('body-parser');
 const upload = multer();
 const Youtube = require("youtube-api"),
@@ -183,7 +182,6 @@ return new Promise(async (resolve,reject) => {
 }
 
 app.post('/uploadFile',upload.single('file'),function(req,res){
-  console.log("WELAAAAAAAAA")
   console.log(req.body.etime)
   const fileName = req.body.fname;
   const id = req.body.id;

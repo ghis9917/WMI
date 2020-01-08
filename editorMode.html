@@ -51,7 +51,33 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/wavesurfer.js/1.2.3/plugin/wavesurfer.regions.min.js"></script>
       <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
+      <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css" />
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:300,400,600" />
+      <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css" />
+      <link rel="stylesheet" href="assets/fonts/font-awesome.min.css" />
+      <link rel="stylesheet" href="assets/fonts/fontawesome5-overrides.min.css" />
+      <link rel="stylesheet" href="assets/css/Animation-Cards-1.css" />
+      <link rel="stylesheet" href="assets/css/Animation-Cards.css" />
+      <link rel="stylesheet" href="assets/css/Footer-Basic.css" />
+      <link rel="stylesheet" href="assets/css/Footer-Clean.css" />
+      <link rel="stylesheet" href="assets/css/Footer-Dark.css" />
+      <link href="https://www.solodev.com/core/fileparse.php/131/urlt/google-translate.css" rel="stylesheet">
+
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css" />
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+      <link rel="stylesheet" href="assets/css/Google-Style-Login.css" />
+      <link rel="stylesheet" href="https://unpkg.com/leaflet-geosearch@latest/assets/css/leaflet.css" />
+      <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" />
+      <link rel="stylesheet" href="assets/css/Map-Clean.css" />
+      <link rel="stylesheet" href="assets/css/Navigation-Clean.css" />
+      <link rel="stylesheet" href="assets/css/Navigation-with-Button.css" />
+      <link rel="stylesheet" href="assets/css/Profile-Card.css" />
+      <link rel="stylesheet" href="https://unpkg.com/@bootstrapstudio/bootstrap-better-nav/dist/bootstrap-better-nav.min.css" />
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.1.1/aos.css" />
+      <link rel="stylesheet" href="assets/css/styles.css" />
     <meta name="google-signin-scope" content="profile email">
     <meta name="google-signin-client_id"
         content="114712511052-o00pbvnd01mt0jfl946p61k2vtjfk6m8.apps.googleusercontent.com">
@@ -114,7 +140,7 @@
             </div>
         </div>
     </div>
-    <!-- <div class="modal fade" id="noGeo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal fade" id="noGeo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -131,12 +157,84 @@
         </div>
       </div>
     </div>
- --><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-  Launch demo modal
-</button>
 
 <!-- Modal -->
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="modal fade" id="uploadModal" tabindex="-2" role="dialog"" aria-hidden="true" data-keyboard="false" data-backdrop="static">
   <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="controls" align="center">
+            <button id="recordButton" >Record</button>
+            <button id="stopButton" disabled>Stop</button>
+
+                </div>
+                <div id="methode" align="center">
+                    <input type="radio" name="clip" value="What" id="what" checked="true"> What
+                    <input type="radio" name="clip" value="How" id="how"> How
+                    <input type="radio" name="clip" value="Why" id="why" > Why
+                </div>
+                <form id="uploadForm"
+                    enctype="multipart/form-data"
+                    action="/uploadFile"
+                    method="post"
+              >
+              <div>
+                  <label>Select multiple audio:</label>
+                  <input id="files" type="file" name="multiAudio" multiple  />
+              </div>
+              </form>
+                  <span id = "status"></span>
+                  <ol id="waveList"></ol>
+                  <button id="upload">
+                      Upload to youtube
+                  </button>
+                  <div>
+                  <div class="modal" id="typeAudioSelect" class="modal fade" tabindex="-5">
+
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" >Please select the type of the clip</h5>
+                        </div>
+                        <div id="typeAudioSelectBody" class="modal-body">
+
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="showWave()">Finish</button>
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="resetForm(1)">Close</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--
+  <div class="modal-dialog" role="document" aria-hidden="true">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
@@ -189,15 +287,19 @@
                 </div>
               </div>
             </div>
-          </div>      </div>
+          </div>
+        </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="bt
+    <style>
+    iframe { left: 0 !important }
+  </style> n btn-primary">Save changes</button>
       </div>
     </div>
   </div>
 
-
+ -->
 
 
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
@@ -213,7 +315,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="assets/js/newMap.js"></script>
     <script src="https://unpkg.com/@bootstrapstudio/bootstrap-better-nav/dist/bootstrap-better-nav.min.js"></script>
-    <script src="https://www.openlayers.org/api/OpenLayers.js"></script>
+    <script src="assets/js/OpenLayers.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/places.js@1.16.6"></script>
     <script src="assets/js/lrm-graphhopper.js"></script>
      <script src="assets/js/googleSignIn.js"></script>
