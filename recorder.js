@@ -192,7 +192,7 @@ var x,c, prova = 0, cont_why = 0, timeout = 15000, edit, time, url,stime,etime, 
       })
       loadWave(div.id,url)
       var text ='<label>Content</label>'+
-        '<select id="Content'+id+'" multiple="multiple">'+
+        '<select id="Content'+radioValue+'" multiple="multiple">'+
         '  <option value="1" selected>None</option>'+
         '  <option value="2">natura</option>'+
         '  <option value="3">arte</option>'+
@@ -214,7 +214,7 @@ var x,c, prova = 0, cont_why = 0, timeout = 15000, edit, time, url,stime,etime, 
         ' </select>'+
         ' <label>Audience</label>'+
 
-        ' <select id="Audience'+id+'" multiple="multiple">'+
+        ' <select id="Audience'+radioValue+'" multiple="multiple">'+
         '   <option value="1" selected>pubblico generico</option>'+
         '   <option value="2">pre-scuola</option>'+
         '   <option value="3">scuola primaria</option>'+
@@ -222,10 +222,10 @@ var x,c, prova = 0, cont_why = 0, timeout = 15000, edit, time, url,stime,etime, 
         '   <option value="5">specialisti del settore</option>'+
         ' </select>'
         $("#"+li.id).append(text);
-        $("#Content"+id).multiselect({
+        $("#Content"+radioValue).multiselect({
           hideOptgroupCheckboxes:true
           });
-        $("#Audience"+id).multiselect({
+        $("#Audience"+radioValue).multiselect({
           hideOptgroupCheckboxes:true
         });
 

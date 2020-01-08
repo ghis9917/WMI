@@ -258,9 +258,8 @@ const onClick = () => {
 
       L.DomEvent.on(fakeBtn, "click", function() {
         mymap.closePopup();
-        var latx = e.latlng.lat;
-        var lonx = e.latlng.lng;
-        console.log("ciao max gay");
+        latx = e.latlng.lat;
+        lonx = e.latlng.lng;
         $("#uploadModal").modal();
       });
       L.popup("#ffffff")

@@ -1,4 +1,4 @@
-var toServer=[],length;
+var toServer=[],length,latx,lonx;
 
 function resetForm(check){
   document.getElementById("uploadForm").reset();
@@ -175,13 +175,14 @@ function uploadAjax(){
   return new Promise(async (resolve,reject) => {
     toServer.forEach(function (item, ind, array) {
       var fd = new FormData();
-
+      console.log(latx);
       fd.append("fname",item.name);
       fd.append("file",item.blob);
       fd.append("id",profile.getId());
       fd.append("etime",etime[item.name + "_wave"]);
 
-      console.log($("#Content"+item.name).multiselect())
+      console.log($("#Content"+item.name).multipleSelect());
+
 
   //     $.ajax({
   //       url: "/uploadFile", //Need to adapt for audio in input

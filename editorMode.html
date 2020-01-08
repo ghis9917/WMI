@@ -85,6 +85,10 @@
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <script src="assets/js/UserModeUtils.js"></script>
     <script src="assets/js/googleSignIn.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/multiple-select@1.5.2/dist/multiple-select.min.css">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://unpkg.com/multiple-select@1.5.2/dist/multiple-select.min.js"></script>
     <script>
         $(document).ready(function () {
             getLog();
@@ -121,6 +125,8 @@
         </div>
     </div>
     <div id="mapid" style="display:nonde;height: 100%;"></div>
+
+
     <div id="loginModal"class="modal fade" role="dialog" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -140,7 +146,9 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="noGeo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+
+
+    <div class="modal" id="noGeo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -160,22 +168,11 @@
 
 <!-- Modal -->
 
-
-
-
-
-
-
-
-
-
-
-
-<div class="modal fade" id="uploadModal" tabindex="-2" role="dialog"" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+<div class="modal" id="uploadModal" role="dialog" tabindex="-1" aria-hidden="true" data-keyboard="false" data-backdrop="static">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <h5 class="modal-title" >Modal title</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -184,8 +181,7 @@
         <div id="controls" align="center">
             <button id="recordButton" >Record</button>
             <button id="stopButton" disabled>Stop</button>
-
-                </div>
+        </div>
                 <div id="methode" align="center">
                     <input type="radio" name="clip" value="What" id="what" checked="true"> What
                     <input type="radio" name="clip" value="How" id="how"> How
@@ -233,73 +229,6 @@
     </div>
   </div>
 </div>
-<!--
-  <div class="modal-dialog" role="document" aria-hidden="true">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-
-          <div id="controls" align="center">
-              <button id="recordButton" >Record</button>
-              <button id="stopButton" disabled>Stop</button>
-
-          </div>
-          <div id="methode" align="center">
-              <input type="radio" name="clip" value="What" id="what" checked="true"> What
-              <input type="radio" name="clip" value="How" id="how"> How
-              <input type="radio" name="clip" value="Why" id="why" > Why
-          </div>
-          <form id="uploadForm"
-              enctype="multipart/form-data"
-              action="/uploadFile"
-              method="post"
-        >
-        <div>
-            <label>Select multiple audio:</label>
-            <input id="files" type="file" name="multiAudio" multiple  />
-        </div>
-        </form>
-            <span id = "status"></span>
-            <ol id="waveList"></ol>
-            <button id="upload">
-                Upload to youtube
-            </button>
-            <div>
-            <div class="modal" id="typeAudioSelect" class="modal fade" tabindex="-5">
-
-              <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" >Please select the type of the clip</h5>
-                  </div>
-                  <div id="typeAudioSelectBody" class="modal-body">
-
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="showWave()">Finish</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="resetForm(1)">Close</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="bt
-    <style>
-    iframe { left: 0 !important }
-  </style> n btn-primary">Save changes</button>
-      </div>
-    </div>
-  </div>
-
- -->
 
 
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
