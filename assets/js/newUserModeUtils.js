@@ -11,7 +11,7 @@ function getIconMarkerOfColor(color) {
 }
 
 function setGeolocationApiKey() {
-  $("#btn-load").click(function() {
+  $("#btn-load").click(function () {
     callGeoLocationApi();
   });
   this.placesAutocomplete = places({
@@ -61,7 +61,7 @@ function updateCurrentLocation(lat, lon) {
   try {
     mymap.removeLayer(currentLocation);
     control.spliceWaypoints(0, 1, L.latLng(lat, lon));
-  } catch (err) {}
+  } catch (err) { }
   currentLocation = L.marker([lat, lon], {
     icon: getIconMarkerOfColor(blackIcon)
   })
@@ -80,18 +80,18 @@ function createButton(label) {
 function addPlayButton() {
   customdirectionsButton = L.easyButton({
     states: [
-      newState("search", "fa-location-arrow", "Enter address", function(btn) {
+      newState("search", "fa-location-arrow", "Enter address", function (btn) {
         $("#noGeo").modal();
       }),
-      newState("start", "fas fa-play", "Start routing to nearest POI", function(
+      newState("start", "fas fa-play", "Start routing to nearest POI", function (
         btn
       ) {
         createPlayer();
       }),
-      newState("loading", "fas fa-spinner", "We are loading the POIs", function(
+      newState("loading", "fas fa-spinner", "We are loading the POIs", function (
         btn
-      ) {}),
-      newState("started", "fas fa-pause", "Stop routing", function(btn) {
+      ) { }),
+      newState("started", "fas fa-pause", "Stop routing", function (btn) {
         mymap.removeControl(control);
         control = null;
         btn.state("start");
@@ -157,14 +157,16 @@ function calculateRouting() {
   var count = 0;
   var currentPOI = getFirstPOI();
   do {
-    currentPOI = getNearestTo(
-      POIs[currentPOI].coords.latitudeCenter,
-      POIs[currentPOI].coords.longitudeCenter,
-      currentPOI
-    );
-    count++;
+    if (currentPOI != -1) {
+      currentPOI = getNearestTo(
+        POIs[currentPOI].coords.latitudeCenter,
+        POIs[currentPOI].coords.longitudeCenter,
+        currentPOI
+      );
+      count++;
+    }
   } while (currentPOI != -1 && count < 50);
-  populatePopup(currentDestination);
+  populatePopup(actualRouting[currentDestination]);
 }
 
 function getFirstPOI() {
@@ -195,7 +197,7 @@ function getNearestTo(lat, lng, currentIndex) {
     }
   }
   if (returnIndex != -1) {
-    actualRouting.append(returnIndex);
+    actualRouting.push(returnIndex);
   }
   return returnIndex;
 }
@@ -225,7 +227,7 @@ function createPlayer() {
   if (Object.keys(POIs).length !== 0) {
     clearTimeout(timer);
     addRouting();
-    routingTo(currentDestination);
+    routingTo(actualRouting[currentDestination]);
     customdirectionsButton.state("started");
   } else {
     timer = setTimeout(createPlayer, 1000);
@@ -240,7 +242,7 @@ function addRouting() {
     1,
     L.latLng(currentLocation.getLatLng().lat, currentLocation.getLatLng().lng)
   );
-  control.on("routesfound", function(e) {
+  control.on("routesfound", function (e) {
     var distance = e.routes[0].summary.totalDistance;
     var instruction = e.routes[0].instructions[0].text;
     var distanceChange = e.routes[0].instructions[0].distance;
@@ -257,7 +259,7 @@ function addRouting() {
 
 function newRouting() {
   return L.routing.control({
-    createMarker: function() {
+    createMarker: function () {
       //this function prevents the routing control from creating another marker over the one already presentof the POI
       return null;
     },
@@ -293,11 +295,13 @@ function checkDistance(distance, instruction) {
   //versione solo una destinazione alla volta
   var stringToBeSpoken = instruction;
   if (distance <= 20) {
-    POIs[currentDestination].marker.setIcon(getIconMarkerOfColor(orangeIcon));
-    stringToBeSpoken = POIs[currentDestination].description;
-    getVideoId(POIs[currentDestination]);
+    POIs[actualRouting[currentDestination]].marker.setIcon(getIconMarkerOfColor(orangeIcon));
+    stringToBeSpoken = POIs[actualRouting[currentDestination]].description;
+    getVideoId(POIs[actualRouting[currentDestination]]);
+    actualRouting.splice(actualRouting.indexOf(currentDestination), 1);
+    currentDestination = 0;
   }
-  onClickMarker(instruction, distance);
+  onClickMarker(stringToBeSpoken, distance);
 }
 
 async function onClickMarker(toBeSpoken, distance) {
@@ -350,7 +354,7 @@ function setCSSAttribute(id, changes) {
 }
 
 function setSpeech() {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     let synthesis = window.speechSynthesis;
     let id;
     id = setInterval(() => {
@@ -368,21 +372,34 @@ function customRouting() {
   if (control == null) addRouting();
   for (var index in list) {
     if (isNumber(index)) {
-      actualRouting.append(list[index].childNodes[1].id);
+      actualRouting.push(list[index].childNodes[1].id);
     }
   }
-  control.spliceWaypoints(
-    control.getWaypoints() - 1,
-    1,
-    L.latLng(
-      POIs[currentDestination].coords.latitudeCenter,
-      POIs[currentDestination].coords.longitudeCenter
-    )
-  );
-  $("#customRoutingContainer").modal("hide"),
-    customdirectionsButton.state("started");
+  console.log(actualRouting);
+  routingTo(actualRouting[currentDestination]);
+  $("#customRoutingContainer").modal("hide");
+  customdirectionsButton.state("started");
+  populatePopup(actualRouting[currentDestination]);
 }
 
 function isNumber(n) {
   return typeof n != "boolean" && !isNaN(n);
 }
+
+$("#prev").click(function (e) {
+  console.log(POIs[actualRouting[currentDestination]].name);
+  if (currentDestination > 0) {
+    currentDestination--;
+    console.log(POIs[actualRouting[currentDestination]].name);
+    populatePopup(actualRouting[currentDestination]);
+  }
+});
+
+$("#next").click(function (e) {
+  console.log(POIs[actualRouting[currentDestination]].name);
+  if (currentDestination < actualRouting.length - 1) {
+    currentDestination++;
+    console.log(POIs[actualRouting[currentDestination]].name);
+    populatePopup(actualRouting[currentDestination]);
+  }
+});
