@@ -79,7 +79,7 @@ module.exports = {
       }
     );
   },
-  getDescription : function getDescription(client, POIs, titolo,f){
+  getDescription : function getDescription(client, titolo,f){
     return new Promise((resolve, reject) => {
     var cont={},img;
     client.connect("mongodb://localhost:27017/", { useUnifiedTopology: true } ,
@@ -88,6 +88,7 @@ module.exports = {
         var mydb = db.db("smogDB");
         mydb.collection("descrizioni").find({ nome: titolo }).toArray( async function (err, result) {
           if (err) throw err;
+          console.log(result)
           if(result.length !== 0){
                   var json = result[0].descrizione;
                   var img = result[0].urlImg;
@@ -96,7 +97,8 @@ module.exports = {
                   resolve(cont);
                 }
                 else {
-                  var d =  await f.get('http://localhost:8000/askDBPedia?que=' + titolo);
+                   console.log("qui si ferma e poi non stampa")
+                  var d =  await f.get('http://localhost:8000/askDBPedia?que=' + titolo).catch((e)=>{console.log(e);});
                   try {
                     var e = await f.get(
                       d.data.results.bindings[0].c1.value.replace(
