@@ -385,21 +385,3 @@ function customRouting() {
 function isNumber(n) {
   return typeof n != "boolean" && !isNaN(n);
 }
-
-$("#prev").click(function (e) {
-  console.log(POIs[actualRouting[currentDestination]].name);
-  if (currentDestination > 0) {
-    currentDestination--;
-    console.log(POIs[actualRouting[currentDestination]].name);
-    populatePopup(actualRouting[currentDestination]);
-  }
-});
-
-$("#next").click(function (e) {
-  console.log(POIs[actualRouting[currentDestination]].name);
-  if (currentDestination < actualRouting.length - 1) {
-    currentDestination++;
-    console.log(POIs[actualRouting[currentDestination]].name);
-    populatePopup(actualRouting[currentDestination]);
-  }
-});
