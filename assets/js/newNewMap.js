@@ -4,6 +4,7 @@
 var mymap;
 var currentLocation = null;
 var currentDestination = 0;
+var popupIndex = 0;
 var blackIcon =
   "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png";
 var orangeIcon =
@@ -19,20 +20,16 @@ var actualRouting = [];
  * Funzione che gestisce l'avvio dell'applicazione
  */
 $(document).ready(async function() {
-  $("#prev").click(function (e) {
-    console.log(POIs[actualRouting[currentDestination]].name);
+  $("#prev").click(function(e) {
     if (currentDestination > 0) {
       currentDestination--;
-      console.log(POIs[actualRouting[currentDestination]].name);
       populatePopup(actualRouting[currentDestination]);
     }
   });
-  
-  $("#next").click(function (e) {
-    console.log(POIs[actualRouting[currentDestination]].name);
+
+  $("#next").click(function(e) {
     if (currentDestination < actualRouting.length - 1) {
       currentDestination++;
-      console.log(POIs[actualRouting[currentDestination]].name);
       populatePopup(actualRouting[currentDestination]);
     }
   });

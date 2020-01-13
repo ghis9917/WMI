@@ -221,7 +221,7 @@ app.get("/getReview", (req, res) => {
 app.get("/getPOIs", (req, res) => {
   var opts = (youtubeSearch.YouTubeSearchOptions = {
     maxResults: 50,
-    key: rickyKey
+    key: maxKey
   });
 
   try {
@@ -256,10 +256,6 @@ function call(results) {
             img: json["img"]
           };
           counter++;
-          /*POIs[item.title] = val.coords;
-        POIs[item.title].videoId = item.id;
-        POIs[item.title].description = json["desc"];
-        POIs[item.title].img = json["img"];*/
         }
       }
     }
