@@ -1,4 +1,4 @@
-const dps = require("dbpedia-sparql-client").default;
+
 const express = require("express");
 const fs = require("fs");
 const multer = require("multer");
@@ -46,15 +46,14 @@ app.get("/askDBPedia", (req, res) => {
       " , 'BOLOGNA'), ?o1)) as ?c2, ?sc, ?rank, ?g where {{{ select ?s1, (?sc * 3e-1) as ?sc, ?o1, (sql:rnk_scale (<LONG::IRI_RANK> (?s1))) as ?rank, ?g where  { quad map virtrdf:DefaultQuadMap { graph ?g { ?s1 ?s1textp ?o1 . ?o1 bif:contains  '(" +
       string +
       " AND BOLOGNA)'  option (score ?sc)  . } } } order by desc (?sc * 3e-1 + sql:rnk_scale (<LONG::IRI_RANK> (?s1)))  limit 1  offset 0 }}}";
-    dps
-      .client()
-      .query(q)
-      .timeout(15000)
-      .asJson()
-      .then(r => {
+    console.log("Eccomi")
+    dps.client().query(q).timeout(15000).asJson().then(r => {
+        console.log("mmmmmmm CIAO")
+        console.log(r)
         res.send(r);
       })
       .catch(e => {
+        console.log("mmmmmmm CIAO")
         res.send(e);
       });
   });
@@ -221,47 +220,68 @@ app.get("/getReview", (req, res) => {
 app.get("/getPOIs", (req, res) => {
   var opts = (youtubeSearch.YouTubeSearchOptions = {
     maxResults: 50,
-    key: maxKey
+    key: guiKey
   });
 
   try {
-    youtubeSearch(req.query.searchQuery, opts, async (err, results) => {
+    //TODO SET LANGUAGE searchQuery
+    var c = req.query.searchQuery +" ita";
+    youtubeSearch(c, opts, async (err, results) => {
       if (err) {
         console.log(err);
         res.send({ error: err.response.statusText });
       } else {
-        var data = await call(results);
+        var data = await call(results,res);
         res.send(data);
       }
     });
   } catch (error) {}
 });
 
-function call(results) {
-  return new Promise(async (resolve, reject) => {
-    var POIs = {};
-    var list = [];
-    var counter = 0;
-    for (var key in results) {
-      var item = results[key];
-      if ((val = utils.validator(item.description)) !== false) {
-        if (list.indexOf(val.plusCode) === -1) {
-          list.push(val.plusCode);
-          var json = await utils.getDescription(client, item.title, utils);
-          POIs[counter] = {
-            name: item.title,
-            coords: val.coords,
-            videoId: item.id,
-            description: json["desc"],
-            img: json["img"]
-          };
-          counter++;
+
+
+
+
+function call(results,res){
+    return new Promise(async (resolve, reject) => {
+      var POIs = {};
+      var list = [];
+      var counter = 0;
+      client.connect("mongodb://localhost:27017/", { useUnifiedTopology: true } , async function (error, db) {
+        var mydb = db.db("smogDB");
+        for (var key in results) {
+          var item = results[key];
+          if ((val = utils.validator(item.description)) !== false) {
+            if (list.indexOf(val.plusCode) === -1) {
+              list.push(val.plusCode);
+              var c = await utils.getDescription(item.title, mydb, utils);
+              console.log(c)
+              try{
+              POIs[counter] = {
+                name: item.title,
+                coords: val.coords,
+                videoId: item.id,
+                description: c[0].descrizione,
+                img: c[0].urlImg
+              };
+            }catch(error){
+              POIs[counter] = {
+                name: item.title,
+                coords: val.coords,
+                videoId: item.id,
+                description: c.descrizione,
+                img: c.urlImg
+              };
+            }
+              counter++;
+            }
+          }
         }
-      }
-    }
-    resolve(POIs);
-  });
+      resolve(POIs);
+        });
+    });
 }
+
 
 app.post("/uploadFile", upload.single("file"), function(req, res) {
   const fileName = req.body.fname;

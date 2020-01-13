@@ -67,8 +67,7 @@ function updateCurrentLocation(lat, lon) {
   })
     .bindPopup(popupCurrentLocation)
     .addTo(mymap);
-  console.log("faccio lupdate del custom routing popup");
-  updateCustomRouting();
+  updateCustomRoutingModal();
 }
 
 function createButton(label) {
@@ -114,17 +113,24 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function updateCustomRouting() {
+function updateCustomRoutingModal() {
   if (Object.keys(POIs).length !== 0) {
-    var list = document.getElementById("B");
-    var child = list.lastElementChild;
-    while (child) {
-      list.removeChild(child);
-      child = list.lastElementChild;
-    }
-    var cont = 0,
-      place = "";
-    for (var poi in POIs) {
+    updateList("A");
+    updateList("B");
+  }
+}
+
+function updateList(id) {
+  var list = document.getElementById(id);
+  var child = list.lastElementChild;
+  while (child) {
+    list.removeChild(child);
+    child = list.lastElementChild;
+  }
+  var cont = 0,
+    place = "";
+  for (var poi in POIs) {
+    if ((actualRouting.indexOf(poi) != -1) == (id == "A")) {
       place +=
         "<div class='list-group-item'>" +
         "  <span class='glyphicon glyphicon-move' aria-hidden='true' id='" +
@@ -147,10 +153,10 @@ function updateCustomRouting() {
         ) +
         "</span>" +
         "</div>";
-      cont++;
     }
-    $("#B").innerHTML = place;
+    cont++;
   }
+  $("#" + id).append(place);
 }
 
 function calculateRouting() {
@@ -332,11 +338,6 @@ function showCloseInfo() {
       "z-index": "-1",
       height: "0px"
     });
-    setCSSAttribute("#popupOpener", {
-      bottom: "0px",
-      "margin-bottom": "1em",
-      "border-radius": "15px"
-    });
     $("#upDown").attr("class", "fa fa-angle-up d-flex");
     infoPopupState = "open";
   } else {
@@ -344,12 +345,6 @@ function showCloseInfo() {
       "z-index": "2",
       height: "250px",
       "margin-top": "0em"
-    });
-    setCSSAttribute("#popupOpener", {
-      bottom: "266px",
-      "margin-bottom": "0em",
-      "border-bottom-right-radius": "0px",
-      "border-bottom-left-radius": "0px"
     });
     $("#upDown").attr("class", "fa fa-angle-down d-flex");
     infoPopupState = "close";
@@ -393,4 +388,12 @@ function customRouting() {
 
 function isNumber(n) {
   return typeof n != "boolean" && !isNaN(n);
+}
+
+function blueMarker(indexPOI) {
+  POIs[indexPOI].marker.setIcon(getIconMarkerOfColor(blueIcon));
+}
+
+function greenMarker(indexPOI) {
+  POIs[indexPOI].marker.setIcon(getIconMarkerOfColor(greenIcon));
 }

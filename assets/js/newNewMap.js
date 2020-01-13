@@ -9,6 +9,10 @@ var blackIcon =
   "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png";
 var orangeIcon =
   "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png";
+var greenIcon =
+  "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png";
+var blueIcon =
+  "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png";
 var customDirectionsButton = null;
 var POIs = {};
 var control = null;
@@ -21,16 +25,36 @@ var actualRouting = [];
  */
 $(document).ready(async function() {
   $("#prev").click(function(e) {
-    if (currentDestination > 0) {
-      currentDestination--;
-      populatePopup(actualRouting[currentDestination]);
+    if (actualRouting.length != 0) {
+    } else {
+      if (popupIndex > 0) {
+        blueMarker(popupIndex);
+        popupIndex--;
+        greenMarker(popupIndex);
+        populatePopup(popupIndex);
+      } else if (popupIndex == 0) {
+        blueMarker(popupIndex);
+        popupIndex = Object.keys(POIs).length - 1;
+        greenMarker(popupIndex);
+        populatePopup(popupIndex);
+      }
     }
   });
 
   $("#next").click(function(e) {
-    if (currentDestination < actualRouting.length - 1) {
-      currentDestination++;
-      populatePopup(actualRouting[currentDestination]);
+    if (actualRouting.length != 0) {
+    } else {
+      if (popupIndex < Object.keys(POIs).length - 1) {
+        blueMarker(popupIndex);
+        popupIndex++;
+        greenMarker(popupIndex);
+        populatePopup(popupIndex);
+      } else if (popupIndex == Object.keys(POIs).length - 1) {
+        blueMarker(popupIndex);
+        popupIndex = 0;
+        greenMarker(popupIndex);
+        populatePopup(popupIndex);
+      }
     }
   });
   setGeolocationApiKey();
@@ -90,19 +114,24 @@ function onError(err) {
 
 function onClick() {
   mymap.on("click", function(e) {
-    var fakePositionBtn = createButton("Simula Posizione");
-    L.DomEvent.on(fakePositionBtn, "click", function() {
-      mymap.closePopup();
-      currentLocation.setLatLng(e.latlng);
-      if (control !== null) {
-        control.spliceWaypoints(0, 1, e.latlng);
-      }
-      updateCustomRouting();
-    });
-    L.popup("#ffffff")
-      .setContent(fakePositionBtn)
-      .setLatLng(e.latlng)
-      .openOn(mymap);
+    if (infoPopupState == "close") {
+      showCloseInfo();
+      blueMarker(popupIndex);
+    } else {
+      var fakePositionBtn = createButton("Simula Posizione");
+      L.DomEvent.on(fakePositionBtn, "click", function() {
+        mymap.closePopup();
+        currentLocation.setLatLng(e.latlng);
+        if (control !== null) {
+          control.spliceWaypoints(0, 1, e.latlng);
+        }
+        updateCustomRoutingModal();
+      });
+      L.popup("#ffffff")
+        .setContent(fakePositionBtn)
+        .setLatLng(e.latlng)
+        .openOn(mymap);
+    }
   });
 }
 /**
@@ -138,12 +167,13 @@ function getPOIs(OCL) {
     url: "/getPOIs?searchQuery=" + OCL,
     success: function(data) {
       POIs = data;
+      console.log(POIs);
     }
   });
 }
 
 async function displayPOIs() {
-  for (var place in POIs) {
+  for (let place in POIs) {
     var poi = L.marker(
       [POIs[place].coords.latitudeCenter, POIs[place].coords.longitudeCenter],
       {
@@ -152,6 +182,12 @@ async function displayPOIs() {
         bounceOnAddCallback: function() {}
       }
     ).addTo(mymap);
+    poi.on("click", function() {
+      populatePopup(place);
+      if (infoPopupState == "open") {
+        showCloseInfo();
+      }
+    });
     POIs[place].marker = poi;
     await sleep(250);
   }
@@ -165,7 +201,7 @@ async function displayPOIs() {
       })
     ]
   }).addTo(mymap);
-  updateCustomRouting();
+  updateCustomRoutingModal();
   customdirectionsButton.state("start");
 }
 /**
