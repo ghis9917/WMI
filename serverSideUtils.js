@@ -7,7 +7,8 @@ var multer = require('multer');
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 const ffmpeg = require('fluent-ffmpeg');
 var readJson = require("r-json");
-const Youtube = require("youtube-api"),
+const Youtube = require("youtube-api");
+const dps = require("dbpedia-sparql-client").default;
 path = require("path");
 ffmpeg.setFfmpegPath(ffmpegPath);
 
@@ -65,84 +66,81 @@ module.exports = {
       return false
     }
   },
-  insertDescription : function insertDescription(client, titolo, desc, img){
-    client.connect("mongodb://localhost:27017/",  { useUnifiedTopology: true },
-      function (error, db) {
-        if (!error) {
-          var mydb = db.db("smogDB");
+  insertDescription : function insertDescription(mydb, titolo, desc, img){
           var myobj = { nome: titolo, descrizione: desc, urlImg : img };
           mydb.collection("descrizioni").insertOne(myobj, function (err, res) {
             if (err) throw err;
-            db.close();
+
           });
-        }
-      }
-    );
   },
-  getDescription : function getDescription(client, titolo,f){
+  askDBPedia :   function(titolo){
     return new Promise((resolve, reject) => {
-    var cont={},img;
-    client.connect("mongodb://localhost:27017/", { useUnifiedTopology: true } ,
-    function (error, db) {
-      if (!error) {
-        var mydb = db.db("smogDB");
-        mydb.collection("descrizioni").find({ nome: titolo }).toArray( async function (err, result) {
-          if (err) throw err;
-          console.log(result)
-          if(result.length !== 0){
-                  var json = result[0].descrizione;
-                  var img = result[0].urlImg;
-                  cont["desc"] = json;
-                  cont["img"] = img;
-                  resolve(cont);
-                }
-                else {
-                   console.log("qui si ferma e poi non stampa")
-                  var d =  await f.get('http://localhost:8000/askDBPedia?que=' + titolo).catch((e)=>{console.log(e);});
-                  try {
-                    var e = await f.get(
-                      d.data.results.bindings[0].c1.value.replace(
-                        "resource",
-                        "data"
-                      ) + ".rdf"
-                    );
-                    parseString(e.data, function(err, result) {
-                      var json = {};
-                      var list =
-                      result["rdf:RDF"]["rdf:Description"][0]["rdfs:comment"];
-                      for (var key in list) {
-                        var chiave = list[key]["$"]["xml:lang"];
-                        var valore = list[key]["_"];
-                        json[chiave] = valore;
-                      }
-                      var img =
-                      result["rdf:RDF"]["rdf:Description"][0]["dbo:thumbnail"][0][
-                        "$"
-                      ]["rdf:resource"];
-                      f.insertDescription(client, titolo, json, img)
-                      cont["desc"] = json;
-                      cont["img"] = img;
-                      resolve(cont)
-                    });
-                  }
-                  catch (error) {
-                    var json = {};
-                    var img = "NF";
-                    json["en"] = "NOT FOUND";
-                    cont["desc"] = json;
-                    cont["img"] = img;
-                    f.insertDescription(client, titolo, json, img)
-                    resolve(cont)
-                  }
-        }
-        db.close();
+      var vector = titolo.split(" ");
+      for (string in vector) {
+        vector[string] = "'" + vector[string] + "'";
+        vector[string] = vector[string].toUpperCase();
+      }
+      var string = titolo.toUpperCase();
+      string = string.replace(/ /g, " AND ");
+      var q =
+        "select ?s1 as ?c1, (bif:search_excerpt (bif:vector (" +
+        vector +
+        " , 'BOLOGNA'), ?o1)) as ?c2, ?sc, ?rank, ?g where {{{ select ?s1, (?sc * 3e-1) as ?sc, ?o1, (sql:rnk_scale (<LONG::IRI_RANK> (?s1))) as ?rank, ?g where  { quad map virtrdf:DefaultQuadMap { graph ?g { ?s1 ?s1textp ?o1 . ?o1 bif:contains  '(" +
+        string +
+        " AND BOLOGNA)'  option (score ?sc)  . } } } order by desc (?sc * 3e-1 + sql:rnk_scale (<LONG::IRI_RANK> (?s1)))  limit 1  offset 0 }}}";
+      dps.client().query(q).timeout(15000).asJson().then(r => {
+          resolve(r)
+        })
+        .catch(e => {
+          reject(e)
         });
-      }
-      else {
-        reject(error);
-      }
-    } );
+    });
+  },
+
+getDescription :   function (nome, mydb,utils){
+  return new Promise( (resolve, reject) => {
+    var cont={},img;
+  mydb.collection("descrizioni").find({ nome: nome }).toArray( async function (err, result) {
+    if(result.length != 0){
+      resolve(result);
+    }else {
+          var d =  await utils.askDBPedia(nome);
+          try {
+            d = d.results.bindings[0].c1.value.replace("resource","data"  ) + ".rdf";
+            var e = await utils.get(d);
+                parseString(e.data, function(err, result) {
+                  var json = {};
+                  var list =
+                  result["rdf:RDF"]["rdf:Description"][0]["rdfs:comment"];
+                  for (var key in list) {
+                    var chiave = list[key]["$"]["xml:lang"];
+                    var valore = list[key]["_"];
+                    json[chiave] = valore;
+                  }
+                  var img =
+                  result["rdf:RDF"]["rdf:Description"][0]["dbo:thumbnail"][0][
+                    "$"
+                  ]["rdf:resource"];
+                  utils.insertDescription(mydb, nome, json, img)
+                  cont["descrizione"] = json;
+                  cont["urlImg"] = img;
+                  resolve(cont)
+                });
+              }
+              catch (error) {
+                console.log(error)
+                var json = {};
+                var img = "NF";
+                json["en"] = "NOT FOUND";
+                cont["descrizione"] = json;
+                cont["urlImg"] = img;
+                utils.insertDescription(mydb, nome, json, img)
+                resolve(cont)
+              }
+
+    }
   });
+});
 },
 
   get: function get(search) {
