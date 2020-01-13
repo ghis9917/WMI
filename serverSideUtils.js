@@ -142,6 +142,19 @@ getDescription :   function (nome, mydb,utils){
   });
 });
 },
+  getSingleReview : async function(luogo, wr, mydb){
+    return new Promise((resolve, reject) => {
+       mydb.collection("review").find({ _id: luogo, wr : wr }).toArray( function(err, result) {
+         if (err) {
+            resolve("error");
+         }
+         else{
+           console.log(result.length)
+           resolve(result);
+         }
+       });
+    });
+  },
 
   get: function get(search) {
     return new Promise((resolve,reject) => {resolve(axios.get(search))});

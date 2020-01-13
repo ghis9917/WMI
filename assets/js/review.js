@@ -2,22 +2,10 @@
 const ind = [1, 2, 3, 4, 5];
 var voto = null;
 
-$(document).ready(function() {
-  $(".starReview").on("click", function(self) {
-    voto = Number(self.currentTarget.id);
-    var color = "rgb(230,180,0)";
-    for (i in ind) {
-      $("#" + ind[i]).css("color", color);
-      if (voto == Number(ind[i])) {
-        color = "rgb(100,100,100)";
-      }
-    }
-  });
-});
-
 
 function openReviewModal(){
   $('#modalReview').modal()
+  checkReview();
 }
 
 
@@ -36,3 +24,26 @@ function sendReview(){
     alert("ma");
   }
 }
+
+
+function checkReview(){
+  $.ajax({
+    type: "post",
+    url: "insertReview?luogo="+$("#reviewLuogo").text()+"&wr="+profile.getName(),
+     success: function(result){
+      console.log(result)
+  }});
+}
+
+$(document).ready(function() {
+  $(".starReview").on("click", function(self) {
+    voto = Number(self.currentTarget.id);
+    var color = "rgb(230,180,0)";
+    for (i in ind) {
+      $("#" + ind[i]).css("color", color);
+      if (voto == Number(ind[i])) {
+        color = "rgb(100,100,100)";
+      }
+    }
+  });
+});
