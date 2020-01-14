@@ -68,7 +68,7 @@
   </head>
 
   <body class="d-flex flex-column justify-content-between">
-            <button onclick="openReviewModal()">Leave a review</button>
+            
     <nav class="navbar navbar-light navbar-expand-md text-uppercase shadow navigation-clean">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">Where Am I?</a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1">
@@ -112,7 +112,8 @@
       <div class="modal-dialog" role="document" align="center  ">
         <div class="modal-content">
           <div class="modal-header">
-            <h4 class="modal-title">Modal Title</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="var div = document.getElementById('clipContainer'); div.hidden = true;"><span aria-hidden="true"
+            <h4 class="modal-title">Modal Title</h4>
+            <button id="btnCloseModalClip" type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="clearClipModal();"><span aria-hidden="true"
                 id="stop">×</span></button>
           </div>
           <div class="modal-body" id="iframeContainer" style="overflow: scroll;">

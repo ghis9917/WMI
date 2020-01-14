@@ -37,6 +37,7 @@ function searchByKeyword(query) {
       for (video in item) {
         var audio_tag = document.createElement("audio");
         videoId = item[video].id.videoId;
+        console.log(item[video].snippet.title)
         // iframe.src = "https://www.youtube.com/watch?v="+videoId;
         // iframe.controls = true;
         // iframe.width="0";
@@ -62,30 +63,33 @@ function onYouTubeIframeAPIReady(videoId) {
     console.log("undefined videoId");
     return;
   }
-  var newVideoController = document.createElement("div");
+
+
+  $("#iframeContainer").append("<div class='d-flex'><div class='d-flex justify-content-center align-items-center' style='  width: 25%;'>  <i id='controller"+videoId+" 'class='fas fa-play' style='font-size: 30px;'></i></div><div class='d-flex flex-row justify-content-between' style='  width: 75%;'><div><p>Titolo</p><p>Tipo di audio</p></div><div class='d-flex flex-column justify-content-end align-items-end'><p class='d-md-flex justify-content-md-end'>Media recensioni</p><p class='d-md-flex justify-content-md-end'><button  onclick='openReviewModal()'>Leave a review</button></p></div></div></div>");
+
+
   var iFramer = document.createElement("div");
-  newVideoController.style.cssText =
-    "height: 50px; width: 100%; background-color: grey!important; margin-bottom: 1em;";
-  newVideoController.setAttribute("id", "controller" + videoId);
   iFramer.setAttribute("id", "player" + videoId);
-  newVideoController.onclick = function() {
+  $("#controller"+videoId).on("click" , function() {
+
+
+    $("#controller"+videoId).attr("class", "fas fa-pause");
+
     var player = YT.get("player" + videoId);
     console.log(player.getPlayerState());
-    if (
-      player.getPlayerState() == YT.PlayerState.ENDED ||
-      player.getPlayerState() == YT.PlayerState.PAUSED ||
-      player.getPlayerState() == -1 ||
-      player.getPlayerState() == YT.PlayerState.CUED
-    ) {
+    if (player.getPlayerState() == YT.PlayerState.ENDED || player.getPlayerState() == YT.PlayerState.PAUSED || player.getPlayerState() == -1 ||player.getPlayerState() == YT.PlayerState.CUED) {
+
       stopOtherVideos(videoId);
       player.playVideo();
     } else {
       stopOtherVideos(player);
+      $("#controller"+videoId).attr("class", "fas fa-play");
       player.pauseVideo();
     }
-  };
-  document.getElementById("iframeContainer").appendChild(newVideoController);
+  });
+
   document.getElementById("iframeContainer").appendChild(iFramer);
+
 
   playerYT = new YT.Player("player" + videoId, {
     height: "0",
@@ -108,6 +112,8 @@ function stopOtherVideos(id) {
         listOfPlayers[element].id.replace("player", "") != id
       ) {
         YT.get(listOfPlayers[element].id).stopVideo();
+        console.log(listOfPlayers[element].id);
+        $("#"+(listOfPlayers[element].id).replace("player", "controller") ).attr("class", "fas fa-play");
       }
     }
   }
@@ -130,6 +136,14 @@ function onPlayerStateChange(event) {
 function stopVideo() {
   playerYT.stopVideo();
 }
+
+
+function clearClipModal(){
+  var div = document.getElementById('clipContainer');
+  div.hidden = true;
+  $("#iframeContainer").empty();
+}
+
 /*function onYouTubeIframeAPIReady(videoId) {
   if (typeof null == undefined) {
     return;

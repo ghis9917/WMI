@@ -3,7 +3,7 @@ var voto = null;
 var check = false;
 var update = false;
 
-function openReviewModal() {
+function openReviewModal(titolo) {
   if (profile == null) {
     check == true;
     $("#signInModal").modal();
@@ -15,7 +15,7 @@ function openReviewModal() {
       }
     });
   } else {
-    checkReview();
+    checkReview(titolo);
   }
 }
 
@@ -50,7 +50,7 @@ function sendReview() {
   }
 }
 
-function checkReview() {
+function checkReview(titolo) {
   $.ajax({
     type: "get",
     url:
@@ -62,7 +62,7 @@ function checkReview() {
     success: function(result) {
       if (result.length != 0) {
         update = true;
-        //$("#txtReview").val(result[0].value.descrizione)
+        $("#reviewLuogo").val(titolo)
       } else {
         console.log("vuottoooo");
       }
