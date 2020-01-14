@@ -63,7 +63,7 @@ function updateCurrentLocation(lat, lon) {
     control.spliceWaypoints(0, 1, L.latLng(lat, lon));
   } catch (err) {}
   currentLocation = L.marker([lat, lon], {
-    icon: getIconMarkerOfColor(blackIcon)
+    icon: getIconMarkerOfColor(redIcon)
   })
     .bindPopup(popupCurrentLocation)
     .addTo(mymap);
@@ -92,6 +92,14 @@ function addPlayButton() {
         btn
       ) {}),
       newState("started", "fas fa-pause", "Stop routing", function(btn) {
+        for (poi in POIs) {
+          POIs[poi].visited = false;
+          blueMarker(poi);
+        }
+        actualRouting = [];
+        showCloseInfo();
+        currentDestination = 0;
+        popupIndex = 0;
         mymap.removeControl(control);
         control = null;
         btn.state("start");
@@ -130,7 +138,11 @@ function updateList(id) {
   var cont = 0,
     place = "";
   for (var poi in POIs) {
-    if ((actualRouting.indexOf(poi) != -1) == (id == "A")) {
+    console.log(!POIs[poi].visited);
+    if (
+      (actualRouting.indexOf(poi) != -1) == (id == "A") &&
+      !POIs[poi].visited
+    ) {
       place +=
         "<div class='list-group-item'>" +
         "  <span class='glyphicon glyphicon-move' aria-hidden='true' id='" +
@@ -162,6 +174,7 @@ function updateList(id) {
 function calculateRouting() {
   actualRouting = [];
   currentDestination = 0;
+  blueMarker(popupIndex);
   popupIndex = currentDestination;
   var count = 0;
   var currentPOI = getFirstPOI();
@@ -176,6 +189,7 @@ function calculateRouting() {
     }
   } while (currentPOI != -1 && count < 50);
   populatePopup(actualRouting[popupIndex]);
+  greenMarker(actualRouting[popupIndex]);
 }
 
 function getFirstPOI() {
@@ -307,16 +321,20 @@ function checkDistance(distance, instruction) {
   var stringToBeSpoken = instruction;
   if (distance <= 20) {
     POIs[actualRouting[currentDestination]].marker.setIcon(
-      getIconMarkerOfColor(orangeIcon)
+      getIconMarkerOfColor(greyIcon)
     );
+    POIs[actualRouting[currentDestination]].visited = true;
     stringToBeSpoken = POIs[actualRouting[currentDestination]].description.en;
     getVideoId(POIs[actualRouting[currentDestination]]);
     actualRouting.splice(currentDestination, 1);
     if (actualRouting.length != 0) {
       routingTo(actualRouting[currentDestination]);
+      greenMarker(actualRouting[currentDestination]);
+      popupIndex = actualRouting[currentDestination];
     }
   }
   onClickMarker(stringToBeSpoken, distance);
+  updateCustomRoutingModal();
 }
 
 async function onClickMarker(toBeSpoken, distance) {
@@ -373,6 +391,8 @@ function setSpeech() {
 function customRouting() {
   actualRouting = [];
   currentDestination = 0;
+  blueMarker(popupIndex);
+  popupIndex = currentDestination;
   var list = document.getElementById("A").children;
   if (control == null) addRouting();
   for (var index in list) {
@@ -384,6 +404,8 @@ function customRouting() {
   $("#customRoutingContainer").modal("hide");
   customdirectionsButton.state("started");
   populatePopup(actualRouting[popupIndex]);
+  greenMarker(actualRouting[popupIndex]);
+  showCloseInfo();
 }
 
 function isNumber(n) {

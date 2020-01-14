@@ -5,27 +5,40 @@ var mymap;
 var currentLocation = null;
 var currentDestination = 0;
 var popupIndex = 0;
-var blackIcon =
-  "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png";
-var orangeIcon =
-  "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png";
-var greenIcon =
-  "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png";
-var blueIcon =
-  "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png";
-var customDirectionsButton = null;
+var customdirectionsButton = null;
 var POIs = {};
 var control = null;
 var routingMode = "foot";
 var infoPopupState = "open";
 var actualRouting = [];
+var redIcon =
+  "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png";
+var greyIcon =
+  "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-grey.png";
+var greenIcon =
+  "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png";
+var blueIcon =
+  "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png";
 
 /**
  * Funzione che gestisce l'avvio dell'applicazione
  */
 $(document).ready(async function() {
   $("#prev").click(function(e) {
-    if (actualRouting.length != 0) {
+    if (actualRouting.length > 0) {
+      if (popupIndex > 0) {
+        blueMarker(popupIndex);
+        currentDestination--;
+        popupIndex = currentDestination;
+        greenMarker(popupIndex);
+        populatePopup(popupIndex);
+      } else if (popupIndex == 0) {
+        blueMarker(popupIndex);
+        currentDestination = actualRouting.length - 1;
+        popupIndex = currentDestination;
+        greenMarker(popupIndex);
+        populatePopup(popupIndex);
+      }
     } else {
       if (popupIndex > 0) {
         blueMarker(popupIndex);
@@ -34,7 +47,8 @@ $(document).ready(async function() {
         populatePopup(popupIndex);
       } else if (popupIndex == 0) {
         blueMarker(popupIndex);
-        popupIndex = Object.keys(POIs).length - 1;
+        currentDestination = Object.keys(POIs).length - 1;
+        popupIndex = currentDestination;
         greenMarker(popupIndex);
         populatePopup(popupIndex);
       }
@@ -42,7 +56,20 @@ $(document).ready(async function() {
   });
 
   $("#next").click(function(e) {
-    if (actualRouting.length != 0) {
+    if (actualRouting.length > 0) {
+      if (popupIndex < actualRouting.length - 1) {
+        blueMarker(popupIndex);
+        currentDestination++;
+        popupIndex = currentDestination;
+        greenMarker(popupIndex);
+        populatePopup(popupIndex);
+      } else if (popupIndex == actualRouting.length - 1) {
+        blueMarker(popupIndex);
+        currentDestination = 0;
+        popupIndex = currentDestination;
+        greenMarker(popupIndex);
+        populatePopup(popupIndex);
+      }
     } else {
       if (popupIndex < Object.keys(POIs).length - 1) {
         blueMarker(popupIndex);
@@ -55,6 +82,21 @@ $(document).ready(async function() {
         greenMarker(popupIndex);
         populatePopup(popupIndex);
       }
+    }
+  });
+  $("#stop").on("click", function() {
+    if (actualRouting.length == 0) {
+      for (poi in POIs) {
+        POIs[poi].visited = false;
+        blueMarker(poi);
+      }
+      actualRouting = [];
+      showCloseInfo();
+      currentDestination = 0;
+      popupIndex = 0;
+      mymap.removeControl(control);
+      control = null;
+      customdirectionsButton.state("start");
     }
   });
   setGeolocationApiKey();
@@ -117,6 +159,7 @@ function onClick() {
     if (infoPopupState == "close") {
       showCloseInfo();
       blueMarker(popupIndex);
+      blueMarker(actualRouting[popupIndex]);
     } else {
       var fakePositionBtn = createButton("Simula Posizione");
       L.DomEvent.on(fakePositionBtn, "click", function() {
@@ -183,9 +226,26 @@ async function displayPOIs() {
       }
     ).addTo(mymap);
     poi.on("click", function() {
-      populatePopup(place);
-      if (infoPopupState == "open") {
-        showCloseInfo();
+      if (actualRouting.length != -1) {
+        try {
+          blueMarker(popupIndex);
+        } catch (error) {
+          blueMarker(actualRouting[currentDestination]);
+        }
+        popupIndex = place;
+        greenMarker(popupIndex);
+        populatePopup(popupIndex);
+        if (infoPopupState == "open") {
+          showCloseInfo();
+        }
+      } else {
+        blueMarker(popupIndex);
+        popupIndex = place;
+        greenMarker(place);
+        populatePopup(place);
+        if (infoPopupState == "open") {
+          showCloseInfo();
+        }
       }
     });
     POIs[place].marker = poi;
