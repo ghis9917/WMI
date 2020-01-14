@@ -1,5 +1,10 @@
 var profile = null;
 var token, refresh;
+
+function getName(){
+
+}
+
 function onSignIn(googleUser) {
   token = googleUser["Zi"].access_token;
   refresh = googleUser["Zi"].id_token;
@@ -41,14 +46,18 @@ function onSignIn(googleUser) {
     $("#logbtn").hide();
     $(".close").click();
   }
-  if (
-    "https://localhost:8000/editorMode.html" == window.location.href ||
-    "https://localhost:8000/editorMode.html/" == window.location.href ||
-    "https://localhost:8000/editorMode.html#" == window.location.href
-  ) {
+  if ("https://localhost:8000/editorMode.html" == window.location.href ||"https://localhost:8000/editorMode.html/" == window.location.href ||"https://localhost:8000/editorMode.html#" == window.location.href) {
     $("#profileText").html(profile.getName());
     $("#loginModal").modal("hide");
     createMap();
+  }
+  if ("https://localhost:8000/userMode.html" == window.location.href ||"https://localhost:8000/userMode.html/" == window.location.href ||"https://localhost:8000/userMode.html#" == window.location.href) {
+    $("#loginModal").modal("hide");
+    $("#profile").show();
+    $("#profile > a").html(profile.getName());
+    $("#logout").show();
+    $("#logbtn").hide();
+    $(".close").click();
   }
 }
 

@@ -7,6 +7,14 @@
     <title>WMI</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
+    <meta name="google-signin-scope" content="profile email">
+    <meta name="google-signin-client_id"
+        content="114712511052-o00pbvnd01mt0jfl946p61k2vtjfk6m8.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="assets/js/googleSignIn.js"></script>
+
+
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:300,400,600" />
     <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css" />
@@ -73,6 +81,14 @@
               <a class="nav-link" href="/editorMode.html">Editor Mode</a>
             </li>
             <li class="nav-item" role="presentation">
+              <button id="logbtn" class="btn btn-link" type="button" data-toggle="modal" data-target="#signInModal">
+                <label class="text-uppercase ml-auto" style="margin: 0px 0px 0px;font-size: 20px;margin-right: 8px;color: #222222;" for="googleIcon">
+                  <strong>Log In with</strong>
+                </label>
+                <i class="fa fa-google border-warning" id="googleIcon" style="font-size: 20px;color: rgb(0,0,0);"></i>
+              </button>
+            </li>
+            <li style="display: none;" id="profile" class="nav-item" role="presentation">
               <a class="nav-link" href="/profile.html">Profile</a>
             </li>
             <ul class="list-unstyled list-inline ct-topbar__list">
@@ -199,6 +215,22 @@
         sort: false
       });
     </script>
+    </div>
+    <div class="modal fade" role="dialog" tabindex="-1" id="signInModal">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Sign In with Google</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+          </div>
+          <div class="modal-body">
+            <div>
+              <p>Click the button to log in with your google account</p>
+              <div class="g-signin2" data-onsuccess="onSignIn"></div>
+            </div>
+          </div>
+          <div class="modal-footer"><button class="btn btn-light" type="button" data-dismiss="modal">Close</button></div>
+        </div>
+      </div>
     </div>
     <div id="modalReview" class="modal" role="dialog" tabindex="-1">
       <div class="modal-dialog modal-dialog-centered" role="document">
