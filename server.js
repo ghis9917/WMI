@@ -92,9 +92,10 @@ app.get("/updateReview", (req, res) => {
 });
 
 
-app.get("/getReview" , (req, res) => {
+app.get("/getReview" , async(req, res) => {
+
+  client.connect("mongodb://localhost:27017/",{ useUnifiedTopology: true }, async function(error, db) {
   if(req.query.mode == "user"){
-    client.connect("mongodb://localhost:27017/",{ useUnifiedTopology: true }, async function(error, db) {
       if(error){
         res.status(400).send({
           message: "DB error"
@@ -115,14 +116,11 @@ app.get("/getReview" , (req, res) => {
             }
           });
       }
-    });
+  }else if(req.query.mode == "check"){
+    var mydb = db.db("WMIdb");
+    var ifExist = await utils.getSingleReview(req.query.luogo, req.query.wr, mydb)
+    res.send(ifExist);
   }else{
-    client.connect("mongodb://localhost:27017/",{ useUnifiedTopology: true }, async function(error, db) {
-      if(error){
-        res.status(400).send({
-          message: "DB error"
-        });
-      }else{
           var mydb = db.db("WMIdb");
           mydb.collection("review").find({  rd : req.query.rd }).toArray( function(err, result) {
             if(err){
@@ -138,18 +136,16 @@ app.get("/getReview" , (req, res) => {
             }
           });
       }
-    });
-  }
+  });
 });
 
-
-app.get("/insertReview", (req, res) => {
+app.post("/insertReview", (req, res) => {
   client.connect("mongodb://localhost:27017/",{ useUnifiedTopology: true }, async function(error, db) {
       if (!error) {
         var mydb = db.db("WMIdb");
 
         var ifExist = await utils.getSingleReview(req.query.luogo, req.query.wr, mydb)
-        console.log(ifExist)
+
         if(ifExist == "error"){
           res.status(400).send({
             message: "DB error"
@@ -181,28 +177,6 @@ app.get("/insertReview", (req, res) => {
       db.close();
     });
 
-});
-//user modePage
-app.get("/getReview", (req, res) => {
-  client.connect("mongodb://localhost:27017/",{ useUnifiedTopology: true },function(error, db) {
-      if (!error) {
-        var mydb = db.db("WMIdb");
-        console.log(req.query.name);
-        mydb.collection("review").find({ _id: req.query.luogo }).toArray(async function(err, result) {
-            if (err) {
-              res.status(400).send({
-                message: "DB error"
-              });
-            } else if (result == 0) {
-              res.send("null");
-            } else {
-              res.send(result);
-            }
-            db.close();
-          });
-      }
-    }
-  );
 });
 
 app.get("/getPOIs", (req, res) => {
