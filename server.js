@@ -1,4 +1,3 @@
-
 const express = require("express");
 const fs = require("fs");
 const multer = require("multer");
@@ -46,143 +45,176 @@ app.get("/askDBPedia", (req, res) => {
       " , 'BOLOGNA'), ?o1)) as ?c2, ?sc, ?rank, ?g where {{{ select ?s1, (?sc * 3e-1) as ?sc, ?o1, (sql:rnk_scale (<LONG::IRI_RANK> (?s1))) as ?rank, ?g where  { quad map virtrdf:DefaultQuadMap { graph ?g { ?s1 ?s1textp ?o1 . ?o1 bif:contains  '(" +
       string +
       " AND BOLOGNA)'  option (score ?sc)  . } } } order by desc (?sc * 3e-1 + sql:rnk_scale (<LONG::IRI_RANK> (?s1)))  limit 1  offset 0 }}}";
-    console.log("Eccomi")
-    dps.client().query(q).timeout(15000).asJson().then(r => {
-        console.log("mmmmmmm CIAO")
-        console.log(r)
+    console.log("Eccomi");
+    dps
+      .client()
+      .query(q)
+      .timeout(15000)
+      .asJson()
+      .then(r => {
+        console.log("mmmmmmm CIAO");
+        console.log(r);
         res.send(r);
       })
       .catch(e => {
-        console.log("mmmmmmm CIAO")
+        console.log("mmmmmmm CIAO");
         res.send(e);
       });
   });
 });
 
 app.get("/updateReview", (req, res) => {
-  client.connect("mongodb://localhost:27017/",{ useUnifiedTopology: true }, async function(error, db) {
-    var myquery = {  _id: req.query.luogo, wr : req.query.wr  };
-    var myobj = {_id: req.query.luogo,
-                value: {
-                          voto: req.query.voto,
-                          descrizione: req.query.descrizione
-                        },
-                wr: req.query.wr,
-                rd:req.query.rd,
-    };
-    var newvalues = { $set: {_id: req.query.luogo,
-                value: {
-                          voto: req.query.voto,
-                          descrizione: req.query.descrizione
-                        },
-                wr: req.query.wr,
-                rd:req.query.rd,
-    }};
-    var mydb = db.db("WMIdb");
-    mydb.collection("review").updateOne(myquery, newvalues, function(err, result) {
-      if (err) {
-        res.status(400).send({
-          message: "DB error"
+  client.connect(
+    "mongodb://localhost:27017/",
+    { useUnifiedTopology: true },
+    async function(error, db) {
+      var myquery = { _id: req.query.luogo, wr: req.query.wr };
+      var myobj = {
+        _id: req.query.luogo,
+        value: {
+          voto: req.query.voto,
+          descrizione: req.query.descrizione
+        },
+        wr: req.query.wr,
+        rd: req.query.rd
+      };
+      var newvalues = {
+        $set: {
+          _id: req.query.luogo,
+          value: {
+            voto: req.query.voto,
+            descrizione: req.query.descrizione
+          },
+          wr: req.query.wr,
+          rd: req.query.rd
+        }
+      };
+      var mydb = db.db("WMIdb");
+      mydb
+        .collection("review")
+        .updateOne(myquery, newvalues, function(err, result) {
+          if (err) {
+            res.status(400).send({
+              message: "DB error"
+            });
+          } else {
+            res.send(newvalues);
+          }
         });
-      }else{
-        res.send(newvalues);
-      }
-  });
-  });
+    }
+  );
 });
 
-
-app.get("/getReview" , async(req, res) => {
-
-  client.connect("mongodb://localhost:27017/",{ useUnifiedTopology: true }, async function(error, db) {
-  if(req.query.mode == "user"){
-      if(error){
-        res.status(400).send({
-          message: "DB error"
-        });
-      }else{
-          var mydb = db.db("WMIdb");
-          mydb.collection("review").find({  wr : req.query.wr }).toArray( function(err, result) {
-            if(err){
-              res.status(400).send({
-                message: "DB error"
-              });
-            }else{
-              if(result.length == 0){
-                res.send("null")
-              }else{
-                res.send(result)
-              }
-            }
-          });
-      }
-  }else if(req.query.mode == "check"){
-    var mydb = db.db("WMIdb");
-    var ifExist = await utils.getSingleReview(req.query.luogo, req.query.wr, mydb)
-    res.send(ifExist);
-  }else{
-          var mydb = db.db("WMIdb");
-          mydb.collection("review").find({  rd : req.query.rd }).toArray( function(err, result) {
-            if(err){
-              res.status(400).send({
-                message: "DB error"
-              });
-            }else{
-              if(result.length == 0){
-                res.send("null")
-              }else{
-                res.send(result)
-              }
-            }
-          });
-      }
-  });
-});
-
-app.post("/insertReview", (req, res) => {
-  client.connect("mongodb://localhost:27017/",{ useUnifiedTopology: true }, async function(error, db) {
-      if (!error) {
-        var mydb = db.db("WMIdb");
-
-        var ifExist = await utils.getSingleReview(req.query.luogo, req.query.wr, mydb)
-
-        if(ifExist == "error"){
+app.get("/getReview", async (req, res) => {
+  client.connect(
+    "mongodb://localhost:27017/",
+    { useUnifiedTopology: true },
+    async function(error, db) {
+      if (req.query.mode == "user") {
+        if (error) {
           res.status(400).send({
             message: "DB error"
           });
+        } else {
+          var mydb = db.db("WMIdb");
+          mydb
+            .collection("review")
+            .find({ wr: req.query.wr })
+            .toArray(function(err, result) {
+              if (err) {
+                res.status(400).send({
+                  message: "DB error"
+                });
+              } else {
+                if (result.length == 0) {
+                  res.send("null");
+                } else {
+                  res.send(result);
+                }
+              }
+            });
         }
-        else if(ifExist.length == 0 ){
-          var myobj = {_id: req.query.luogo,
-                      value: {
-                                voto: req.query.voto,
-                                descrizione: req.query.descrizione
-                              },
-                      wr: req.query.wr,
-                      rd:req.query.rd
+      } else if (req.query.mode == "check") {
+        var mydb = db.db("WMIdb");
+        var ifExist = await utils.getSingleReview(
+          req.query.luogo,
+          req.query.wr,
+          mydb
+        );
+        res.send(ifExist);
+      } else {
+        var mydb = db.db("WMIdb");
+        mydb
+          .collection("review")
+          .find({ rd: req.query.rd })
+          .toArray(function(err, result) {
+            if (err) {
+              res.status(400).send({
+                message: "DB error"
+              });
+            } else {
+              if (result.length == 0) {
+                res.send("null");
+              } else {
+                res.send(result);
+              }
+            }
+          });
+      }
+    }
+  );
+});
+
+app.post("/insertReview", (req, res) => {
+  client.connect(
+    "mongodb://localhost:27017/",
+    { useUnifiedTopology: true },
+    async function(error, db) {
+      if (!error) {
+        var mydb = db.db("WMIdb");
+
+        var ifExist = await utils.getSingleReview(
+          req.query.luogo,
+          req.query.wr,
+          mydb
+        );
+
+        if (ifExist == "error") {
+          res.status(400).send({
+            message: "DB error"
+          });
+        } else if (ifExist.length == 0) {
+          var myobj = {
+            _id: req.query.luogo,
+            value: {
+              voto: req.query.voto,
+              descrizione: req.query.descrizione
+            },
+            wr: req.query.wr,
+            rd: req.query.rd
           };
           mydb.collection("review").insertOne(myobj, function(err, result) {
             if (err) {
               res.status(400).send({
                 message: "DB error"
               });
-            }
-            else{
-              res.send("Successo!")
+            } else {
+              res.send("Successo!");
             }
           });
-        }else{
-          res.send(ifExist)
+        } else {
+          res.send(ifExist);
         }
       }
       db.close();
-    });
-
+    }
+  );
 });
 
 app.get("/getPOIs", (req, res) => {
   var opts = (youtubeSearch.YouTubeSearchOptions = {
     maxResults: 50,
-    key: guiKey
+    key: rickykey_second
   });
 
   try {
@@ -193,23 +225,22 @@ app.get("/getPOIs", (req, res) => {
         console.log(err);
         res.send({ error: err.response.statusText });
       } else {
-        var data = await call(results,res);
+        var data = await call(results, res);
         res.send(data);
       }
     });
   } catch (error) {}
 });
 
-
-
-
-
-function call(results,res){
-    return new Promise(async (resolve, reject) => {
-      var POIs = {};
-      var list = [];
-      var counter = 0;
-      client.connect("mongodb://localhost:27017/", { useUnifiedTopology: true } , async function (error, db) {
+function call(results, res) {
+  return new Promise(async (resolve, reject) => {
+    var POIs = {};
+    var list = [];
+    var counter = 0;
+    client.connect(
+      "mongodb://localhost:27017/",
+      { useUnifiedTopology: true },
+      async function(error, db) {
         var mydb = db.db("smogDB");
         for (var key in results) {
           var item = results[key];
@@ -217,35 +248,35 @@ function call(results,res){
             if (list.indexOf(val.plusCode) === -1) {
               list.push(val.plusCode);
               var c = await utils.getDescription(item.title, mydb, utils);
-              console.log(c)
-              try{
-              POIs[counter] = {
-                name: item.title,
-                coords: val.coords,
-                videoId: item.id,
-                description: c[0].descrizione,
-                img: c[0].urlImg,
-                visited : false
-              };
-            }catch(error){
-              POIs[counter] = {
-                name: item.title,
-                coords: val.coords,
-                videoId: item.id,
-                description: c.descrizione,
-                img: c.urlImg,
-                visited : false
-              };
-            }
+              console.log(c);
+              try {
+                POIs[counter] = {
+                  name: item.title,
+                  coords: val.coords,
+                  videoId: item.id,
+                  description: c[0].descrizione,
+                  img: c[0].urlImg,
+                  visited: false
+                };
+              } catch (error) {
+                POIs[counter] = {
+                  name: item.title,
+                  coords: val.coords,
+                  videoId: item.id,
+                  description: c.descrizione,
+                  img: c.urlImg,
+                  visited: false
+                };
+              }
               counter++;
             }
           }
         }
-      resolve(POIs);
-        });
-    });
+        resolve(POIs);
+      }
+    );
+  });
 }
-
 
 app.post("/uploadFile", upload.single("file"), function(req, res) {
   const fileName = req.body.fname;

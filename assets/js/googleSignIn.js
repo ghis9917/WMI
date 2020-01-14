@@ -1,14 +1,11 @@
 var profile = null;
 var token, refresh;
 
-function getName(){
-
-}
-
 function onSignIn(googleUser) {
   token = googleUser["Zi"].access_token;
   refresh = googleUser["Zi"].id_token;
   profile = googleUser.getBasicProfile();
+
   $.ajax({
     url: "/saveToken?token=" + token + "&refresh=" + refresh,
     type: "post",
@@ -20,6 +17,7 @@ function onSignIn(googleUser) {
 
   window.localStorage.removeItem("check");
   window.localStorage.setItem("check", true);
+
   if (
     "https://localhost:8000/profile.html" == window.location.href ||
     "https://localhost:8000/profile.html#" == window.location.href
@@ -30,9 +28,7 @@ function onSignIn(googleUser) {
     $("#email").html("");
     $("#email").html("Email: " + profile.getEmail());
     $(".rounded-circle").attr("src", profile.getImageUrl());
-    $(".spinner-border").remove();
-    $("#spinner").remove();
-    $("#display").show();
+    
     getProfileReview();
   }
   if (

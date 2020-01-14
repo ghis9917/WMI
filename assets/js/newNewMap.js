@@ -24,6 +24,12 @@ var blueIcon =
  * Funzione che gestisce l'avvio dell'applicazione
  */
 $(document).ready(async function() {
+  var tag = document.createElement("script");
+
+  tag.src = "https://www.youtube.com/iframe_api";
+  var firstScriptTag = document.getElementsByTagName("script")[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
   $("#prev").click(function(e) {
     if (actualRouting.length > 0) {
       if (popupIndex > 0) {

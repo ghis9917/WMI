@@ -342,7 +342,7 @@ async function onClickMarker(toBeSpoken, distance) {
   var availableVoices = setSpeech();
   availableVoices.then(voice => {
     talker.voice = voice[5];
-    window.speechSynthesis.speak(talker);
+    //window.speechSynthesis.speak(talker);
     if (distance <= 20) {
       infoPopupState = "open";
       showCloseInfo();
