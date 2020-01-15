@@ -142,14 +142,13 @@ getDescription :   function (nome, mydb,utils){
   });
 });
 },
-  getSingleReview : async function(luogo, wr, mydb){
+  getSingleReview : async function(req, mydb){
     return new Promise((resolve, reject) => {
-       mydb.collection("review").find({ _id: luogo, wr : wr }).toArray( function(err, result) {
+       mydb.collection("review").find({ _id: req.query.luogo, wr : req.query.wr, clip: req.query.clip }).toArray( function(err, result) {
          if (err) {
             resolve("error");
          }
          else{
-           console.log(result.length)
            resolve(result);
          }
        });

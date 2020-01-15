@@ -65,7 +65,7 @@ function onYouTubeIframeAPIReady(videoId) {
   }
 
 
-  $("#iframeContainer").append("<div class='d-flex'><div class='d-flex justify-content-center align-items-center' style='  width: 25%;'>  <i id='controller"+videoId+" 'class='fas fa-play' style='font-size: 30px;'></i></div><div class='d-flex flex-row justify-content-between' style='  width: 75%;'><div><p>Titolo</p><p>Tipo di audio</p></div><div class='d-flex flex-column justify-content-end align-items-end'><p class='d-md-flex justify-content-md-end'>Media recensioni</p><p class='d-md-flex justify-content-md-end'><button  onclick='openReviewModal()'>Leave a review</button></p></div></div></div>");
+  $("#iframeContainer").append("<div class='d-flex'><div class='d-flex justify-content-center align-items-center' style='  width: 25%;'>  <i id='controller"+videoId+"'class='fas fa-play' style='font-size: 30px;'></i></div><div class='d-flex flex-row justify-content-between' style='  width: 75%;'><div><p>Titolo</p><p>Tipo di audio</p></div><div class='d-flex flex-column justify-content-end align-items-end'><p class='d-md-flex justify-content-md-end'>Media recensioni</p><p class='d-md-flex justify-content-md-end'><button id='btn"+videoId+"' onclick='openReviewModal(this.id)'>Leave a review</button></p></div></div></div>");
 
 
   var iFramer = document.createElement("div");
@@ -128,7 +128,9 @@ function onPlayerReady(event) {
 //    the player should play for six seconds and then stop.
 var done = false;
 function onPlayerStateChange(event) {
-  if (event.data == YT.PlayerState.PLAYING && !done) {
+  if(event.data == YT.PlayerState.ENDED){
+    $("#"+(event.target.a.id).replace("player","controller")).attr("class", "fas fa-play");
+  }else if (event.data == YT.PlayerState.PLAYING && !done) {
     setTimeout(stopVideo, 6000);
     done = true;
   }
@@ -142,6 +144,8 @@ function clearClipModal(){
   var div = document.getElementById('clipContainer');
   div.hidden = true;
   $("#iframeContainer").empty();
+  $("#reviewContainer").hide();
+  $("#iframeContainer").show();
 }
 
 /*function onYouTubeIframeAPIReady(videoId) {

@@ -2,8 +2,13 @@ const ind = [1, 2, 3, 4, 5];
 var voto = null;
 var check = false;
 var update = false;
+var clip
 
 function openReviewModal(titolo) {
+  $(".modal-body").height($("#iframeContainer").height());
+  $("#iframeContainer").hide();
+  $("#spinnerReview").show();
+  clip = titolo.replace("btn", "");
   if (profile == null) {
     check == true;
     $("#signInModal").modal();
@@ -15,58 +20,57 @@ function openReviewModal(titolo) {
       }
     });
   } else {
-    checkReview(titolo);
+    checkReview();
   }
 }
 
 function sendReview() {
-  if (voto == null) {
-    var txt = $("#txtReview").val();
-    if (txt == "") {
-      txt = "null";
-    }
+    var api;
     if (update == false) {
+      api = "insertReview"
+    }else{
+      api = "updateReview"
+    }
+
       $.ajax({
         type: "post",
         url:
-          "insertReview?luogo=" +
+          api+"?luogo=" +
           $("#reviewLuogo").text() +
-          "&voto=3&descrizione=" +
-          $("#txtReview").val() +
+          "&voto="+voto+"&descrizione=" +$("#txtReview").val()+
+          "&clip="+clip+
           "&wr=" +
           profile.getName() +
           "&rd=" +
           profile.getName(),
-        success: function(result) {
-          console.log(result);
+          success: function(result) {
+            $("#reviewContainer").hide();
+            $("#iframeContainer").show();
         }
       });
-    } else {
-      //TODO UPDATE AJAX CALL
-      console.log("mmmmmm");
-    }
-  } else {
-    alert("ma");
-  }
 }
 
-function checkReview(titolo) {
+function checkReview() {
   $.ajax({
     type: "get",
-    url:
-      "getReview?luogo=" +
-      $("#reviewLuogo").text() +
-      "&wr=" +
-      profile.getName() +
-      "&mode=check",
+    url:"getReview?luogo=" + $("#reviewLuogo").text() +"&clip="+clip+ "&wr=" + profile.getName() +"&mode=check",
     success: function(result) {
       if (result.length != 0) {
         update = true;
-        $("#reviewLuogo").val(titolo)
+        $("#txtReview").val(result[0].value.descrizione)
+        voto = Number(result[0].value.voto);
+        var color = "rgb(230,180,0)";
+        for (i in ind) {
+          $("#star" + ind[i]).css("color", color);
+          if (voto == Number(ind[i])) {
+              color = "rgb(100,100,100)";
+          }
+        }
       } else {
-        console.log("vuottoooo");
+        $("#txtReview").val("")
       }
-      $("#modalReview").modal();
+      $("#spinnerReview").hide();
+      $("#reviewContainer").show();
     }
   });
 }
@@ -79,7 +83,7 @@ $(document).ready(function() {
     for (i in ind) {
       $("#star" + ind[i]).css("color", color);
       if (voto == Number(ind[i])) {
-        color = "rgb(100,100,100)";
+          color = "rgb(100,100,100)";
       }
     }
   });

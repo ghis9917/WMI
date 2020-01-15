@@ -63,21 +63,12 @@ app.get("/askDBPedia", (req, res) => {
   });
 });
 
-app.get("/updateReview", (req, res) => {
+app.post("/updateReview", (req, res) => {
   client.connect(
     "mongodb://localhost:27017/",
     { useUnifiedTopology: true },
     async function(error, db) {
-      var myquery = { _id: req.query.luogo, wr: req.query.wr };
-      var myobj = {
-        _id: req.query.luogo,
-        value: {
-          voto: req.query.voto,
-          descrizione: req.query.descrizione
-        },
-        wr: req.query.wr,
-        rd: req.query.rd
-      };
+      var myquery = { _id: req.query.luogo, wr: req.query.wr }
       var newvalues = {
         $set: {
           _id: req.query.luogo,
@@ -85,6 +76,7 @@ app.get("/updateReview", (req, res) => {
             voto: req.query.voto,
             descrizione: req.query.descrizione
           },
+          clip : req.query.clip,
           wr: req.query.wr,
           rd: req.query.rd
         }
@@ -98,7 +90,7 @@ app.get("/updateReview", (req, res) => {
               message: "DB error"
             });
           } else {
-            res.send(newvalues);
+            res.send("Update!");
           }
         });
     }
@@ -136,11 +128,7 @@ app.get("/getReview", async (req, res) => {
         }
       } else if (req.query.mode == "check") {
         var mydb = db.db("WMIdb");
-        var ifExist = await utils.getSingleReview(
-          req.query.luogo,
-          req.query.wr,
-          mydb
-        );
+        var ifExist = await utils.getSingleReview(req, mydb);
         res.send(ifExist);
       } else {
         var mydb = db.db("WMIdb");
@@ -173,23 +161,21 @@ app.post("/insertReview", (req, res) => {
       if (!error) {
         var mydb = db.db("WMIdb");
 
-        var ifExist = await utils.getSingleReview(
-          req.query.luogo,
-          req.query.wr,
-          mydb
-        );
-
+        var ifExist = await utils.getSingleReview(req, mydb);
+        console.log("Eccomi")
         if (ifExist == "error") {
           res.status(400).send({
             message: "DB error"
           });
         } else if (ifExist.length == 0) {
+          console.log("Pro")
           var myobj = {
             _id: req.query.luogo,
             value: {
               voto: req.query.voto,
               descrizione: req.query.descrizione
             },
+            clip: req.query.clip,
             wr: req.query.wr,
             rd: req.query.rd
           };
@@ -199,7 +185,7 @@ app.post("/insertReview", (req, res) => {
                 message: "DB error"
               });
             } else {
-              res.send("Successo!");
+              res.send("Insert!");
             }
           });
         } else {
