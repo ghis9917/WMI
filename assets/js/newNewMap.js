@@ -209,37 +209,46 @@ function loadMarker() {
   }
 }
 
-function getFilters(valori){
-  var l = $("#language")
-  valori = (l[0].selectedOptions[0].text).toLowerCase();
+function getFilters(valori) {
+  var languageSelector = $("#language");
+  valori = " " + languageSelector[0].selectedOptions[0].text.toLowerCase();
 
-  var aud = $("#content");/*
-  alert($("#language").text)
-  for(var i in l[0].selectedOptions){
-    console.log(l[0].selectedOptions[i].text)
-    if(l[0].selectedOptions[i].text != undefined){
-      valori = valori +" " +l[0].selectedOptions[i].text
-
+  var contentSelector = $("#content");
+  if (contentSelector[0].selectedOptions.length > 0) {
+    for (var selection in contentSelector[0].selectedOptions) {
+      if (isNumber(selection)) {
+        valori +=
+          " " + contentSelector[0].selectedOptions[selection].value + " ";
+      }
     }
-  }*/
+  }
 
+  var audienceSelector = $("#audience");
+  if (audienceSelector[0].selectedOptions.length > 0) {
+    for (var selection in audienceSelector[0].selectedOptions) {
+      if (isNumber(selection)) {
+        valori +=
+          " " + contentSelector[0].audienceSelector[selection].value + " ";
+      }
+    }
+  }
+
+  var detailSelector = $("#detail");
+  valori += " " + detailSelector[0].selectedOptions[0].text.toLowerCase();
 
   return valori;
 }
-
-
 
 /**
  * loadMarker Functions
  */
 function getPOIs(OCL) {
-
   var valori;
   getFilters(valori);
-  alert(valori)
+  alert(valori);
   return $.ajax({
     type: "get",
-    url: "/getPOIs?searchQuery=" + OCL,
+    url: "/getPOIs?searchQuery=" + OCL + valori,
     success: function(data) {
       POIs = data;
       console.log(POIs);
