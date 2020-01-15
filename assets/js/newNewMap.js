@@ -209,10 +209,34 @@ function loadMarker() {
   }
 }
 
+function getFilters(valori){
+  var l = $("#language")
+  valori = (l[0].selectedOptions[0].text).toLowerCase();
+
+  var aud = $("#content");/*
+  alert($("#language").text)
+  for(var i in l[0].selectedOptions){
+    console.log(l[0].selectedOptions[i].text)
+    if(l[0].selectedOptions[i].text != undefined){
+      valori = valori +" " +l[0].selectedOptions[i].text
+
+    }
+  }*/
+
+
+  return valori;
+}
+
+
+
 /**
  * loadMarker Functions
  */
 function getPOIs(OCL) {
+
+  var valori;
+  getFilters(valori);
+  alert(valori)
   return $.ajax({
     type: "get",
     url: "/getPOIs?searchQuery=" + OCL,

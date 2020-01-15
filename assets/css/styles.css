@@ -47,3 +47,12 @@ body {
   transform: scaleX(1.1);
   background-color: #cccccc !important;
 }
+
+
+.bootstrap-select{
+  width: auto;
+}
+
+.dropdown {
+    width: auto;
+}
