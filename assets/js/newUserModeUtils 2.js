@@ -108,16 +108,6 @@ function addPlayButton() {
   }).addTo(mymap);
 }
 
-function addFilterButton() {
-  L.easyButton({
-    states: [
-      newState("search", "fa-filter", "Enter address", function(btn) {
-        $("#filterModal").modal();
-      })
-    ]
-  }).addTo(mymap);
-}
-
 function newState(name, icon, title, f) {
   return {
     stateName: name,

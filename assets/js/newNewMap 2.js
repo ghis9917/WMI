@@ -11,7 +11,6 @@ var control = null;
 var routingMode = "foot";
 var infoPopupState = "open";
 var actualRouting = [];
-var filters = {};
 var redIcon =
   "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png";
 var greyIcon =
@@ -140,7 +139,6 @@ function createMap() {
       }
     ).addTo(mymap);
     addPlayButton();
-    addFilterButton();
 
     mymap.setView([44.49394, 11.3426944], 12);
     navigator.geolocation.watchPosition(onLocationFound, onError, {
