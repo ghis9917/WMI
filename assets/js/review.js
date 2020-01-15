@@ -24,6 +24,7 @@ function openReviewModal(titolo) {
   }
 }
 
+
 function sendReview() {
     var api;
     if (update == false) {
