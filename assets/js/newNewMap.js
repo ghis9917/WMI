@@ -6,12 +6,12 @@ var currentLocation = null;
 var currentDestination = 0;
 var popupIndex = 0;
 var customdirectionsButton = null;
+var customRouting;
 var POIs = {};
 var control = null;
 var routingMode = "foot";
 var infoPopupState = "open";
 var actualRouting = [];
-var filters = {};
 var redIcon =
   "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png";
 var greyIcon =
@@ -192,8 +192,13 @@ function onClick() {
 /**
  * Loads marker with descriptions and images
  */
-function loadMarker() {
+function loadMarker(value) {
+  if(value != undefined && currentLocation == null){
+    console.log("bella")
+    return;
+  }
   if (currentLocation !== null) {
+    console.log(currentLocation)
     var currentLocationOCL = OpenLocationCode.encode(
       currentLocation.getLatLng().lat,
       currentLocation.getLatLng().lng,
@@ -243,20 +248,34 @@ function getFilters(valori) {
  * loadMarker Functions
  */
 function getPOIs(OCL) {
-  var valori;
-  getFilters(valori);
-  alert(valori);
+  var valori = OCL + " " +getFilters(valori);
   return $.ajax({
     type: "get",
-    url: "/getPOIs?searchQuery=" + OCL + valori,
+    url: "/getPOIs?searchQuery=" + valori,
     success: function(data) {
+      try{
+          for(var i in POIs){
+            mymap.removeLayer(POIs[i].marker);
+          }
+            mymap.removeControl(customRouting);
+             currentDestination = 0;
+             popupIndex = 0;
+             mymap.removeControl(control);
+             control = null;
+            showCloseInfo();
+             infoPopupState = "open";
+             actualRouting = [];
+      }catch(e){
+          console.log(e)
+      }
       POIs = data;
-      console.log(POIs);
     }
   });
 }
 
 async function displayPOIs() {
+  try{mymap.setView(currentLocation, 12);}catch(e){}
+
   for (let place in POIs) {
     var poi = L.marker(
       [POIs[place].coords.latitudeCenter, POIs[place].coords.longitudeCenter],
@@ -292,7 +311,7 @@ async function displayPOIs() {
     POIs[place].marker = poi;
     await sleep(250);
   }
-  L.easyButton({
+  customRouting =  L.easyButton({
     states: [
       newState("custom", "fas fa-bong", "Custom way", function(btn) {
         $("#customRoutingContainer").modal({

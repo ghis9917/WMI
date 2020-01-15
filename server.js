@@ -200,7 +200,7 @@ app.post("/insertReview", (req, res) => {
 app.get("/getPOIs", (req, res) => {
   var opts = (youtubeSearch.YouTubeSearchOptions = {
     maxResults: 50,
-    key: rickykey_second
+    key: guiKey
   });
 
   try {
