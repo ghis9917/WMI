@@ -398,7 +398,7 @@ function setSpeech() {
   });
 }
 
-function customRouting() {
+function customRoutingFunction() {
   actualRouting = [];
   currentDestination = 0;
   blueMarker(popupIndex);
@@ -423,9 +423,13 @@ function isNumber(n) {
 }
 
 function blueMarker(indexPOI) {
-  POIs[indexPOI].marker.setIcon(getIconMarkerOfColor(blueIcon));
+  try {
+    POIs[indexPOI].marker.setIcon(getIconMarkerOfColor(blueIcon));
+  } catch (error) {}
 }
 
 function greenMarker(indexPOI) {
-  POIs[indexPOI].marker.setIcon(getIconMarkerOfColor(greenIcon));
+  try {
+    POIs[indexPOI].marker.setIcon(getIconMarkerOfColor(greenIcon));
+  } catch (error) {}
 }

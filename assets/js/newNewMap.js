@@ -33,13 +33,13 @@ $(document).ready(async function() {
 
   $("#prev").click(function(e) {
     if (actualRouting.length > 0) {
-      if (popupIndex > 0) {
+      if (popupIndex > 0 && currentDestination > 0) {
         blueMarker(popupIndex);
         currentDestination--;
         popupIndex = currentDestination;
         greenMarker(popupIndex);
         populatePopup(popupIndex);
-      } else if (popupIndex == 0) {
+      } else if (popupIndex == 0 || currentDestination == 0) {
         blueMarker(popupIndex);
         currentDestination = actualRouting.length - 1;
         popupIndex = currentDestination;
@@ -54,8 +54,8 @@ $(document).ready(async function() {
         populatePopup(popupIndex);
       } else if (popupIndex == 0) {
         blueMarker(popupIndex);
-        currentDestination = Object.keys(POIs).length - 1;
-        popupIndex = currentDestination;
+        popupIndex = Object.keys(POIs).length - 1;
+        popupIndex;
         greenMarker(popupIndex);
         populatePopup(popupIndex);
       }
@@ -64,13 +64,19 @@ $(document).ready(async function() {
 
   $("#next").click(function(e) {
     if (actualRouting.length > 0) {
-      if (popupIndex < actualRouting.length - 1) {
+      if (
+        popupIndex < actualRouting.length - 1 &&
+        currentDestination < actualRouting.length - 1
+      ) {
         blueMarker(popupIndex);
         currentDestination++;
         popupIndex = currentDestination;
         greenMarker(popupIndex);
         populatePopup(popupIndex);
-      } else if (popupIndex == actualRouting.length - 1) {
+      } else if (
+        popupIndex == actualRouting.length - 1 ||
+        currentDestination == actualRouting.length - 1
+      ) {
         blueMarker(popupIndex);
         currentDestination = 0;
         popupIndex = currentDestination;
@@ -106,6 +112,7 @@ $(document).ready(async function() {
       customdirectionsButton.state("start");
     }
   });
+
   setGeolocationApiKey();
   createMap();
   loadMarker();
@@ -193,12 +200,12 @@ function onClick() {
  * Loads marker with descriptions and images
  */
 function loadMarker(value) {
-  if(value != undefined && currentLocation == null){
-    console.log("bella")
+  if (value != undefined && currentLocation == null) {
+    console.log("bella");
     return;
   }
   if (currentLocation !== null) {
-    console.log(currentLocation)
+    console.log(currentLocation);
     var currentLocationOCL = OpenLocationCode.encode(
       currentLocation.getLatLng().lat,
       currentLocation.getLatLng().lng,
@@ -248,33 +255,33 @@ function getFilters(valori) {
  * loadMarker Functions
  */
 function getPOIs(OCL) {
-  var valori = OCL + " " +getFilters(valori);
+  var valori = OCL + " " + getFilters(valori);
   return $.ajax({
     type: "get",
     url: "/getPOIs?searchQuery=" + valori,
     success: function(data) {
-      try{
-          for(var i in POIs){
-            mymap.removeLayer(POIs[i].marker);
-          }
-            mymap.removeControl(customRouting);
-             currentDestination = 0;
-             popupIndex = 0;
-             mymap.removeControl(control);
-             control = null;
-            showCloseInfo();
-             infoPopupState = "open";
-             actualRouting = [];
-      }catch(e){
-          console.log(e)
-      }
+      try {
+        for (var i in POIs) {
+          mymap.removeLayer(POIs[i].marker);
+        }
+        mymap.removeControl(customRouting);
+        currentDestination = 0;
+        popupIndex = 0;
+        mymap.removeControl(control);
+        control = null;
+        showCloseInfo();
+        infoPopupState = "open";
+        actualRouting = [];
+      } catch (e) {}
       POIs = data;
     }
   });
 }
 
 async function displayPOIs() {
-  try{mymap.setView(currentLocation, 12);}catch(e){}
+  try {
+    mymap.setView(currentLocation, 12);
+  } catch (e) {}
 
   for (let place in POIs) {
     var poi = L.marker(
@@ -311,7 +318,7 @@ async function displayPOIs() {
     POIs[place].marker = poi;
     await sleep(250);
   }
-  customRouting =  L.easyButton({
+  customRouting = L.easyButton({
     states: [
       newState("custom", "fas fa-bong", "Custom way", function(btn) {
         $("#customRoutingContainer").modal({
