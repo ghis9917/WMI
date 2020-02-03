@@ -425,11 +425,15 @@ function isNumber(n) {
 function blueMarker(indexPOI) {
   try {
     POIs[indexPOI].marker.setIcon(getIconMarkerOfColor(blueIcon));
-  } catch (error) {}
+  } catch (error) {
+    console.log(indexPOI);
+  }
 }
 
 function greenMarker(indexPOI) {
   try {
     POIs[indexPOI].marker.setIcon(getIconMarkerOfColor(greenIcon));
-  } catch (error) {}
+  } catch (error) {
+    console.log(indexPOI);
+  }
 }
