@@ -11,7 +11,7 @@
     <meta name="google-signin-client_id"
         content="114712511052-o00pbvnd01mt0jfl946p61k2vtjfk6m8.apps.googleusercontent.com">
     <script src="https://apis.google.com/js/api.js"></script>
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
     <script src="assets/js/googleSignIn.js"></script>
     <script src="https://cdn.rawgit.com/labnol/files/master/yt.js"></script>
 
@@ -69,9 +69,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/js/bootstrap-select.min.js"></script>
   </head>
-
   <body class="d-flex flex-column justify-content-between">
-
     <nav class="navbar navbar-light navbar-expand-md text-uppercase shadow navigation-clean">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">Where Am I?</a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1">
@@ -115,13 +113,27 @@
       <div class="modal-dialog" role="document" align="center  ">
         <div class="modal-content">
           <div class="modal-header">
-            <h4 class="modal-title">Modal Title</h4>
+            <h4 id="infoTitolo" style ="width:100%;"class="modal-title"></h4>
             <button id="btnCloseModalClip" type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="clearClipModal();"><span aria-hidden="true"
                 id="stop">×</span></button>
           </div>
-          <div class="modal-body" style="overflow: scroll;">
-            <div id="iframeContainer" >
+          <div class="modal-body" style="overflow-y: scroll;">
+            <div id="LoginRequired" style="display:none">
+              <p>Click the button to log in with your google account</p>
+              <div>
+                <div class="g-signin2" data-onsuccess="onSignIn"></div><button onclick="showInfo()"type="button" class="btn btn-dark">Dark</button>
             </div>
+            </div>
+            <div id="bodyClip">
+                <div style="width:100%;">
+                  <img style="width:25%; height:25%" src= "https://cdn.shopify.com/s/files/1/1552/7487/products/good_game_gg-smiley_fornite_spray_emote_printed_sticker_grfxp_grafixpressions_720x.jpg?v=1525975056">
+                  <p>
+                    Descrizione non disponibile
+                  </p>
+                </div>
+                <div id="iframeContainer" >
+                </div>
+          </div>
             <div id="spinnerReview" class="spinner-grow" role="status" style="display:none">
               <span class="sr-only">Loading...</span>
             </div>
@@ -136,9 +148,7 @@
               <button id="sendReview" onclick="sendReview()" class="btn btn-primary" type="button">Save</button>
             </div>
           </div>
-          <div class="modal-footer">
-            <!-- Draw other clips of that POI -->
-          </div>
+
         </div>
       </div>
     </div>
@@ -166,8 +176,8 @@
         <i class="fas fa-chevron-right d-flex justify-content-center align-items-center" style="width: 10%;"></i>
       </div>
     </div>
-    <div class="modal" id="noGeo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
 
+    <div class="modal" id="noGeo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -249,19 +259,8 @@
         </div>
       </div>
     </div>
-    <div id="modalReview" class="modal" role="dialog" tabindex="-1">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title" id="reviewLuogo">POI name</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-          </div>
-          <div class="modal-body">
 
-          <div class="modal-footer"><button class="btn btn-light" type="button" data-dismiss="modal">Close</button><button id="sendReview" onclick="sendReview()" class="btn btn-primary" type="button">Save</button></div>
-        </div>
-      </div>
-    </div>
-    </div>
+
 
     <div id="filterModal" class="modal" role="dialog" tabindex="-1">
       <div class="modal-dialog modal-dialog-centered" role="document">

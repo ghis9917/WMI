@@ -2,23 +2,21 @@ const ind = [1, 2, 3, 4, 5];
 var voto = null;
 var check = false;
 var update = false;
-var clip
+
+function showInfo(){
+  $("#bodyClip").show();
+  $("#LoginRequired").hide();
+  $("#spinnerReview").hide();
+}
 
 function openReviewModal(titolo) {
-  $(".modal-body").height($("#iframeContainer").height());
-  $("#iframeContainer").hide();
-  $("#spinnerReview").show();
+
   clip = titolo.replace("btn", "");
   if (profile == null) {
     check == true;
-    $("#signInModal").modal();
-    $(document).on("hidden", "#signInModal:not(.in)", function() {
-      if (check == true) {
-        check = false;
-        $("#modalReview").modal();
-        checkReview();
-      }
-    });
+    bodyClip
+    $("#bodyClip").hide();
+    $("#LoginRequired").show();
   } else {
     checkReview();
   }

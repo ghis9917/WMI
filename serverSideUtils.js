@@ -12,6 +12,50 @@ const dps = require("dbpedia-sparql-client").default;
 path = require("path");
 ffmpeg.setFfmpegPath(ffmpegPath);
 var latinize = require('latinize');
+const Entities = require('html-entities').XmlEntities;
+const entities = new Entities();
+
+const type = [
+  "why",
+  "how",
+  "what"
+];
+
+const language = [
+  "ita",
+  "eng",
+  "deu",
+  "fra",
+  "esp"
+];
+
+const contents = [
+  "none",
+  "nat",
+  "art",
+  "his",
+  "flk",
+  "mod",
+  "rel",
+  "cui",
+  "spo",
+  "mus",
+  "mov",
+  "fas",
+  "shp",
+  "tec",
+  "pop",
+  "prs",
+  "oth"
+];
+
+const audience = [
+  "gen",
+  "pre",
+  "elm",
+  "mid",
+  "scl"
+];
 
 const CREDENTIALS = readJson("./credential.json");
 var auth = Youtube.authenticate({
@@ -61,11 +105,65 @@ function UploadYoutube(myTitle, myDescription, myTags, myFileLocation) {
 module.exports = {
   validator: function validator(d) {
     var list = d.split(":");
-
+    var check = (list.length >= 3) && (list[0].split("-").length == 3) && (type.indexOf(list[1]) != -1) && (language.indexOf(list[2]) != -1);
+    if (check) {
+        console.log(d);
+        if (list[3] != undefined){
+          if (list[3].charAt(0) != 'A' && list[3].charAt(0) != 'P'){
+            var contentList = list[3].split("-");
+            for (var content in contentList) {
+              check = check && (contents.indexOf(contentList[content]) != -1);
+            }
+            if (list[4] != undefined && list[4].charAt(0) == 'A'){
+              var val = list[4].replace("A", "");
+              check = check && (audience.indexOf(val) != -1);
+              if (list[5] != undefined && list[5].charAt(0) == 'P') {
+                var val = list[5].replace("P", "");
+                try {
+                  check = check && (parseInt(val, 10) >= 0);
+                } catch (err) {
+                  check = false;
+                }
+              }
+            } else if (list[4] != undefined && list[4].charAt(0) == 'P') {
+              var val = list[4].replace("P", "");
+              try {
+                check = check && (parseInt(val, 10) >= 0);
+              } catch (err) {
+                check = false;
+              }
+            }
+          }
+          else if (list[3] != undefined && list[3].charAt(0) == 'A'){
+            var val = list[3].replace("A", "");
+            check = check && (audience.indexOf(val) != -1);
+            if (list[4] != undefined && list[4].charAt(0) == 'P') {
+              var val = list[4].replace("P", "");
+              try {
+                check = check && (parseInt(val, 10) >= 0);
+              } catch (err) {
+                check = false;
+              }
+            }
+          } else if (list[3] != undefined && list[3].charAt(0) == 'P') {
+            var val = list[3].replace("P", "");
+            try {
+              check = check && (parseInt(val, 10) >= 0);
+            } catch (err) {
+              check = false;
+            }
+          }
+        }
+    }
     try {
-      return { coords: openLocationCode.decode(list[2]), plusCode: list[2] };
+      if (check){
+        var ocls = list[0].split("-");
+        return { coords: openLocationCode.decode(ocls[2]), plusCode: ocls[2] };
+      } else {
+        throw check;
+      }
     } catch (err) {
-      return false
+      return false;
     }
   },
   insertDescription: function insertDescription(mydb, titolo, desc, img) {
@@ -82,12 +180,9 @@ module.exports = {
         vector[string] = "'" + vector[string] + "'";
         vector[string] = vector[string].toUpperCase();
       }
-      console.log(string);
       var string = titolo.toUpperCase();
       string = string.replace(/&#([0-9]|[a-z])*;/g, "  ");
-      console.log(string);
       string = string.replace( /  +/g, ' ' );
-      console.log(string);
       string = string.replace(/ /g, " AND ");
       string = latinize(string);
       var q =
@@ -108,12 +203,17 @@ module.exports = {
   getDescription: function (nome, mydb, utils) {
     return new Promise((resolve, reject) => {
       var cont = {}, img;
+      console.log("Mmmmmmm")
       mydb.collection("descrizioni").find({ nome: nome }).toArray(async function (err, result) {
         if (result.length != 0) {
+          console.log("AHAHAHAHAH")
           resolve(result);
         } else {
           var d = await utils.askDBPedia(nome);
           try {
+
+             nome = entities.decode(nome);
+            console.log("QUAAA "+ nome)
             d = d.results.bindings[0].c1.value.replace("resource", "data") + ".rdf";
             var e = await utils.get(d);
             parseString(e.data, function (err, result) {
@@ -125,10 +225,7 @@ module.exports = {
                 var valore = list[key]["_"];
                 json[chiave] = valore;
               }
-              var img =
-                result["rdf:RDF"]["rdf:Description"][0]["dbo:thumbnail"][0][
-                "$"
-                ]["rdf:resource"];
+              var img = result["rdf:RDF"]["rdf:Description"][0]["dbo:thumbnail"][0]["$"]["rdf:resource"];
               utils.insertDescription(mydb, nome, json, img)
               cont["descrizione"] = json;
               cont["urlImg"] = img;
@@ -136,7 +233,9 @@ module.exports = {
             });
           }
           catch (error) {
-            console.log(error)
+
+            nome = entities.decode(nome);
+           console.log("sooottoo "+ nome)
             var json = {};
             var img = "NF";
             json["en"] = "NOT FOUND";
@@ -256,5 +355,4 @@ module.exports = {
   remove: function remove(id) {
     fs.rmdir(__dirname + '/user/' + id, { recursive: true }, function () { });
   }
-
 }

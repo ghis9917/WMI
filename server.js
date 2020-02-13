@@ -16,7 +16,9 @@ const Youtube = require("youtube-api"),
   opn = require("opn"),
   prettyBytes = require("pretty-bytes");
 const ffmpeg = require("fluent-ffmpeg");
+const Entities = require('html-entities').XmlEntities;
 
+const entities = new Entities();
 // app.use(bodyParser.urlencoded());
 
 const rickyKey = "AIzaSyBEpETjNZc18OP9L603YkzOvotslkQiBGI";
@@ -199,7 +201,7 @@ app.post("/insertReview", (req, res) => {
 app.get("/getPOIs", (req, res) => {
   var opts = (youtubeSearch.YouTubeSearchOptions = {
     maxResults: 50,
-    key: guiKey
+    key: rickyKey
   });
 
   try {
@@ -233,7 +235,8 @@ function call(results, res) {
             if (list.indexOf(val.plusCode) === -1) {
               list.push(val.plusCode);
               var c = await utils.getDescription(item.title, mydb, utils);
-              console.log(c);
+              item.title = entities.decode(item.title);
+              console.log("TITOLOO "+ item.title)
               try {
                 POIs[counter] = {
                   name: item.title,

@@ -1,3 +1,5 @@
+var wmi;
+
 function getIconMarkerOfColor(color) {
   return new L.Icon({
     iconUrl: color,
@@ -185,7 +187,6 @@ function calculateRouting() {
   actualRouting = [];
   currentDestination = 0;
   blueMarker(popupIndex);
-  popupIndex = actualRouting[currentDestination];
   var count = 0;
   var currentPOI = getFirstPOI();
   do {
@@ -198,8 +199,9 @@ function calculateRouting() {
       count++;
     }
   } while (currentPOI != -1 && count < 50);
-  populatePopup(actualRouting[popupIndex]);
-  greenMarker(actualRouting[popupIndex]);
+  popupIndex = actualRouting[currentDestination];
+  populatePopup(actualRouting[currentDestination]);
+  greenMarker(actualRouting[currentDestination]);
 }
 
 function getFirstPOI() {
@@ -338,6 +340,7 @@ function checkDistance(distance, instruction) {
     POIs[actualRouting[currentDestination]].visited = true;
     stringToBeSpoken = POIs[actualRouting[currentDestination]].description.en;
     getVideoId(POIs[actualRouting[currentDestination]]);
+    wmi = actualRouting[currentDestination];
     actualRouting.splice(currentDestination, 1);
     if (actualRouting.length != 0) {
       routingTo(actualRouting[currentDestination]);
@@ -381,7 +384,13 @@ function showCloseInfo() {
   }
 }
 
+function setclipContainerInfo(){
+    console.log(POIs[wmi])
+    $("#infoTitolo").text($("#popupTitle").text());
+}
+
 function setCSSAttribute(id, changes) {
+  setclipContainerInfo();
   for (attribute in changes) {
     $(id).css(attribute, changes[attribute]);
   }
