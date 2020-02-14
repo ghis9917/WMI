@@ -24,16 +24,16 @@ var blueIcon =
 /**
  * Funzione che gestisce l'avvio dell'applicazione
  */
-$(document).ready(async function () {
+$(document).ready(async function() {
   var tag = document.createElement("script");
 
   tag.src = "https://www.youtube.com/iframe_api";
   var firstScriptTag = document.getElementsByTagName("script")[0];
   firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-  $("#prev").click(function (e) {
+  $("#prev").click(function(e) {
     if (actualRouting.length > 0) {
-      if (popupIndex > 0) {
+      if (currentDestination > 0) {
         blueMarker(popupIndex);
         currentDestination--;
         popupIndex = actualRouting[currentDestination];
@@ -62,18 +62,15 @@ $(document).ready(async function () {
     }
   });
 
-  $("#next").click(function (e) {
+  $("#next").click(function(e) {
     if (actualRouting.length > 0) {
-      if (popupIndex < actualRouting.length - 1) {
+      if (currentDestination < actualRouting.length - 1) {
         blueMarker(popupIndex);
         currentDestination++;
         popupIndex = actualRouting[currentDestination];
         greenMarker(popupIndex);
         populatePopup(popupIndex);
-      } else if (
-        popupIndex == actualRouting.length - 1 ||
-        currentDestination == actualRouting.length - 1
-      ) {
+      } else {
         blueMarker(popupIndex);
         currentDestination = 0;
         popupIndex = actualRouting[currentDestination];
@@ -94,7 +91,7 @@ $(document).ready(async function () {
       }
     }
   });
-  $("#stop").on("click", function () {
+  $("#stop").on("click", function() {
     if (actualRouting.length == 0) {
       for (poi in POIs) {
         POIs[poi].visited = false;
@@ -167,14 +164,14 @@ function onError(err) {
 }
 
 function onClick() {
-  mymap.on("click", function (e) {
+  mymap.on("click", function(e) {
     if (infoPopupState == "close") {
       showCloseInfo();
       blueMarker(popupIndex);
       blueMarker(actualRouting[popupIndex]);
     } else {
       var fakePositionBtn = createButton("Simula Posizione");
-      L.DomEvent.on(fakePositionBtn, "click", function () {
+      L.DomEvent.on(fakePositionBtn, "click", function() {
         mymap.closePopup();
         currentLocation.setLatLng(e.latlng);
         if (control !== null) {
@@ -210,7 +207,7 @@ function loadMarker(value) {
     );
     customdirectionsButton.state("loading");
     currentLocationOCL = currentLocationOCL.replace("+", "");
-    $.when(getPOIs(currentLocationOCL)).done(async function () {
+    $.when(getPOIs(currentLocationOCL)).done(async function() {
       displayPOIs();
     });
   } else {
@@ -256,7 +253,7 @@ function getPOIs(OCL) {
   return $.ajax({
     type: "get",
     url: "/getPOIs?searchQuery=" + valori,
-    success: function (data) {
+    success: function(data) {
       try {
         for (var i in POIs) {
           mymap.removeLayer(POIs[i].marker);
@@ -269,8 +266,9 @@ function getPOIs(OCL) {
         showCloseInfo();
         infoPopupState = "open";
         actualRouting = [];
-      } catch (e) { }
+      } catch (e) {}
       POIs = data;
+      console.log(POIs);
     }
   });
 }
@@ -278,7 +276,7 @@ function getPOIs(OCL) {
 async function displayPOIs() {
   try {
     mymap.setView(currentLocation, 12);
-  } catch (e) { }
+  } catch (e) {}
 
   for (let place in POIs) {
     var poi = L.marker(
@@ -286,10 +284,10 @@ async function displayPOIs() {
       {
         bounceOnAdd: true,
         bounceOnAddOptions: {},
-        bounceOnAddCallback: function () { }
+        bounceOnAddCallback: function() {}
       }
     ).addTo(mymap);
-    poi.on("click", function () {
+    poi.on("click", function() {
       if (actualRouting.length != -1) {
         try {
           blueMarker(popupIndex);
@@ -317,7 +315,7 @@ async function displayPOIs() {
   }
   customRouting = L.easyButton({
     states: [
-      newState("custom", "fas fa-bong", "Custom way", function (btn) {
+      newState("custom", "fas fa-bong", "Custom way", function(btn) {
         $("#customRoutingContainer").modal({
           backdrop: "static",
           keyboard: false

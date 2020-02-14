@@ -11,7 +11,7 @@ function getIconMarkerOfColor(color) {
 }
 
 function setGeolocationApiKey() {
-  $("#btn-load").click(function () {
+  $("#btn-load").click(function() {
     callGeoLocationApi();
   });
   this.placesAutocomplete = places({
@@ -61,7 +61,7 @@ function updateCurrentLocation(lat, lon) {
   try {
     mymap.removeLayer(currentLocation);
     control.spliceWaypoints(0, 1, L.latLng(lat, lon));
-  } catch (err) { }
+  } catch (err) {}
   currentLocation = L.marker([lat, lon], {
     icon: getIconMarkerOfColor(redIcon)
   })
@@ -80,18 +80,18 @@ function createButton(label) {
 function addPlayButton() {
   customdirectionsButton = L.easyButton({
     states: [
-      newState("search", "fa-location-arrow", "Enter address", function (btn) {
+      newState("search", "fa-location-arrow", "Enter address", function(btn) {
         $("#noGeo").modal();
       }),
-      newState("start", "fas fa-play", "Start routing to nearest POI", function (
+      newState("start", "fas fa-play", "Start routing to nearest POI", function(
         btn
       ) {
         createPlayer();
       }),
-      newState("loading", "fas fa-spinner", "We are loading the POIs", function (
+      newState("loading", "fas fa-spinner", "We are loading the POIs", function(
         btn
-      ) { }),
-      newState("started", "fas fa-pause", "Stop routing", function (btn) {
+      ) {}),
+      newState("started", "fas fa-pause", "Stop routing", function(btn) {
         for (poi in POIs) {
           POIs[poi].visited = false;
           blueMarker(poi);
@@ -111,7 +111,7 @@ function addPlayButton() {
 function addFilterButton() {
   L.easyButton({
     states: [
-      newState("search", "fa-filter", "Enter address", function (btn) {
+      newState("search", "fa-filter", "Enter address", function(btn) {
         $("#filterModal").modal();
       })
     ]
@@ -236,7 +236,9 @@ function getNearestTo(lat, lng, currentIndex) {
 }
 
 function populatePopup(indexPOItoDisplay) {
+  console.log("Index received: " + indexPOItoDisplay);
   var POItodisplay = POIs[indexPOItoDisplay];
+  console.log("POI: " + POItodisplay);
   $("#popupTitle").text(POItodisplay.name);
   $("#popupDescription").text(
     POItodisplay.description.en !== "NOT FOUND"
@@ -276,7 +278,7 @@ function addRouting() {
     1,
     L.latLng(currentLocation.getLatLng().lat, currentLocation.getLatLng().lng)
   );
-  control.on("routesfound", function (e) {
+  control.on("routesfound", function(e) {
     var distance = e.routes[0].summary.totalDistance;
     var instruction = e.routes[0].instructions[0].text;
     var distanceChange = e.routes[0].instructions[0].distance;
@@ -294,7 +296,7 @@ function addRouting() {
 
 function newRouting() {
   return L.routing.control({
-    createMarker: function () {
+    createMarker: function() {
       //this function prevents the routing control from creating another marker over the one already presentof the POI
       return null;
     },
@@ -386,7 +388,7 @@ function setCSSAttribute(id, changes) {
 }
 
 function setSpeech() {
-  return new Promise(function (resolve, reject) {
+  return new Promise(function(resolve, reject) {
     let synthesis = window.speechSynthesis;
     let id;
     id = setInterval(() => {
@@ -402,7 +404,6 @@ function customRoutingFunction() {
   actualRouting = [];
   currentDestination = 0;
   blueMarker(popupIndex);
-  popupIndex = actualRouting[currentDestination];
   var list = document.getElementById("A").children;
   if (control == null) addRouting();
   for (var index in list) {
@@ -410,8 +411,7 @@ function customRoutingFunction() {
       actualRouting.push(list[index].childNodes[1].id);
     }
   }
-  console.log(actualRouting);
-  console.log(POIs);
+  popupIndex = actualRouting[currentDestination];
   routingTo(actualRouting[currentDestination]);
   $("#customRoutingContainer").modal("hide");
   customdirectionsButton.state("started");
