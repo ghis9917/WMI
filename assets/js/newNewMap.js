@@ -25,12 +25,13 @@ var blueIcon =
  * Funzione che gestisce l'avvio dell'applicazione
  */
 $(document).ready(async function() {
+  //Aggiunge agli script quello per la getione degli iframe di youtube
   var tag = document.createElement("script");
-
   tag.src = "https://www.youtube.com/iframe_api";
   var firstScriptTag = document.getElementsByTagName("script")[0];
   firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
+  //Funcioni per la gestione dei bottoni del popup
   $("#prev").click(function(e) {
     if (actualRouting.length > 0) {
       if (currentDestination > 0) {
@@ -168,7 +169,7 @@ function onClick() {
     if (infoPopupState == "close") {
       showCloseInfo();
       blueMarker(popupIndex);
-      blueMarker(actualRouting[popupIndex]);
+      blueMarker(actualRouting[currentDestination]);
     } else {
       var fakePositionBtn = createButton("Simula Posizione");
       L.DomEvent.on(fakePositionBtn, "click", function() {
@@ -195,11 +196,12 @@ function onClick() {
  */
 function loadMarker(value) {
   if (value != undefined && currentLocation == null) {
-    console.log("bella");
     return;
   }
   if (currentLocation !== null) {
-    console.log(currentLocation);
+    if (infoPopupState == "close") {
+      showCloseInfo();
+    }
     var currentLocationOCL = OpenLocationCode.encode(
       currentLocation.getLatLng().lat,
       currentLocation.getLatLng().lng,
