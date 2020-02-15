@@ -10,8 +10,7 @@ body {
 }
 
 #popupContainer {
-  border-bottom-left-radius: 15px !important;
-  border-bottom-right-radius: 15px !important;
+  border-radius: 15px !important;
   transition: all 0.50s ease-in-out;
   /* transition: all 0.50s ease-in; */
 
@@ -29,6 +28,7 @@ body {
 }
 
 #prev {
+  border-top-left-radius: 15px;
   border-bottom-left-radius: 15px;
   transition: all 0.25s ease-in-out;
 }
@@ -39,6 +39,7 @@ body {
 }
 
 #next {
+  border-top-right-radius: 15px;
   border-bottom-right-radius: 15px;
   transition: all 0.25s ease-in-out;
 }

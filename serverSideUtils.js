@@ -60,7 +60,8 @@ function UploadYoutube(myTitle, myDescription, myTags, myFileLocation) {
 
 module.exports = {
   validator: function validator(d) {
-    var list = d.split(":")
+    var list = d.split(":");
+
     try {
       return { coords: openLocationCode.decode(list[2]), plusCode: list[2] };
     } catch (err) {
@@ -83,7 +84,9 @@ module.exports = {
       }
       var string = titolo.toUpperCase();
       string = string.replace(/ /g, " AND ");
+      console.log(string);
       string = latinize(string);
+      console.log(string);
       var q =
         "select ?s1 as ?c1, (bif:search_excerpt (bif:vector (" +
         vector +
