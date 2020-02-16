@@ -82,11 +82,14 @@ module.exports = {
         vector[string] = "'" + vector[string] + "'";
         vector[string] = vector[string].toUpperCase();
       }
+      console.log(string);
       var string = titolo.toUpperCase();
+      string = string.replace(/&#([0-9]|[a-z])*;/g, "  ");
+      console.log(string);
+      string = string.replace( /  +/g, ' ' );
+      console.log(string);
       string = string.replace(/ /g, " AND ");
-      console.log(string);
       string = latinize(string);
-      console.log(string);
       var q =
         "select ?s1 as ?c1, (bif:search_excerpt (bif:vector (" +
         vector +
