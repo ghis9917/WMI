@@ -14,6 +14,26 @@ function getVideoId(poi) {
     poi.coords.latitudeCenter,
     poi.coords.longitudeCenter
   );
+  $("#infoTitolo").text(poi.name.toString());
+  if (poi.img !== "NF") {
+    $("#imgOnLocation").attr("src", poi.img);
+    $("#imgOnLocation").show();
+  } else {
+    $("#imgOnLocation").attr("src", "");
+    $("#imgOnLocation").hide();
+  }
+  if (poi.description.en !== "NOT FOUND") {
+    $("#descriptionOnLocation").text(poi.description.en);
+    $("#descriptionOnLocation").show();
+  } else {
+    $("#descriptionOnLocation").text("");
+    $("#descriptionOnLocation").hide();
+  }
+  if (poi.img !== "NF" || poi.description.en !== "NOT FOUND") {
+    $("#dividerOnLocation").show();
+  } else {
+    $("#dividerOnLocation").hide();
+  }
   searchByKeyword(search);
 }
 
@@ -37,7 +57,7 @@ function searchByKeyword(query) {
       for (video in item) {
         var audio_tag = document.createElement("audio");
         videoId = item[video].id.videoId;
-        console.log(item[video].snippet.title)
+        console.log(item[video].snippet.title);
         // iframe.src = "https://www.youtube.com/watch?v="+videoId;
         // iframe.controls = true;
         // iframe.width="0";
@@ -64,32 +84,37 @@ function onYouTubeIframeAPIReady(videoId) {
     return;
   }
 
-
-  $("#iframeContainer").append("<div class='d-flex'><div class='d-flex justify-content-center align-items-center' style='  width: 25%;'>  <i id='controller"+videoId+"'class='fas fa-play' style='font-size: 30px;'></i></div><div class='d-flex flex-row justify-content-between' style='  width: 75%;'><div><p>Titolo</p><p>Tipo di audio</p></div><div class='d-flex flex-column justify-content-end align-items-end'><p class='d-md-flex justify-content-md-end'>Media recensioni</p><p class='d-md-flex justify-content-md-end'><button id='btn"+videoId+"' onclick='openReviewModal(this.id)'>Leave a review</button></p></div></div></div>");
-
+  $("#iframeContainer").append(
+    "<div class='d-flex'><div class='d-flex justify-content-center align-items-center' style='  width: 25%;'>  <i id='controller" +
+      videoId +
+      "'class='fas fa-play' style='font-size: 30px;'></i></div><div class='d-flex flex-row justify-content-between' style='  width: 75%;'><div><p>Titolo</p><p>Tipo di audio</p></div><div class='d-flex flex-column justify-content-end align-items-end'><p class='d-md-flex justify-content-md-end'>Media recensioni</p><p class='d-md-flex justify-content-md-end'><button id='btn" +
+      videoId +
+      "' onclick='openReviewModal(this.id)'>Leave a review</button></p></div></div></div>"
+  );
 
   var iFramer = document.createElement("div");
   iFramer.setAttribute("id", "player" + videoId);
-  $("#controller"+videoId).on("click" , function() {
-
-
-    $("#controller"+videoId).attr("class", "fas fa-pause");
+  $("#controller" + videoId).on("click", function() {
+    $("#controller" + videoId).attr("class", "fas fa-pause");
 
     var player = YT.get("player" + videoId);
     console.log(player.getPlayerState());
-    if (player.getPlayerState() == YT.PlayerState.ENDED || player.getPlayerState() == YT.PlayerState.PAUSED || player.getPlayerState() == -1 ||player.getPlayerState() == YT.PlayerState.CUED) {
-
+    if (
+      player.getPlayerState() == YT.PlayerState.ENDED ||
+      player.getPlayerState() == YT.PlayerState.PAUSED ||
+      player.getPlayerState() == -1 ||
+      player.getPlayerState() == YT.PlayerState.CUED
+    ) {
       stopOtherVideos(videoId);
       player.playVideo();
     } else {
       stopOtherVideos(player);
-      $("#controller"+videoId).attr("class", "fas fa-play");
+      $("#controller" + videoId).attr("class", "fas fa-play");
       player.pauseVideo();
     }
   });
 
   document.getElementById("iframeContainer").appendChild(iFramer);
-
 
   playerYT = new YT.Player("player" + videoId, {
     height: "0",
@@ -113,7 +138,10 @@ function stopOtherVideos(id) {
       ) {
         YT.get(listOfPlayers[element].id).stopVideo();
         console.log(listOfPlayers[element].id);
-        $("#"+(listOfPlayers[element].id).replace("player", "controller") ).attr("class", "fas fa-play");
+        $("#" + listOfPlayers[element].id.replace("player", "controller")).attr(
+          "class",
+          "fas fa-play"
+        );
       }
     }
   }
@@ -128,9 +156,12 @@ function onPlayerReady(event) {
 //    the player should play for six seconds and then stop.
 var done = false;
 function onPlayerStateChange(event) {
-  if(event.data == YT.PlayerState.ENDED){
-    $("#"+(event.target.a.id).replace("player","controller")).attr("class", "fas fa-play");
-  }else if (event.data == YT.PlayerState.PLAYING && !done) {
+  if (event.data == YT.PlayerState.ENDED) {
+    $("#" + event.target.a.id.replace("player", "controller")).attr(
+      "class",
+      "fas fa-play"
+    );
+  } else if (event.data == YT.PlayerState.PLAYING && !done) {
     setTimeout(stopVideo, 6000);
     done = true;
   }
@@ -139,9 +170,8 @@ function stopVideo() {
   playerYT.stopVideo();
 }
 
-
-function clearClipModal(){
-  var div = document.getElementById('clipContainer');
+function clearClipModal() {
+  var div = document.getElementById("clipContainer");
   div.hidden = true;
   $("#iframeContainer").empty();
   $("#reviewContainer").hide();

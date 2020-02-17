@@ -16,7 +16,7 @@ const Youtube = require("youtube-api"),
   opn = require("opn"),
   prettyBytes = require("pretty-bytes");
 const ffmpeg = require("fluent-ffmpeg");
-const Entities = require('html-entities').XmlEntities;
+const Entities = require("html-entities").XmlEntities;
 
 const entities = new Entities();
 // app.use(bodyParser.urlencoded());
@@ -68,8 +68,8 @@ app.post("/updateReview", (req, res) => {
   client.connect(
     "mongodb://localhost:27017/",
     { useUnifiedTopology: true },
-    async function (error, db) {
-      var myquery = { _id: req.query.luogo, wr: req.query.wr }
+    async function(error, db) {
+      var myquery = { _id: req.query.luogo, wr: req.query.wr };
       var newvalues = {
         $set: {
           _id: req.query.luogo,
@@ -85,7 +85,7 @@ app.post("/updateReview", (req, res) => {
       var mydb = db.db("WMIdb");
       mydb
         .collection("review")
-        .updateOne(myquery, newvalues, function (err, result) {
+        .updateOne(myquery, newvalues, function(err, result) {
           if (err) {
             res.status(400).send({
               message: "DB error"
@@ -102,7 +102,7 @@ app.get("/getReview", async (req, res) => {
   client.connect(
     "mongodb://localhost:27017/",
     { useUnifiedTopology: true },
-    async function (error, db) {
+    async function(error, db) {
       if (req.query.mode == "user") {
         if (error) {
           res.status(400).send({
@@ -113,7 +113,7 @@ app.get("/getReview", async (req, res) => {
           mydb
             .collection("review")
             .find({ wr: req.query.wr })
-            .toArray(function (err, result) {
+            .toArray(function(err, result) {
               if (err) {
                 res.status(400).send({
                   message: "DB error"
@@ -136,7 +136,7 @@ app.get("/getReview", async (req, res) => {
         mydb
           .collection("review")
           .find({ rd: req.query.rd })
-          .toArray(function (err, result) {
+          .toArray(function(err, result) {
             if (err) {
               res.status(400).send({
                 message: "DB error"
@@ -158,18 +158,18 @@ app.post("/insertReview", (req, res) => {
   client.connect(
     "mongodb://localhost:27017/",
     { useUnifiedTopology: true },
-    async function (error, db) {
+    async function(error, db) {
       if (!error) {
         var mydb = db.db("WMIdb");
 
         var ifExist = await utils.getSingleReview(req, mydb);
-        console.log("Eccomi")
+        console.log("Eccomi");
         if (ifExist == "error") {
           res.status(400).send({
             message: "DB error"
           });
         } else if (ifExist.length == 0) {
-          console.log("Pro")
+          console.log("Pro");
           var myobj = {
             _id: req.query.luogo,
             value: {
@@ -180,7 +180,7 @@ app.post("/insertReview", (req, res) => {
             wr: req.query.wr,
             rd: req.query.rd
           };
-          mydb.collection("review").insertOne(myobj, function (err, result) {
+          mydb.collection("review").insertOne(myobj, function(err, result) {
             if (err) {
               res.status(400).send({
                 message: "DB error"
@@ -201,7 +201,7 @@ app.post("/insertReview", (req, res) => {
 app.get("/getPOIs", (req, res) => {
   var opts = (youtubeSearch.YouTubeSearchOptions = {
     maxResults: 50,
-    key: rickyKey
+    key: guiKey
   });
 
   try {
@@ -216,7 +216,7 @@ app.get("/getPOIs", (req, res) => {
         res.send(data);
       }
     });
-  } catch (error) { }
+  } catch (error) {}
 });
 
 function call(results, res) {
@@ -227,7 +227,7 @@ function call(results, res) {
     client.connect(
       "mongodb://localhost:27017/",
       { useUnifiedTopology: true },
-      async function (error, db) {
+      async function(error, db) {
         var mydb = db.db("smogDB");
         for (var key in results) {
           var item = results[key];
@@ -236,7 +236,7 @@ function call(results, res) {
               list.push(val.plusCode);
               var c = await utils.getDescription(item.title, mydb, utils);
               item.title = entities.decode(item.title);
-              console.log("TITOLOO "+ item.title)
+              console.log("TITOLOO " + item.title);
               try {
                 POIs[counter] = {
                   name: item.title,
@@ -266,7 +266,7 @@ function call(results, res) {
   });
 }
 
-app.post("/uploadFile", upload.single("file"), function (req, res) {
+app.post("/uploadFile", upload.single("file"), function(req, res) {
   const fileName = req.body.fname;
   const id = req.body.id;
   const newPath = "user/" + id + "/upload/";
@@ -295,14 +295,14 @@ app.post("/uploadFile", upload.single("file"), function (req, res) {
       "-pix_fmt yuv420p",
       "-shortest"
     ])
-    .on("start", function (commandLine) {
+    .on("start", function(commandLine) {
       console.log("Spawned FFmpeg with command: " + commandLine);
     })
-    .on("error", function (err) {
+    .on("error", function(err) {
       console.log("error: ");
       console.log(err);
     })
-    .on("end", function (err) {
+    .on("end", function(err) {
       if (!err) {
         console.log("conversion Done");
       }
@@ -313,17 +313,17 @@ app.post("/uploadFile", upload.single("file"), function (req, res) {
     .saveToFile(newPath + fileName + ".mkv");
 });
 
-app.post("/cutAudio", upload.single("file"), function (req, res) {
+app.post("/cutAudio", upload.single("file"), function(req, res) {
   //, is still necessary to upload file?
   utils.cutAudio(req, res);
 });
 
-app.post("/saveToken", function (req, res) {
+app.post("/saveToken", function(req, res) {
   utils.reload(req);
   res.send("end");
 });
 
-app.post("/removeDir", function (req, res) {
+app.post("/removeDir", function(req, res) {
   utils.remove(req.query.id);
   res.send("deleted");
 });
