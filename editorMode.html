@@ -1,0 +1,284 @@
+	
+<!DOCTYPE html>
+<html>
+<head>
+<script src="assets/js/jquery.min.js"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+    <title>WMI</title>  
+    
+   
+   <meta name="google-signin-client_id"
+        content="668542132317-c9an23v8dkkeotliabjoh16m1k37778n.apps.googleusercontent.com">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://code.iconify.design/1/1.0.3/iconify.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="assets/js/googleSignIn.js"></script>
+ 
+    <link rel="stylesheet" href="assets/css/editorCss.css"/>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:300,400,600" />
+    <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css" />
+    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css" />
+    <link rel="stylesheet" href="assets/fonts/fontawesome5-overrides.min.css" />
+    <link rel="stylesheet" href="assets/css/Animation-Cards-1.css" />
+    <link rel="stylesheet" href="assets/css/Animation-Cards.css" />
+    <link rel="stylesheet" href="assets/css/Footer-Basic.css" />
+    <link rel="stylesheet" href="assets/css/Footer-Clean.css" />
+    <link rel="stylesheet" href="assets/css/Footer-Dark.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="assets/css/Google-Style-Login.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-geosearch@latest/assets/css/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="assets/css/Map-Clean.css" />
+    <link rel="stylesheet" href="assets/css/Navigation-Clean.css" />
+    <link rel="stylesheet" href="assets/css/Navigation-with-Button.css" />
+    <link rel="stylesheet" href="assets/css/Profile-Card.css" />
+    <link rel="stylesheet" href="https://unpkg.com/@bootstrapstudio/bootstrap-better-nav/dist/bootstrap-better-nav.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.1.1/aos.css" />
+    <link rel="stylesheet" href="assets/css/styles.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.1.1/aos.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/openlocationcode/1.0.3/openlocationcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/@bootstrapstudio/bootstrap-better-nav/dist/bootstrap-better-nav.min.js"></script>
+    <script src="https://unpkg.com/leaflet-geosearch@latest/dist/bundle.min.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
+    <script src="https://raw.githack.com/SortableJS/Sortable/master/Sortable.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/places.js@1.16.6"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/css/bootstrap-select.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/js/bootstrap-select.min.js"></script>
+    
+    
+    <script src="assets/js/review.js"> </script>
+    <script src="assets/js/OpenLayers.js"></script>
+    <script src="assets/js/redirect.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/bs-animation.js"></script>
+    <script src="assets/js/bouncemarker.js"></script>
+    <script src="assets/js/lrm-graphhopper.js"></script>
+    <!-- wavesurfer.js -->
+    <script src="https://unpkg.com/wavesurfer.js"></script>
+      <script src="//cdnjs.cloudflare.com/ajax/libs/wavesurfer.js/1.4.0/wavesurfer.min.js"></script>
+      <!-- wavesurfer.js regions -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wavesurfer.js/1.2.3/plugin/wavesurfer.regions.min.js"></script>
+        
+    <script src="assets/js/editorMap.js"></script>
+    <script src="assets/js/draw.js"></script>
+    <script src="assets/js/recorder.js"></script>
+    <script src="assets/js/uploadAudio.js"></script>
+    
+</head>
+
+<body class="d-flex flex-column justify-content-between">
+    <nav class="navbar navbar-light navbar-expand-md text-uppercase shadow navigation-clean">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">Where Am I?</a>
+            <button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navcol-1">
+              <ul class="nav navbar-nav ml-auto">
+                    <li class="nav-item" role="presentation"><a class="nav-link " href="/userMode.html">Browser</a></li>
+                <li style="display: none;" id="profile" class="nav-item" role="presentation">
+                  <a class="nav-link" href="/profile.html">Profilo</a>
+                </li>
+                <li style="" id="helpEditor" class="nav-item" role="presentation" onclick="$('#editorGuide').show();">
+                  <a class="nav-link">Guida</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+    </nav>
+    <div id="spinner" class="d-flex justify-content-center">
+        <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Caricamento...</span>
+        </div>
+    </div>
+    <div id="mapid" style="display:nonde;height: 100%;"></div>
+
+
+    <div id="loginModalEditor"class="modal fade" role="dialog" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div id="headerModal">
+                    <header>
+                        <p class="text-center" style="margin-bottom: 0px;font-size: 40px;"><strong>Log In</strong></p>
+                    </header>
+                </div>
+                <div class="modal-body text-center">
+                    <div></div>
+                    <div class="text-center">
+                        <p>Clicca qui per loggarti col tuo profilo google</p>
+              <div style="display: inline-flex;margin-bottom:1em;">
+                <div id="google-signin3">
+                </div>
+               </div>
+                </div>
+                </div>
+                <div class="modal-footer"><button class="btn btn-light" type="button" onclick="window.open('https://site181947.tw.cs.unibo.it/', '_self')">Chiudi</button></div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal" id="noGeo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Inserisci indirizzo:</h5>
+          </div>
+          <div class="modal-body">
+            <label>Inserisci:</label>
+            <input type="search" id="addressInput" class="form-control" placeholder="Dove si trova il Poi?" />
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Chiudi</button>
+            <button type="button" class="btn btn-outline-primary" id="btn-load">Cerca</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<!-- Modal -->
+<div class="modal" id="uploadModal" role="dialog" tabindex="-1" aria-hidden="true" data-keyboard="false" data-backdrop="static" scrollable >
+  <div class="modal-dialog modal-dialog-centered" role="document" >
+    <div class="modal-content" >
+      <div class="modal-header">
+        <h5 class="modal-title" >
+			<div>
+				<div class="input-group mb-3">
+					   <div class="input-group-prepend">
+						<input type="Name" class="form-control" id="titleName" aria-describedby="detail" placeholder="Nome del Poi" >
+				</div>
+			</div>
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" onclick="resetForm(1);"aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" style="text-align: center; overflow-y: scroll; height:400px;">
+		  <div id="main">
+		  <select id="listDropDown" class="selectpicker" style="position: absolute; right:0%;" title="Audio" data-width="fit" onchange="updateCurrentAudio()" >
+         </select>
+        <div id="controls" align="center">
+			<form id="uploadForm"
+						enctype="multipart/form-data"
+						action="/uploadFile"
+						method="post"
+						style="display:none;">
+				<input type="file" id="files" name="multiAudio" style="display:none;"></form>
+		    <div style="text-align: center;">
+				<button id="nextButton" class="btn btn-light btn-circle m-1" style="text-align:center; border-radius:50%; position: absolute; right:0%;" onclick="nextAudio()"><i class="fas fa-chevron-right" aria-hidden="true"></i></button>
+				<button id="recordButton" class="btn btn-light btn-circle m-1"style="text-align:center; color:red; border-radius: 50%;" ><i class="fa fa-microphone" aria-hidden="true"></i></button>
+				<button id="stopButton" class="btn btn-light btn-circle m-1" style="text-align:center; border-radius:50%;" disabled><i class="fa fa-stop" aria-hidden="true"></i></button>
+				<button id="filesButton" class="btn btn-light btn-circle m-1" style="text-align:center; border-radius:50%;" onclick="$('#files').click()"><i class="fa fa-folder" aria-hidden="true" ></i></button>
+				<button id="prevButton" class="btn btn-light btn-circle m-1" style="text-align:center; border-radius:50%; position: absolute; left:0%;" onclick="prevAudio()"><i class="fas fa-chevron-left" aria-hidden="true" ></i></button>
+			</div>
+            <div id="methode" class="custom-control custom-radio" align="center">
+		<div class="custom-control custom-radio custom-control-inline">
+		  <input type="radio" class="custom-control-input" id="what" name="clip" value="What">
+		  <label class="custom-control-label" for="what">What</label>
+		</div>
+		<div class="custom-control custom-radio custom-control-inline">
+		  <input type="radio" class="custom-control-input" id="how" name="clip" value="How">
+		  <label class="custom-control-label" for="how">How</label>
+		</div>
+
+		<div class="custom-control custom-radio custom-control-inline">
+		  <input type="radio" class="custom-control-input" id="why" name="clip" value="Why" checked="checked">
+		  <label class="custom-control-label" for="why">Why</label>
+		</div>
+            </div>
+         </div>                
+		 <div  class="modal-content modal-sm" style="margin: 0 auto; background-color: #FFFCFC;">
+				<div   id="divAudio" style="padding: 5%; ">
+					
+					<ul id="waveList" style="padding: 5%;" ></ul>
+					<div id="spinnerAudio" class="d-flex justify-content-center" style="text-align:center;">
+						<div class="spinner-border" id="spinnerBorderAudio" style="width: 3rem; height: 3rem; position: relative!important;" role="status">
+						<span class="sr-only">Caricamento...</span>
+					</div>
+					
+    </div>
+				</div>
+		</div>	
+	  </div>
+	  <div id="uploadSuccess" style="display:none;">
+	  </div>
+	  </div>
+      <div class="modal-footer" >
+        <button type="button" class="btn btn-outline-danger" data-dismiss="modal" onclick="resetForm(1);">Chiudi</button>
+        <button id="upload" type="button" class="btn btn-outline-primary">Carica su YouTube</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<div id="typeAudioSelect" class="modal" tabindex="-3" role="dialog" aria-labelledby="AudioType" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+	  <div class="modal-dialog" role="document">
+			<div class="modal-content">
+                <div class="modal-header">
+                     <h5 class="modal-title" >Perfavore seleziona til tipo della clip</h5>
+				</div>
+				<div id="typeAudioSelectBody" class="modal-body">
+            
+ 				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="resetForm(0);">Chiudi</button>
+					<button id="upload" type="button" class="btn btn-primary" data-dismiss="modal" onclick="showWave();">Scegli</button>
+				</div>
+			</div>
+      </div>
+</div>
+
+ <div  id="editorGuide" class="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Guida Editor</h5>
+        <button type="button" class="close" aria-label="Close"onclick="$('#editorGuide').hide()">
+          <span aria-hidden="true"  >&times;</span>
+        </button>
+      </div>
+      <div> </div>
+      <div class="modal-body" style="overflow-y: scroll; height:300px;"> 
+         <b><p>Ciao Utente Editor!<br>Questa guida serve per preparare i nuovi utenti all'utilizzo di questa feature aggiuntiva del nostro sito</p></b>
+              <p>Prima cosa: Login!<br>Abbiamo bisogno che accediate con il vostro account google in modo che le clip che avete preparato possano essere uploadate su YouTube.</p>
+              <p>Una volta effetuato il login si pu&#242; accedere alla mappa.<br>Da qui si hanno 3 modi per registrare le clip per i POI(Point of Interest):<br>1)Schiacciare in punto libero della mappa e schiacciare il pulsante aggiungi audio;
+              <br>2)Schiacciare su un POI gi&#224; esistente;<br>3)Inserire l'indirizzo del POI.</p>
+              <p>La piattaforma permette sia di registrare audio sia di selezionare un file in input (solo formato mp3) alla volta.<br>Ci sono 3 tipi di clip:
+                <br>1)What:Se ne pu&#242; avere solo una di questo tipo. Rappresenta l'identit&#224; del luogo in questione.
+                <br>2)How:Se ne pu&#242; avere solo una di questo tipo. Spiega come accedere alla location. Dai 15 ai 30 secondi massimo.
+                <br>3)Why:Non c'&#232; un limite al numero di queste clip. Spiega perché &#232; interessante parlare di questa location</p>
+              <p>Si ha anche la possibilit&#224; di tagliare la clip, attraverso le apposite input box per selezionare tempo di inizio e fine della clip e il tasto taglia, e tornare all'audio originale attraverso il pulsante reset.</p>
+              <p>Ogni clip &#232; dotata di alcuni attributi:<br>
+              1)Contenuto: Indica il contenuto della clip (default: none)<br>
+              2)Audience: Indica a chi &#232; rivolta la clip (default: generico)<br>
+              3)Lingua: Indica la lingua della clip (default: ita)<br>
+              4)Dettaglio: Indica il dettaglio della clip (default: 1)</p>
+              <p>Infine col pulsante Upload verranno caricate le clip su YouTube.</p>
+              <br><b><p>Grazie per utilizzare il nostro sito e ingradire la community!</p></b>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="$('#editorGuide').hide()" >Chiudi</button>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://apis.google.com/js/platform.js?onload=renderButton" sync defer></script>
+</html>
