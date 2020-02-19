@@ -1,212 +1,241 @@
-//Init Map
 
-async function init(){
-  createMap();
-  if ("http://localhost:8000/userMode.html" == window.location.href || "http://localhost:8000/userMode.html/" == window.location.href || "http://localhost:8000/userMode.html#" == window.location.href) {
-    loadMarker();
-    createPlayer();
+var mymap;
+var POIs = {};
+
+var blackIcon =
+  "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png";
+  
+var redIcon =
+  "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png";
+var blueIcon =
+  "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png";
+var currentPoi = null,currentLocation = null;
+function callGeoLocationApi() {
+  if ($("#addressInput").val() != "") {
+    $.ajax({
+      async: false,
+      url:
+        "https://api.opencagedata.com/geocode/v1/json?q=" +
+        $("#addressInput").val() +
+        "&key=4e6db93d236944d68db1551367316df5&language=it&pretty=1",
+      success: result => {
+          if (result.results.length != 0) {
+            latx = result.results[0].geometry.lat;
+            lonx = result.results[0].geometry.lng;
+            updateCurrentPoi(latx,lonx,0);
+            $("#uploadModal").modal();
+			$("#noGeo").modal("toggle");
+        } else {
+          $(".ap-input").css({ backgroundColor: "red" });
+        }
+      },
+      error: result => {
+        $(".ap-input").css({ backgroundColor: "red" });
+      }
+    });
+  } else {
+    $(".ap-input").css({ backgroundColor: "red" });
   }
 }
 
 
-
-var lat, lon;
-var searchControl;
-var waypoints = [];
-var control = null;
-var distanceRouting = null;
-var routingMode = "foot";
-var mymap;
-var POIs = {};
-var DSTs = {};
-var dsts, ret;
-var currentLocation;
-var currentDestination;
-var referenceTable = {};
-
-
-$("#stop").click(function() {
-  document.getElementById("dad").hidden = true;
-  try {
-    document.getElementById("iframe").stop();
-  } catch {}
-});
-
-function createMap() {
-
-  $('#mapid').show();
-  $('#spinner').remove();
-  var bounds = new L.LatLngBounds(
-    new L.LatLng(-90, -180),
-    new L.LatLng(90, 180)
-  );
-  mymap = L.map("mapid", {
-    zoomControl: true,
-    maxBounds: bounds,
-    maxBoundsViscosity: 1.0
+function setGeolocationApiKey() {
+  $("#btn-load").click(function() {
+    callGeoLocationApi();
   });
-
-  L.tileLayer(
-    "https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiZnJhbno5OTE3IiwiYSI6ImNrMml5c2FmZDAwZ3YzaG5vODVvdmVxZXUifQ.Dm-BwkGmch8JSsJ9tTpo5w",
-    {
-      attribution:
-        'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-      maxZoom: 18,
-      minZoom: 3,
-      id: "mapbox.streets"
-    }
-  ).addTo(mymap);
-
-  addPlayButton();
-  mymap.setView([44.49394, 11.3426944], 12);
-  navigator.geolocation.watchPosition(onLocationFound, onError, {
-    enableHighAccuracy: true,
-    maximumAge: 0
+  this.placesAutocomplete = places({
+    appId: "plTCO8O9NAP7",
+    apiKey: "a5c7d70d42023f9e0afdfa6bac7a2634",
+    container: document.querySelector("#addressInput")
   });
-  loadMarker();
+}
+
+function createEditorMap() {
+  setGeolocationApiKey();
+  return new Promise((resolve, reject) => {
+    $("#mapid").show();
+    $("#spinner").remove();
+    var boundsMap = new L.LatLngBounds(
+      new L.LatLng(-90, -180),
+      new L.LatLng(90, 180)
+    );
+    mymap = L.map("mapid", {
+      zoomControl: true,
+      maxBounds: boundsMap,
+      maxBoundsViscosity: 1.0
+    });
+    onClickMap();
+
+    L.tileLayer(
+      "https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiZnJhbno5OTE3IiwiYSI6ImNrMml5c2FmZDAwZ3YzaG5vODVvdmVxZXUifQ.Dm-BwkGmch8JSsJ9tTpo5w",
+      {
+        attribution:
+          'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        maxZoom: 18,
+        minZoom: 3,
+        id: "mapbox.streets"
+      }
+    ).addTo(mymap);
+	routeButton();
+    mymap.setView([44.49394, 11.3426944], 12);
+    navigator.geolocation.watchPosition(onLocationFound, function(){}, {
+      enableHighAccuracy: true,
+      maximumAge: 0
+    });
+    resolve(mymap);
+  });
 }
 
 function onLocationFound(position) {
-  var popup = '<p class="text-center" style="margin: 1em;">Sei qui!</p>';
-  lat = position.coords.latitude;
-  lon = position.coords.longitude;
-  try {
-    mymap.removeLayer(currentLocation);
-  } catch (err){}
-  currentLocation = L.marker([lat, lon])
-    .bindPopup(popup)
-    .addTo(mymap);
-  if (control !== null) {
-      control.spliceWaypoints(0, 1, [lat, lon]);
-  }
-
-  loadMarker();
-
+	console.log("location found")
+  updateCurrentPoi(position.coords.latitude, position.coords.longitude,1);
 }
 
-function setApiKey(){
-  this.placesAutocomplete = places({
-  appId: 'plTCO8O9NAP7',
-  apiKey: 'a5c7d70d42023f9e0afdfa6bac7a2634',
-  container: document.querySelector('#address')
+function routeButton(){
+	L.easyButton('fa-location-arrow', function(btn, map){
+		$("#noGeo").modal();
+	}).addTo(mymap);
+}
+
+function onClickMap(){
+	mymap.on("click", function(e) {
+      var fakeBtn = createButton("Aggiungi audio");
+      fakeBtn.setAttribute('class','btn btn-outline-dark');
+      L.DomEvent.on(fakeBtn, "click", function() {
+        mymap.closePopup();
+        latx = e.latlng.lat;
+        lonx = e.latlng.lng;
+        updateCurrentPoi(latx,lonx,0);
+        $("#uploadModal").modal();
+      });
+      L.popup("#ffffff")
+        .setContent(fakeBtn)
+        .setLatLng(e.latlng)
+        .openOn(mymap);
+    });	
+}
+
+
+function getIconMarkerOfColor(color) {
+  return new L.Icon({
+    iconUrl: color,
+    shadowUrl:
+      "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
   });
 }
 
-
-function callApi(){
-  if($("#address").val() != ""){
-    $.ajax({
-      url: "https://api.opencagedata.com/geocode/v1/json?q="+$("#address").val()+"&key=4e6db93d236944d68db1551367316df5&language=it&pretty=1",
-      success: (result) => {
-          if(result.results.length != 0){
-            var popup = '<p class="text-center" style="margin: 1em;">Sei qui!</p>';
-            lat = result.results[0].geometry.lat;
-            lon = result.results[0].geometry.lng;;
-            try {
-              mymap.removeLayer(currentLocation);
-            } catch {}
-            currentLocation = L.marker([lat, lon])
-              .bindPopup(popup)
-              .addTo(mymap);
-            if (control !== null) {
-                control.spliceWaypoints(0, 1, [lat, lon]);
-            }
-
-            $('#noGeo').modal('toggle');
-
-          }else{
-            cssError();
-          }
-      },
-      error: (result) =>{
-        console.log("Impossibile contattare il server");
-        cssError();
-      }
-    });
-  }else {
-      cssError();
+function updateCurrentPoi(lat, lon,check) {
+  if(check == 0){
+  var popupCurrentPoi =
+    '<p class="text-center" style="margin: 1em;">Aggiungi audio al POI</p>';
+  try {
+    mymap.removeLayer(currentPoi);
+  } catch (err) {}
+	currentPoi = L.marker([lat, lon], {
+    icon: getIconMarkerOfColor(blackIcon),
+    bounceOnAdd: true,
+	bounceOnAddOptions: {},
+	bounceOnAddCallback: function() {}
+  })
+    .bindPopup(popupCurrentPoi)
+    .addTo(mymap);
+  }
+  else{
+	var popupCurrentLocation =
+    '<p class="text-center" style="margin: 1em;">Sei qui.</p>';
+  try {
+    mymap.removeLayer(currentLocation);
+  } catch (err) {}
+	currentLocation = L.marker([lat, lon], {
+    icon: getIconMarkerOfColor(redIcon)
+  })
+    .bindPopup(popupCurrentLocation)
+    .addTo(mymap);
   }
 }
 
-function onError(err) {
-    setApiKey();
-    $('#noGeo').modal({ backdrop: 'static', keyboard: false })
-    $("#btn-load").click(function(){
-        callApi();
+function loadMarker() {
+  if (currentLocation !== null) {
+    console.log(currentLocation)
+    var currentLocationOCL = OpenLocationCode.encode(
+      currentLocation.getLatLng().lat,
+      currentLocation.getLatLng().lng,
+      4
+    );
+    currentLocationOCL = currentLocationOCL.replace("+", "");
+    $.when(getPOIs(currentLocationOCL)).done(async function() {
+      modifyPOI();
     });
+  } else {
+    setTimeout(loadMarker, 1000);
+  }
 }
 
-//____________CREATEMAP FUNCTIONS_______________________________________
-
-function getPOIs(q) {
+function getPOIs(OCL) {
+  var valori = OCL;
+	console.log("valore" +valori);
   return $.ajax({
     type: "get",
-    url: "/getPOIs?searchQuery=" + q,
+    url: "/getPOIs?mode=editor&searchQuery=" + valori,
     success: function(data) {
+	console.log(data)
+      try{
+          for(var i in POIs){
+            mymap.removeLayer(POIs[i].marker);
+          }
+      }catch(e){
+          console.log(e)
+      }
       POIs = data;
     },
     error: function(e){
-      console.log(e)
-    }
+		console.log(e)
+	}
   });
 }
+
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function loadMarker() {
-  var timer = null;
-  if (typeof lat !== "undefined") {
-    clearTimeout(timer);
-    var q = OpenLocationCode.encode(lat, lon, 4);
-    q = q.replace("+", "");
-    $.when(getPOIs(q)).done(async function() {
-      console.log(POIs);
-      for (var key in POIs) {
-        var popup =
-          '<div id="popupContainer" style="width: 300px;height: 250px;padding: 1em;overflow: scroll;"><div class="d-flex justify-content-between"><div class="d-flex align-items-center"><p>' +
-          key +
-          '</p></div><div><img style="width: 100px; height: 100px" src=' +
-          POIs[key].img +
-          '/></div></div><div style="padding-top: 1em;"><p style="margin: 0px;">' +
-          POIs[key].description.it +
-          "</p></div></div>";
-        var m = L.marker(
-          [POIs[key].latitudeCenter, POIs[key].longitudeCenter],
-          {
-            bounceOnAdd: true,
-            bounceOnAddOptions: {},
-            bounceOnAddCallback: function() {}
-          }
-        )
-          .on("click", function(e) {
-            mymap.setView(m.getLatLng(), 12);
-          })
-          .bindPopup(popup)
-          .addTo(mymap);
-        await sleep(250);
-      }
-    });
-  } else {
-    console.log("firstelse");
-    timer = setTimeout(loadMarker, 1000);
-  }
+async function modifyPOI(){
+	
+	 for (let place in POIs) {
+		    var poi = L.marker(
+				  [POIs[place].coords.latitudeCenter, POIs[place].coords.longitudeCenter],
+				  {
+					bounceOnAdd: true,
+					bounceOnAddOptions: {},
+					bounceOnAddCallback: function() {}
+				  }
+				).addTo(mymap);
+		poi.on("click", async function() {
+			var title = document.getElementById("titleName");
+			title.value = POIs[place].name;
+			title.disabled = true;
+			mymap.removeLayer(poi);
+			
+			poi = L.marker([POIs[place].coords.latitudeCenter, POIs[place].coords.longitudeCenter], {
+				icon: getIconMarkerOfColor(blackIcon)
+			})
+			.addTo(mymap);
+			latx = POIs[place].coords.latitudeCenter;
+			lonx = POIs[place].coords.longitudeCenter;
+			
+			$("#uploadModal").modal();
+		});
+		POIs[place].marker = poi;
+		await sleep(250);
+	  }
 }
-
-//____________LOADMARKER FUNCTIONS_______________________________________
-
-function addPlayButton() {
-  L.easyButton({
-    states: [
-      {
-        stateName: "null", // name the state
-        icon: "fas fa-bong", // and define its properties
-        title: "Click to get directions to the nearest POI", // like its title
-        onClick: function(btn) {
-            $('#noGeo').modal({ backdrop: 'static', keyboard: false });
-        }
-      }
-    ]
-  }).addTo(mymap);
+function createButton(label) {
+  var btn = L.DomUtil.create("button", "#000000");
+  btn.setAttribute("type", "button");
+  btn.innerHTML = label;
+  return btn;
 }

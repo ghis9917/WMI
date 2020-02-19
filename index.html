@@ -1,149 +1,235 @@
 <!DOCTYPE html>
-<html style="max-height: 100%;">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>WMI</title>
-    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:300,400,600">
-    <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
-    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
-    <link rel="stylesheet" href="assets/fonts/fontawesome5-overrides.min.css">
-    <link rel="stylesheet" href="assets/css/Animation-Cards-1.css">
-    <link rel="stylesheet" href="assets/css/Animation-Cards.css">
-    <link rel="stylesheet" href="assets/css/Footer-Basic.css">
-    <link rel="stylesheet" href="assets/css/Footer-Clean.css">
-    <link rel="stylesheet" href="assets/css/Footer-Dark.css">
-    <link rel="stylesheet" href="assets/css/Map-Clean.css">
-    <link rel="stylesheet" href="assets/css/Navigation-Clean.css">
-    <link rel="stylesheet" href="assets/css/Navigation-with-Button.css">
-    <link rel="stylesheet" href="assets/css/Profile-Card.css">
-    <link rel="stylesheet" href="assets/css/styles.css">
-    <link rel="stylesheet" href="https://unpkg.com/@bootstrapstudio/bootstrap-better-nav/dist/bootstrap-better-nav.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.1.1/aos.css">
+<html>
 
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="assets/js/bs-animation.js"></script>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+  <title>WMI</title>
+  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:300,400,600">
+  <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
+  <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+  <link rel="stylesheet" href="assets/fonts/fontawesome5-overrides.min.css">
+  <link rel="stylesheet" href="assets/css/Animation-Cards-1.css">
+  <link rel="stylesheet" href="assets/css/Animation-Cards.css">
+  <link rel="stylesheet" href="assets/css/Footer-Basic.css">
+  <link rel="stylesheet" href="assets/css/Footer-Clean.css">
+  <link rel="stylesheet" href="assets/css/Footer-Dark.css">
+  <link rel="stylesheet" href="assets/css/Map-Clean.css">
+  <link rel="stylesheet" href="assets/css/Navigation-Clean.css">
+  <link rel="stylesheet" href="assets/css/Navigation-with-Button.css">
+  <link rel="stylesheet" href="assets/css/Profile-Card.css">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet"
+    href="https://unpkg.com/@bootstrapstudio/bootstrap-better-nav/dist/bootstrap-better-nav.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.1.1/aos.css">
 
-    <link rel="stylesheet" href="assets/css/Google-Style-Login.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.1.1/aos.js"></script>
-    <script src="https://apis.google.com/js/platform.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://unpkg.com/@bootstrapstudio/bootstrap-better-nav/dist/bootstrap-better-nav.min.js"></script>
+  <script src="assets/js/jquery.min.js"></script>
+  <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+  <script src="assets/js/bs-animation.js"></script>
 
-    <meta name="google-signin-scope" content="profile email">
-    <meta name="google-signin-client_id" content="114712511052-o00pbvnd01mt0jfl946p61k2vtjfk6m8.apps.googleusercontent.com">
-    <script src="https://apis.google.com/js/api.js"></script>
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
-    <script src="assets/js/googleSignIn.js"></script>
-    <script>
-      $(document).ready(function() {
-        $("#userMode").click(function() {
-          window.location.href = '/userMode.html';
-        });
-        $("#editorMode").click(function() {
-          window.location.href = '/editorMode.html';
-        });
+  <link rel="stylesheet" href="assets/css/Google-Style-Login.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.1.1/aos.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://unpkg.com/@bootstrapstudio/bootstrap-better-nav/dist/bootstrap-better-nav.min.js"></script>
+
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <meta name="google-signin-client_id"
+    content="668542132317-c9an23v8dkkeotliabjoh16m1k37778n.apps.googleusercontent.com">
+
+  <script src="assets/js/googleSignIn.js"></script>
+  <script>
+    $(document).ready(function () {
+      $("#userMode").click(function () {
+        window.location.href = '/userMode.html';
       });
-    </script>
-  </head>
+      $("#editorMode").click(function () {
+        window.location.href = '/editorMode.html';
+      });
+      $("#Unibo").click(function () {
+        window.location.href = 'https://corsi.unibo.it/laurea/informatica';
+      });
+    });
+  </script>
+</head>
 
-  <body>
-    <section class="d-flex flex-column justify-content-between" id="page" style="height: 100vh;">
-      <div>
-        <nav class="navbar navbar-light navbar-expand-md text-uppercase shadow navigation-clean">
-          <div class="container-fluid">
-            <a class="navbar-brand" href="index.html">Where Am I?</a>
-            <button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1">
-              <span class="sr-only">Toggle navigation</span>
-              <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navcol-1">
-              <ul class="nav navbar-nav ml-auto">
-                <li class="nav-item" role="presentation">
-                  <button id="logbtn" class="btn btn-link" type="button" data-toggle="modal" data-target="#signInModal">
-                    <label class="text-uppercase ml-auto" style="margin: 0px 0px 0px;font-size: 20px;margin-right: 8px;color: #222222;" for="googleIcon">
-                      <strong>Log In with</strong>
-                    </label>
-                    <i class="fa fa-google border-warning" id="googleIcon" style="font-size: 20px;color: rgb(0,0,0);"></i>
-                  </button>
-                </li>
-                <li style="display: none;" id="profile" class="nav-item" role="presentation">
-                  <a class="nav-link" href="/profile.html">Profile</a>
-                </li>
-                <li style="display: none;" id="logout" class="nav-item" role="presentation">
-                  <a class="nav-link" onclick="signOut();" style="cursor: pointer;">LOGOUT</a>
-                </li>
-              </ul>
+<body style="overflow-y: scroll;">
+  <section class="d-flex flex-column justify-content-between" id="page" style="height: 100vh;">
+    <div>
+      <nav class="navbar navbar-light navbar-expand-md text-uppercase shadow navigation-clean">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="index.html">Where Am I?</a>
+          <button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navcol-1">
+            <ul class="nav navbar-nav ml-auto">
+              <li class="nav-item" role="presentation">
+                <button id="logbtn" class="btn btn-link" type="button" data-toggle="modal" data-target="#loginModal">
+                  <label class="text-uppercase ml-auto"
+                    style="margin: 0px 0px 0px;font-size: 20px;margin-right: 8px;color: #222222;" for="googleIcon">
+                    <strong>Log In with</strong>
+                  </label>
+                  <i class="fa fa-google border-warning" id="googleIcon" style="font-size: 20px;color: rgb(0,0,0);"></i>
+                </button>
+              </li>
+              <li style="display: none;" id="profile" class="nav-item" role="presentation">
+                <a class="nav-link" href="/profile.html">Profile</a>
+              </li>
+              <li style="display: none;" id="logout" class="nav-item" role="presentation">
+                <a class="nav-link" onclick="signOut();" style="cursor: pointer;">LOGOUT</a>
+              </li>
+              <li style="" id="help" class="nav-item" role="presentation" onclick='document.getElementById("completeGuideHeader").innerHTML="Guida Browse";	$("#EditorGuide").hide(); $("#userGuide").show(); $("#completeGuide").show(); '>
+                  <a class="nav-link" >Guida</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </div>
+    <div class="d-flex justify-content-center align-items-center" id="page-middle" style="height: 100%;background-image: url(/assets/img/bg.jpg);
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center;">
+      <div class="row space-rows" style="margin: 0;height: 50%;width: 90%;">
+        <div class="col" style="padding: 1em;padding-bottom: 1em; border-radius: 20px!important;">
+          <div class="card cards-shadown cards-hover" data-aos="flip-left" data-aos-duration="950" id="userModeCard"
+            style="height: 100%;border-radius: 20px!important; background-color: rgba(0,0,0, 0.0);">
+            <div id="userMode"
+              class="card-header text-center d-flex d-lg-flex justify-content-center align-items-center justify-content-lg-center align-items-lg-center"
+              style="background-color: rgba(0,0,0, 0.75);background-size: cover;opacity: 0.80;height: 100%;background-position: center;background-repeat: no-repeat;border-radius: 20px!important;">
+              <div class="cardheader-text">
+                <span class="space">
+                  <a href="#">
+                    <i class="fas fa-map-marker-alt" id="download-icon"
+                      style="font-size: 40px;opacity: 1;color: white;"></i>
+                  </a>
+                </span>
+                <h4 id="heading-card" style="margin-top: 8px;">Browse</h4>
+              </div>
             </div>
           </div>
-        </nav>
+        </div>
+        <div class="col" style="padding: 1em;padding-bottom: 1em;  ">
+          <div class="card cards-shadown cards-hover" data-aos="flip-left" data-aos-duration="950" id="editorModeCard"
+            style="height: 100%;border-radius: 20px!important;  background-color: rgba(0,0,0, 0.0);">
+            <div id="editorMode"
+              class="card-header text-center d-flex d-lg-flex justify-content-center align-items-center justify-content-lg-center align-items-lg-center"
+              style="background-color: rgba(0,0,0, 0.75);background-size: cover;opacity: 0.80;height: 100%;background-position: center;background-repeat: no-repeat;border-radius: 20px!important;">
+              <div class="cardheader-text">
+                <span class="space">
+                  <a href="#">
+                    <i class="fas fa-edit" id="download-icon"
+                      style="font-size: 40px;opacity: 1; color: white;"></i></a></span>
+                <h4 id="heading-card" style="margin-top: 8px;">Editor</h4>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="d-flex justify-content-center align-items-center" id="page-middle" style="height: 100%;">
-        <div class="row space-rows" style="margin: 0;height: 90%;width: 90%;">
-          <div class="col" style="padding: 1em;padding-bottom: 20px;">
-            <div class="card cards-shadown cards-hover" data-aos="flip-left" data-aos-duration="950" id="userModeCard" style="height: 100%;">
-              <div id="userMode" class="card-header text-center d-flex d-lg-flex justify-content-center align-items-center justify-content-lg-center align-items-lg-center"
-                style="background-image: url(&quot;assets/img/antique-camera-classic-269820.jpg&quot;);background-size: cover;opacity: 0.80;height: 100%;background-position: center;background-repeat: no-repeat;">
-                <div class="cardheader-text">
-                  <span class="space">
-                    <a href="#">
-                      <i class="fas fa-map-marker-alt" id="download-icon" style="font-size: 40px;opacity: 1;"></i>
-                    </a>
-                  </span>
-                  <h4 id="heading-card" style="margin-top: 8px;">User Mode</h4>
+    </div>
+    <div class="shadow-lg" id="page-bottom">
+      <div class="container">
+        <div class="row">
+          <div class="col text-center icon-footer" style="padding: 0px;">
+            <button id="Unibo" class="btn btn-link" type="button"><i class="fas fa-university"
+                style="color: rgb(0,0,0);font-size: 30px;"></i></button></div>
+          <!--div class="col text-center icon-footer with-border" style="padding: 0px;"><button id="GitProject" class="btn btn-link" type="button"><i class="fab fa-github" style="color: rgb(0,0,0);font-size: 30px;"></i></button></div>
+            <div class="col text-center icon-footer" style="padding: 0px;"><button id="LinkedIn" class="btn btn-link" type="button"><i class="fab fa-linkedin" style="color: rgb(0,0,0);font-size: 30px;"></i></button></div!-->
+        </div>
+        <div class="row">
+          <div class="col" style="padding: 0em;">
+            <p class="text-uppercase text-center d-flex d-lg-flex justify-content-center align-items-center justify-content-lg-center align-items-lg-center"
+              style="font-family: Montserrat, sans-serif;font-weight: bold;font-size: 12px;margin: 0;">
+              Where Am I? &nbsp; &nbsp;<strong>© &nbsp; &nbsp;2019</strong><br><br></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="loginModal" class="modal fade" role="dialog" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div id="headerModal">
+            <header>
+              <p class="text-center" style="margin-bottom: 0px;font-size: 40px;"><strong>Log In</strong></p>
+            </header>
+          </div>
+          <div class="modal-body text-center">
+            <div></div>
+            <div class="text-center">
+              <p>Clicca qui per loggarti col tuo profilo google</p>
+              <div style="display: inline-flex;">
+                <div id="google-signin2">
                 </div>
-              </div>
+               </div>
+              <!-- <div class="g-signin2" data-onsuccess="onSignIn"   data-onerror="alert('non')"></div> -->
             </div>
           </div>
-          <div class="col" style="padding: 1em;padding-bottom: 20px;">
-            <div class="card cards-shadown cards-hover" data-aos="flip-left" data-aos-duration="950" id="editorModeCard" style="height: 100%;">
-              <div id="editorMode" class="card-header text-center d-flex d-lg-flex justify-content-center align-items-center justify-content-lg-center align-items-lg-center"
-                style="background-image: url(&quot;assets/img/antique-blank-camera-163182.jpg&quot;);background-size: cover;opacity: 0.80;height: 100%;background-position: center;background-repeat: no-repeat;">
-                <div class="cardheader-text">
-                  <span class="space">
-                    <a href="#">
-                      <i class="fas fa-edit" id="download-icon" style="font-size: 40px;opacity: 1;"></i></a></span>
-                  <h4 id="heading-card" style="margin-top: 8px;">Editor Mode</h4>
-                </div>
-              </div>
-            </div>
-          </div>
+          <div class="modal-footer"><button class="btn btn-light" type="button"
+              onclick="window.open('https://site181947.tw.cs.unibo.it/', '_self')">Chiudi</button></div>
         </div>
       </div>
-      <div class="shadow-lg" id="page-bottom">
-        <div class="container">
-          <div class="row">
-            <div class="col text-center icon-footer" style="padding: 0px;">
-              <button class="btn btn-link" type="button"><i class="fas fa-university" style="color: rgb(0,0,0);font-size: 30px;"></i></button></div>
-            <div class="col text-center icon-footer with-border" style="padding: 0px;"><button class="btn btn-link" type="button"><i class="fab fa-github" style="color: rgb(0,0,0);font-size: 30px;"></i></button></div>
-            <div class="col text-center icon-footer" style="padding: 0px;"><button class="btn btn-link" type="button"><i class="fab fa-linkedin" style="color: rgb(0,0,0);font-size: 30px;"></i></button></div>
+    </div>
+  </section>
+ <div  id="completeGuide" class="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content" style=";">
+      <div class="modal-header">
+        <h5 class="modal-title" style="width:50%;" id="completeGuideHeader">Guida</h5>
+        <div style="width:100%;text-align:center;">
+          <button style="margin-right:10px;"type="button" class="btn btn-outline-primary btn-sm steppers-btn-prev" onclick="$('#editorGuide').hide(); $('#userGuide').show(); document.getElementById('completeGuideHeader').innerHTML='Guida Browse'">Browse</button>  
+          <button style="margin-left:10px;"type="button" class="btn btn-outline-primary btn-sm steppers-btn-next" onclick="$('#userGuide').hide(); $('#editorGuide').show(); document.getElementById('completeGuideHeader').innerHTML='Guida Editor'">Editor</button>
           </div>
-          <div class="row">
-            <div class="col" style="padding: 0em;">
-              <p class="text-uppercase text-center d-flex d-lg-flex justify-content-center align-items-center justify-content-lg-center align-items-lg-center" style="font-family: Montserrat, sans-serif;font-weight: bold;font-size: 12px;margin: 0;">
-                Where Am I? &nbsp; &nbsp;<strong>© &nbsp; &nbsp;2019</strong><br><br></p>
+        <button type="button" class="close" aria-label="Close"onclick="$('#completeGuide').hide()">
+          <span aria-hidden="true"  >&times;</span>
+        </button>
+      </div>
+      <div> </div>
+      <div id="completeGuidebody"class="modal-body" style="overflow-y: scroll; height:300px;">
+        <div class="steppers mobile-examples">
+          <div class="steppers-content" aria-live="polite" style="heigth: 60%!important;">
+			  <div id="userGuide" >
+              <b><p>Ciao Viaggiatore!<br>Questa guida serve per preparare i nuovi utenti all'utilizzo del servizio Browser che il nostro sito offre.</p></b>
+              <p>Per iniziare a cercare i punti di interesse vicino a te puoi attivare il GPS o inserire l'indirizzo desiderato.</p>
+              <p>Tramite il tasto Filter (l'imbuto a sinistra della mappa) &#232; possibile scegliere i tipi di POI ai quali si &#232; interessati tramite le input box fornite.</p>
+              <p>Una volta caricati i POI (Point Of Interest) si pu&#242; essere guidati all'attrazione pi&#249; vicina tramite il tasto play situato sulla parte sinistra della mappa. Una volta partito il routing pu&#242; essere stoppato tramite lo stesso pulsante.</p>
+              <p>Si pu&#242; anche scegliere un percorso personalizzato dei POI tramite l'icona della bacchetta sotto a filter.</p>
+              <p>Quando si arriva nei pressi del POI selezionato parte in automatico, se esistente, la descrizione relativa al luogo e si apre un popup contente la descrizione e le clip trovate per luogo.</p>
+              <br><b><p>Grazie per utilizzare il nostro sito e Buon Viaggio!</p></b>
+            </div>
+            <div id="editorGuide" style="display:none; ">
+              <b><p>Ciao Utente Editor!<br>Questa guida serve per preparare i nuovi utenti all'utilizzo di questa feature aggiuntiva del nostro sito</p></b>
+              <p>Prima cosa: Login!<br>Abbiamo bisogno che accediate con il vostro account google in modo che le clip che avete preparato possano essere uploadate su YouTube.</p>
+              <p>Una volta effetuato il login si pu&#242; accedere alla mappa.<br>Da qui si hanno 3 modi per registrare le clip per i POI(Point of Interest):<br>1)Schiacciare in punto libero della mappa e schiacciare il pulsante aggiungi audio;
+              <br>2)Schiacciare su un POI gi&#224; esistente;<br>3)Inserire l'indirizzo del POI.</p>
+              <p>La piattaforma permette sia di registrare audio sia di selezionare un file in input (solo formato mp3) alla volta.<br>Ci sono 3 tipi di clip:
+                <br>1)What:Se ne pu&#242; avere solo una di questo tipo. Rappresenta l'identit&#224; del luogo in questione.
+                <br>2)How:Se ne pu&#242; avere solo una di questo tipo. Spiega come accedere alla location. Dai 15 ai 30 secondi massimo.
+                <br>3)Why:Non c'&#232; un limite al numero di queste clip. Spiega perché &#232; interessante parlare di questa location</p>
+              <p>Si ha anche la possibilit&#224; di tagliare la clip, attraverso le apposite input box per selezionare tempo di inizio e fine della clip e il tasto taglia, e tornare all'audio originale attraverso il pulsante reset.</p>
+              <p>Ogni clip &#232; dotata di alcuni attributi:<br>
+              1)Contenuto: Indica il contenuto della clip (default: none)<br>
+              2)Audience: Indica a chi &#232; rivolta la clip (default: generico)<br>
+              3)Lingua: Indica la lingua della clip (default: ita)<br>
+              4)Dettaglio: Indica il dettaglio della clip (default: 1)</p>
+              <p>Infine col pulsante Upload verranno caricate le clip su YouTube.</p>
+              <br><b><p>Grazie per utilizzare il nostro sito e ingradire la community!</p></b>
             </div>
           </div>
+          
         </div>
       </div>
-      <div class="modal fade" role="dialog" tabindex="-1" id="signInModal">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h4 class="modal-title">Sign In with Google</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-            </div>
-            <div class="modal-body">
-              <div>
-                <p>Click the button to log in with your google account</p>
-                <div class="g-signin2" data-onsuccess="onSignIn"></div>
-              </div>
-            </div>
-            <div class="modal-footer"><button class="btn btn-light" type="button" data-dismiss="modal">Close</button></div>
-          </div>
-        </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick=" $('#userGuide').show(); $('#editorGuide').hide();$('#completeGuide').hide();" >Chiudi</button>
       </div>
-    </section>
-  </body>
+    </div>
+  </div>
+</div>
+  
+  
+</body>
+<script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://apis.google.com/js/platform.js?onload=renderButton" sync defer></script>
 </html>

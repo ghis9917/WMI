@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="stylesheet" href="https://unpkg.com/@bootstrapstudio/bootstrap-better-nav/dist/bootstrap-better-nav.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.1.1/aos.css">
+    <link rel="stylesheet" href="assets/css/editorCss.css"/>
 
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
@@ -28,39 +29,190 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://unpkg.com/@bootstrapstudio/bootstrap-better-nav/dist/bootstrap-better-nav.min.js"></script>
 
-    <meta name="google-signin-scope" content="profile email">
-    <meta name="google-signin-client_id"
-        content="114712511052-o00pbvnd01mt0jfl946p61k2vtjfk6m8.apps.googleusercontent.com">
-    <script src="https://apis.google.com/js/api.js"></script>
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
-    <script src="assets/js/googleSignIn.js"></script>
-    <script>
-        $(document).ready(function () {
-            getLog();
-        });
-    </script>
-    <style>
-        #spinner {
-            height: 100%;
-        }
+	<script src="assets/js/googleSignIn.js"></script>
+	<meta name="google-signin-client_id" content="668542132317-c9an23v8dkkeotliabjoh16m1k37778n.apps.googleusercontent.com">
+    <script src="assets/js/reviewProfile.js"></script>
 
-        .spinner-border {
-            position: absolute;
-            top: 50%;
-            bottom: 50%;
-        }
-    </style>
+	<style>
+		body {
+    
+    overflow-x: hidden
+}
+
+a {
+    text-decoration: none !important;
+    color: inherit
+}
+
+a:hover {
+    color: #455A64
+}
+
+.card {
+	border: 2px solid #000000;
+    border-radius: 5px;
+    background-color: #fff;
+    padding-left: 1em;
+    padding-right: 1em;
+    margin-top: 2em;
+    margin-left: 1em;
+    margin-right: 1em;
+    padding-top: 1em;
+    padding-bottom: 2em;
+}
+
+.rating-box {
+    width: 130px;
+    height: 130px;
+    margin-right: auto;
+    margin-left: auto;
+    background-color: #000000;
+    color: #fff;
+    border-radius: 5px;
+}
+
+.rating-label {
+    font-weight: bold
+}
+
+.rating-bar {
+    width: 300px;
+    padding: 8px;
+    border-radius: 5px
+}
+
+.bar-container {
+    width: 100%;
+    background-color: #f1f1f1;
+    text-align: center;
+    color: white;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-bottom: 5px
+}
+
+.bar-5 {
+    width: 70%;
+    height: 13px;
+    background-color: #000000;
+    border-radius: 20px
+}
+
+.bar-4 {
+    width: 30%;
+    height: 13px;
+    background-color: #FBC02D;
+    border-radius: 20px
+}
+
+.bar-3 {
+    width: 20%;
+    height: 13px;
+    background-color: #FBC02D;
+    border-radius: 20px
+}
+
+.bar-2 {
+    width: 10%;
+    height: 13px;
+    background-color: #FBC02D;
+    border-radius: 20px
+}
+
+.bar-1 {
+    width: 0%;
+    height: 13px;
+    background-color: #FBC02D;
+    border-radius: 20px
+}
+
+td {
+    padding-bottom: 10px
+}
+
+.star-active {
+    color: #000000;
+    margin-top: 10px;
+    margin-bottom: 10px
+}
+
+.star-inactive {
+    color: #CFD8DC;
+    margin-top: 10px;
+    margin-bottom: 10px
+}
+
+.blue-text {
+    color: #0091EA
+}
+
+.content {
+    font-size: 18px
+}
+
+.profile-pic {
+    width: 90px;
+    height: 90px;
+    border-radius: 100%;
+    margin-right: 30px
+}
+
+.pic {
+    width: 80px;
+    height: 80px;
+    margin-right: 10px
+}
+
+.vote {
+    cursor: pointer
+}
+
+#nameContainer{
+	padding-bottom:10px;
+}
+
+@media only screen and (max-width: 768px) {
+  .card {
+	  margin-right:20px;
+	  margin-left:20px;
+  }
+  #main{
+	  margin:1em!important;
+	}
+}
+
+
+.POIcontainer > .shadow{
+	border-radius: 5px;
+	border:2px solid black;
+}
+
+#PersonalReview > .shadow{
+	border-radius: 5px;
+	border:2px solid black;
+}
+
+.POIcontainer > h5{
+	margin-left: 0.25em!important;
+}
+
+#PersonalReview > h5{
+	margin-left: 0.25em!important;
+}
+	</style>
+
 </head>
 
-<body style="width: 100%;height: 100%; overflow: hidden;">
+<body style="width: 100%;height: 100%;">
     <nav class="navbar navbar-light navbar-expand-md text-uppercase shadow navigation-clean">
-        <div class="container-fluid"><a class="navbar-brand" href="index.html">Where Am I?</a><button
-                data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle
-                    navigation</span><span class="navbar-toggler-icon"></span></button>
+        <div class="container-fluid">
+			<a class="navbar-brand" href="index.html">Where Am I?</a>
+			<button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1">
+				<span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navcol-1">
                 <ul class="nav navbar-nav ml-auto">
-                    <li class="nav-item" role="presentation"><a class="nav-link" href="/userMode">User Mode</a></li>
-                    <li class="nav-item" role="presentation"><a class="nav-link" href="/editorMode">Editor Mode</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" href="/userMode.html">User Mode</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" href="/editorMode.html">Editor Mode</a></li>
                     <li class="nav-item" role="presentation"><a class="nav-link" onclick="signOut();" style="cursor: pointer;">LOGOUT</a></li>
                 </ul>
             </div>
@@ -71,419 +223,92 @@
             <span class="sr-only">Loading...</span>
         </div>
     </div>
-    <section class="d-flex flex-column" style="height: 90%;">
-        <div id="upper" class="text-center profile-card" style="margin:15px;background-color:#ffffff;">
-            <div class="profile-card-img" style="height: 100px;background-size: cover;"></div>
-            <div id="imageContainer"><img class="rounded-circle" id="imageProfile"
-                    style="margin-top: -100px;background-image: url(&quot;assets/img/antique-camera-classic-269820.jpg&quot;);"
-                    height="150px">
-                <div class="text-center d-flex flex-column justify-content-between align-items-center"
-                    id="nameMailContainer" style="margin-top: 1em;">
-                    <h4 class="d-md-flex" id="nameContainer">Nome Cognome</h4>
-                    <div class="d-flex justify-content-sm-center align-items-sm-center">
-                        <p id="email" style="padding: 20px;padding-bottom: 0;padding-top: 5px;font-size: 20px;">Email:</p>
-                    </div>
-                </div>
-            </div>
-            <div class="row" id="rateColumnContainer" style="padding: 0;padding-bottom: 0;padding-top: 0;margin: 0;">
-                <div class="col text-center" id="rateContainer" style="padding: 0;">
-                    <p class="text-center" style="font-size: 20px;">Rating: 0/0</p>
-                </div>
-            </div>
-        </div>
-        <div class="text-truncate rightContainer" style="width: 100%;">
-            <div class="POIcontainer">
-                <div class="shadow" id="POI" style="margin-right: 1em;margin-left: 1em;padding: 0.5em;margin-top: 1em;"
-                    data-target="#myModal" data-toggle="modal">
-                    <p id="cardFirstLine" style="margin-bottom: 0;max-width: 100%;">Luogo di interesse, Indirizzo/Coords
-                    </p>
-                    <div class="d-flex flex-row justify-content-sm-start align-items-sm-center">
-                        <p class="text-center">Rating: 0/0</p>
-                    </div>
-                    <div class="modal fade" role="dialog" tabindex="-1" id="myModal"
-                        style="font-family: Montserrat, sans-serif;">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h4 class="modal-title">Luogo di Interesse</h4><button type="button" class="close"
-                                        data-dismiss="modal" aria-label="Close"><span
-                                            aria-hidden="true">×</span></button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>Descrizione punto interesse con DBPedia</p>
-                                    <p>Audio presi da youtube</p>
-                                    <p>Rate</p>
-                                </div>
-                                <div class="modal-footer"><button class="btn btn-primary" type="button">Go to the
-                                        map</button></div>
-                            </div>
+    <div style="height: 100%; overflow-y: scroll!important; padding-bottom: 5em">
+    <div id="main" style="margin: 3em; border-radius: 15px; box-shadow: 0px 0px 20px 4px #888888; display:none; padding-bottom: 1em;">
+    <div class="container-fluid px-1 py-5 mx-auto" style="padding-bottom:0px!important;">
+		<div style="text-align:center;">
+		<img id="imageProfile"  src="" alt="Immagine Profilo" style="width:200px; border-radius: 50%; margin:0px;">
+		<h4 class="d-md" id="nameFrame" style=""></h4>
+		</div>
+    <div class="row justify-content-center">
+        <div class="col-xl-7 col-lg-8 col-md-10 col-12 text-center mb-5" style="margin:0.25em!important;margin-bottom:2em!important; padding: 0px!important">
+            <div class="card">
+				<div class="row justify-content-left d-flex">
+                    <div class="col-md-4 d-flex flex-column">
+                        <div class="rating-box">
+                            <h1 class="pt-4">0.0</h1>
+                            <p class="">out of 5</p>
                         </div>
+                        <div> <span id="star1" class="fa fa-star star-inactive mx-1"></span> <span id="star2" class="fa fa-star star-inactive mx-1"></span> <span id="star3" class="fa fa-star star-inactive mx-1"></span> <span id="star4" class="fa fa-star star-inactive mx-1"></span> <span id="star5" class="fa fa-star star-inactive mx-1"></span> </div>
                     </div>
-                </div>
-                <div class="shadow" id="POI" style="margin-right: 1em;margin-left: 1em;padding: 0.5em;margin-top: 1em;"
-                    data-target="#myModal" data-toggle="modal">
-                    <p id="cardFirstLine" style="margin-bottom: 0;max-width: 100%;">Luogo di interesse, Indirizzo/Coords
-                    </p>
-                    <div class="d-flex flex-row justify-content-sm-start align-items-sm-center">
-                        <p style="margin-bottom: 0;">Rate:&nbsp;</p>
-                        <div class="text-center" style="font-size: 16px;"><i class="fa fa-star"></i><i
-                                class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
-                                class="fa fa-star"></i></div>
-                    </div>
-                    <div class="modal fade" role="dialog" tabindex="-1" id="myModal"
-                        style="font-family: Montserrat, sans-serif;">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h4 class="modal-title">Luogo di Interesse</h4><button type="button" class="close"
-                                        data-dismiss="modal" aria-label="Close"><span
-                                            aria-hidden="true">×</span></button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>Descrizione punto interesse con DBPedia</p>
-                                    <p>Audio presi da youtube</p>
-                                    <p>Rate</p>
-                                </div>
-                                <div class="modal-footer"><button class="btn btn-primary" type="button">Go to the
-                                        map</button></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="shadow" id="POI" style="margin-right: 1em;margin-left: 1em;padding: 0.5em;margin-top: 1em;"
-                    data-target="#myModal" data-toggle="modal">
-                    <p id="cardFirstLine" style="margin-bottom: 0;max-width: 100%;">Luogo di interesse, Indirizzo/Coords
-                    </p>
-                    <div class="d-flex flex-row justify-content-sm-start align-items-sm-center">
-                        <p style="margin-bottom: 0;">Rate:&nbsp;</p>
-                        <div class="text-center" style="font-size: 16px;"><i class="fa fa-star"></i><i
-                                class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
-                                class="fa fa-star"></i></div>
-                    </div>
-                    <div class="modal fade" role="dialog" tabindex="-1" id="myModal"
-                        style="font-family: Montserrat, sans-serif;">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h4 class="modal-title">Luogo di Interesse</h4><button type="button" class="close"
-                                        data-dismiss="modal" aria-label="Close"><span
-                                            aria-hidden="true">×</span></button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>Descrizione punto interesse con DBPedia</p>
-                                    <p>Audio presi da youtube</p>
-                                    <p>Rate</p>
-                                </div>
-                                <div class="modal-footer"><button class="btn btn-primary" type="button">Go to the
-                                        map</button></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="shadow" id="POI" data-target="#myModal" data-toggle="modal"
-                    style="margin-right: 1em;margin-left: 1em;padding: 0.5em;margin-top: 1em;">
-                    <p id="cardFirstLine" style="margin-bottom: 0;max-width: 100%;">Luogo di interesse, Indirizzo/Coords
-                    </p>
-                    <div class="d-flex flex-row justify-content-sm-start align-items-sm-center">
-                        <p style="margin-bottom: 0;">Rate:&nbsp;</p>
-                        <div class="text-center" style="font-size: 16px;"><i class="fa fa-star"></i><i
-                                class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
-                                class="fa fa-star"></i></div>
-                    </div>
-                    <div class="modal fade" role="dialog" tabindex="-1" id="myModal"
-                        style="font-family: Montserrat, sans-serif;">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h4 class="modal-title">Luogo di Interesse</h4><button type="button" class="close"
-                                        data-dismiss="modal" aria-label="Close"><span
-                                            aria-hidden="true">×</span></button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>Descrizione punto interesse con DBPedia</p>
-                                    <p>Audio presi da youtube</p>
-                                    <p>Rate</p>
-                                </div>
-                                <div class="modal-footer"><button class="btn btn-primary" type="button">Go to the
-                                        map</button></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="shadow" id="POI" data-target="#myModal" data-toggle="modal"
-                    style="margin-right: 1em;margin-left: 1em;padding: 0.5em;margin-top: 1em;">
-                    <p id="cardFirstLine" style="margin-bottom: 0;max-width: 100%;">Luogo di interesse, Indirizzo/Coords
-                    </p>
-                    <div class="d-flex flex-row justify-content-sm-start align-items-sm-center">
-                        <p style="margin-bottom: 0;">Rate:&nbsp;</p>
-                        <div class="text-center" style="font-size: 16px;"><i class="fa fa-star"></i><i
-                                class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
-                                class="fa fa-star"></i></div>
-                    </div>
-                    <div class="modal fade" role="dialog" tabindex="-1" id="myModal"
-                        style="font-family: Montserrat, sans-serif;">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h4 class="modal-title">Luogo di Interesse</h4><button type="button" class="close"
-                                        data-dismiss="modal" aria-label="Close"><span
-                                            aria-hidden="true">×</span></button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>Descrizione punto interesse con DBPedia</p>
-                                    <p>Audio presi da youtube</p>
-                                    <p>Rate</p>
-                                </div>
-                                <div class="modal-footer"><button class="btn btn-primary" type="button">Go to the
-                                        map</button></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="shadow" id="POI" data-target="#myModal" data-toggle="modal"
-                    style="margin-right: 1em;margin-left: 1em;padding: 0.5em;margin-top: 1em;">
-                    <p id="cardFirstLine" style="margin-bottom: 0;max-width: 100%;">Luogo di interesse, Indirizzo/Coords
-                    </p>
-                    <div class="d-flex flex-row justify-content-sm-start align-items-sm-center">
-                        <p style="margin-bottom: 0;">Rate:&nbsp;</p>
-                        <div class="text-center" style="font-size: 16px;"><i class="fa fa-star"></i><i
-                                class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
-                                class="fa fa-star"></i></div>
-                    </div>
-                    <div class="modal fade" role="dialog" tabindex="-1" id="myModal"
-                        style="font-family: Montserrat, sans-serif;">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h4 class="modal-title">Luogo di Interesse</h4><button type="button" class="close"
-                                        data-dismiss="modal" aria-label="Close"><span
-                                            aria-hidden="true">×</span></button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>Descrizione punto interesse con DBPedia</p>
-                                    <p>Audio presi da youtube</p>
-                                    <p>Rate</p>
-                                </div>
-                                <div class="modal-footer"><button class="btn btn-primary" type="button">Go to the
-                                        map</button></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="shadow" id="POI" data-target="#myModal" data-toggle="modal"
-                    style="margin-right: 1em;margin-left: 1em;padding: 0.5em;margin-top: 1em;">
-                    <p id="cardFirstLine" style="margin-bottom: 0;max-width: 100%;">Luogo di interesse, Indirizzo/Coords
-                    </p>
-                    <div class="d-flex flex-row justify-content-sm-start align-items-sm-center">
-                        <p style="margin-bottom: 0;">Rate:&nbsp;</p>
-                        <div class="text-center" style="font-size: 16px;"><i class="fa fa-star"></i><i
-                                class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
-                                class="fa fa-star"></i></div>
-                    </div>
-                    <div class="modal fade" role="dialog" tabindex="-1" id="myModal"
-                        style="font-family: Montserrat, sans-serif;">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h4 class="modal-title">Luogo di Interesse</h4><button type="button" class="close"
-                                        data-dismiss="modal" aria-label="Close"><span
-                                            aria-hidden="true">×</span></button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>Descrizione punto interesse con DBPedia</p>
-                                    <p>Audio presi da youtube</p>
-                                    <p>Rate</p>
-                                </div>
-                                <div class="modal-footer"><button class="btn btn-primary" type="button">Go to the
-                                        map</button></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="shadow" id="POI" data-target="#myModal" data-toggle="modal"
-                    style="margin-right: 1em;margin-left: 1em;padding: 0.5em;margin-top: 1em;">
-                    <p id="cardFirstLine" style="margin-bottom: 0;max-width: 100%;">Luogo di interesse, Indirizzo/Coords
-                    </p>
-                    <div class="d-flex flex-row justify-content-sm-start align-items-sm-center">
-                        <p style="margin-bottom: 0;">Rate:&nbsp;</p>
-                        <div class="text-center" style="font-size: 16px;"><i class="fa fa-star"></i><i
-                                class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
-                                class="fa fa-star"></i></div>
-                    </div>
-                    <div class="modal fade" role="dialog" tabindex="-1" id="myModal"
-                        style="font-family: Montserrat, sans-serif;">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h4 class="modal-title">Luogo di Interesse</h4><button type="button" class="close"
-                                        data-dismiss="modal" aria-label="Close"><span
-                                            aria-hidden="true">×</span></button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>Descrizione punto interesse con DBPedia</p>
-                                    <p>Audio presi da youtube</p>
-                                    <p>Rate</p>
-                                </div>
-                                <div class="modal-footer"><button class="btn btn-primary" type="button">Go to the
-                                        map</button></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="shadow" id="POI" data-target="#myModal" data-toggle="modal"
-                    style="margin-right: 1em;margin-left: 1em;padding: 0.5em;margin-top: 1em;">
-                    <p id="cardFirstLine" style="margin-bottom: 0;max-width: 100%;">Luogo di interesse, Indirizzo/Coords
-                    </p>
-                    <div class="d-flex flex-row justify-content-sm-start align-items-sm-center">
-                        <p style="margin-bottom: 0;">Rate:&nbsp;</p>
-                        <div class="text-center" style="font-size: 16px;"><i class="fa fa-star"></i><i
-                                class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
-                                class="fa fa-star"></i></div>
-                    </div>
-                    <div class="modal fade" role="dialog" tabindex="-1" id="myModal"
-                        style="font-family: Montserrat, sans-serif;">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h4 class="modal-title">Luogo di Interesse</h4><button type="button" class="close"
-                                        data-dismiss="modal" aria-label="Close"><span
-                                            aria-hidden="true">×</span></button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>Descrizione punto interesse con DBPedia</p>
-                                    <p>Audio presi da youtube</p>
-                                    <p>Rate</p>
-                                </div>
-                                <div class="modal-footer"><button class="btn btn-primary" type="button">Go to the
-                                        map</button></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="shadow" id="POI" data-target="#myModal" data-toggle="modal"
-                    style="margin-right: 1em;margin-left: 1em;padding: 0.5em;margin-top: 1em;">
-                    <p id="cardFirstLine" style="margin-bottom: 0;max-width: 100%;">Luogo di interesse, Indirizzo/Coords
-                    </p>
-                    <div class="d-flex flex-row justify-content-sm-start align-items-sm-center">
-                        <p style="margin-bottom: 0;">Rate:&nbsp;</p>
-                        <div class="text-center" style="font-size: 16px;"><i class="fa fa-star"></i><i
-                                class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
-                                class="fa fa-star"></i></div>
-                    </div>
-                    <div class="modal fade" role="dialog" tabindex="-1" id="myModal"
-                        style="font-family: Montserrat, sans-serif;">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h4 class="modal-title">Luogo di Interesse</h4><button type="button" class="close"
-                                        data-dismiss="modal" aria-label="Close"><span
-                                            aria-hidden="true">×</span></button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>Descrizione punto interesse con DBPedia</p>
-                                    <p>Audio presi da youtube</p>
-                                    <p>Rate</p>
-                                </div>
-                                <div class="modal-footer"><button class="btn btn-primary" type="button">Go to the
-                                        map</button></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="shadow" id="POI" data-target="#myModal" data-toggle="modal"
-                    style="margin-right: 1em;margin-left: 1em;padding: 0.5em;margin-top: 1em;">
-                    <p id="cardFirstLine" style="margin-bottom: 0;max-width: 100%;">Luogo di interesse, Indirizzo/Coords
-                    </p>
-                    <div class="d-flex flex-row justify-content-sm-start align-items-sm-center">
-                        <p style="margin-bottom: 0;">Rate:&nbsp;</p>
-                        <div class="text-center" style="font-size: 16px;"><i class="fa fa-star"></i><i
-                                class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
-                                class="fa fa-star"></i></div>
-                    </div>
-                    <div class="modal fade" role="dialog" tabindex="-1" id="myModal"
-                        style="font-family: Montserrat, sans-serif;">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h4 class="modal-title">Luogo di Interesse</h4><button type="button" class="close"
-                                        data-dismiss="modal" aria-label="Close"><span
-                                            aria-hidden="true">×</span></button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>Descrizione punto interesse con DBPedia</p>
-                                    <p>Audio presi da youtube</p>
-                                    <p>Rate</p>
-                                </div>
-                                <div class="modal-footer"><button class="btn btn-primary" type="button">Go to the
-                                        map</button></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="shadow" id="POI" data-target="#myModal" data-toggle="modal"
-                    style="margin-right: 1em;margin-left: 1em;padding: 0.5em;margin-top: 1em;">
-                    <p id="cardFirstLine" style="margin-bottom: 0;max-width: 100%;">Luogo di interesse, Indirizzo/Coords
-                    </p>
-                    <div class="d-flex flex-row justify-content-sm-start align-items-sm-center">
-                        <p style="margin-bottom: 0;">Rate:&nbsp;</p>
-                        <div class="text-center" style="font-size: 16px;"><i class="fa fa-star"></i><i
-                                class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
-                                class="fa fa-star"></i></div>
-                    </div>
-                    <div class="modal fade" role="dialog" tabindex="-1" id="myModal"
-                        style="font-family: Montserrat, sans-serif;">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h4 class="modal-title">Luogo di Interesse</h4><button type="button" class="close"
-                                        data-dismiss="modal" aria-label="Close"><span
-                                            aria-hidden="true">×</span></button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>Descrizione punto interesse con DBPedia</p>
-                                    <p>Audio presi da youtube</p>
-                                    <p>Rate</p>
-                                </div>
-                                <div class="modal-footer"><button class="btn btn-primary" type="button">Go to the
-                                        map</button></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="shadow" id="POI" data-target="#myModal" data-toggle="modal"
-                    style="margin-right: 1em;margin-left: 1em;padding: 0.5em;margin-top: 1em;">
-                    <p id="cardFirstLine" style="margin-bottom: 0;max-width: 100%;">Luogo di interesse, Indirizzo/Coords
-                    </p>
-                    <div class="d-flex flex-row justify-content-sm-start align-items-sm-center">
-                        <p style="margin-bottom: 0;">Rate:&nbsp;</p>
-                        <div class="text-center" style="font-size: 16px;"><i class="fa fa-star"></i><i
-                                class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
-                                class="fa fa-star"></i></div>
-                    </div>
-                    <div class="modal fade" role="dialog" tabindex="-1" id="myModal"
-                        style="font-family: Montserrat, sans-serif;">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h4 class="modal-title">Luogo di Interesse</h4><button type="button" class="close"
-                                        data-dismiss="modal" aria-label="Close"><span
-                                            aria-hidden="true">×</span></button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>Descrizione punto interesse con DBPedia</p>
-                                    <p>Audio presi da youtube</p>
-                                    <p>Rate</p>
-                                </div>
-                                <div class="modal-footer"><button class="btn btn-primary" type="button">Go to the
-                                        map</button></div>
-                            </div>
+                    <div class="col-md-8">
+                        <div class="rating-bar0 justify-content-center">
+                            <table id="reviewTable" class="text-left mx-auto">
+                                <tr>
+                                    <td class="rating-label">5</td>
+                                    <td class="rating-bar">
+                                        <div class="bar-container">
+                                            <div class="bar-5"></div>
+                                        </div>
+                                    </td>
+                                    <td class="text-right">123</td>
+                                </tr>
+                                <tr>
+                                    <td class="rating-label">4</td>
+                                    <td class="rating-bar">
+                                        <div class="bar-container">
+                                            <div class="bar-4"></div>
+                                        </div>
+                                    </td>
+                                    <td class="text-right">23</td>
+                                </tr>
+                                <tr>
+                                    <td class="rating-label">3</td>
+                                    <td class="rating-bar">
+                                        <div class="bar-container">
+                                            <div class="bar-3"></div>
+                                        </div>
+                                    </td>
+                                    <td class="text-right">10</td>
+                                </tr>
+                                <tr>
+                                    <td class="rating-label">2</td>
+                                    <td class="rating-bar">
+                                        <div class="bar-container">
+                                            <div class="bar-2"></div>
+                                        </div>
+                                    </td>
+                                    <td class="text-right">3</td>
+                                </tr>
+                                <tr>
+                                    <td class="rating-label">1</td>
+                                    <td class="rating-bar">
+                                        <div class="bar-container">
+                                            <div class="bar-1"></div>
+                                        </div>
+                                    </td>
+                                    <td class="text-right">0</td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+</div>
+    <section class="d-flex flex-column" style="padding:0.25em;">
+		
+        <div class="POIcontainer" style="white-space: normal;">
+        </div>
+        <hr>
+		<div id="PersonalReview" style="white-space: normal;">
+		</div>
     </section>
+    </div>
+    </div>
     <div class="modal fade" role="dialog" tabindex="-1">
+		
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-body">
@@ -495,7 +320,7 @@
             </div>
         </div>
     </div>
-    <div id="loginModal"class="modal fade" role="dialog" tabindex="-1">
+    <div id="loginModalProfile"class="modal fade" role="dialog" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div id="headerModal">
@@ -507,13 +332,15 @@
                     <div></div>
                     <div class="text-center">
                         <p>Click the button to log in with your google account</p>
-                            <div class="g-signin2" data-onsuccess="onSignIn"></div>
+							<div id="google-signin2"></div>
+                            <!-- <div class="g-signin2" data-onsuccess="onSignIn"></div> -->
                           </div>
                 </div>
-                <div class="modal-footer"><button class="btn btn-light" type="button" onclick="window.open('http://localhost:8000/', '_self')">Close</button></div>
+                <div class="modal-footer"><button class="btn btn-light" type="button" onclick="window.open('https://site181947.tw.cs.unibo.it/', '_self')">Close</button></div>
             </div>
         </div>
     </div>
 </body>
-
+<script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://apis.google.com/js/platform.js?onload=renderButton" sync defer></script>
 </html>

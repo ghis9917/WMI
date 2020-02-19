@@ -2,7 +2,7 @@
  * Module Dependencies
  */
 
-var minstache = require('minstache');
+var minstache = require('minstache')
 
 /**
  * Run the `src` function on the client-side, capture
@@ -12,7 +12,7 @@ var minstache = require('minstache');
 
 var execute = `
 (function javascript () {
-  var ipc = (window.__nightmare ? __nightmare.ipc : window[''].nightmare.ipc);
+  var nightmare = window.__nightmare || window[''].nightmare;
   try {
     var fn = ({{!src}}), 
       response, 
@@ -22,10 +22,8 @@ var execute = `
 
     if(fn.length - 1 == args.length) {
       args.push(((err, v) => {
-          if(err) {
-            ipc.send('error', err.message || err.toString());
-          }
-          ipc.send('response', v);
+          if(err) return nightmare.reject(err);
+          nightmare.resolve(v);
         }));
       fn.apply(null, args);
     } 
@@ -33,20 +31,20 @@ var execute = `
       response = fn.apply(null, args);
       if(response && response.then) {
         response.then((v) => {
-          ipc.send('response', v);
+          nightmare.resolve(v);
         })
         .catch((err) => {
-          ipc.send('error', err)
+          nightmare.reject(err)
         });
       } else {
-        ipc.send('response', response);
+        nightmare.resolve(response);
       }
     }
   } catch (err) {
-    ipc.send('error', err.message);
+    nightmare.reject(err);
   }
 })()
-`;
+`
 
 /**
  * Inject the `src` on the client-side, capture
@@ -56,19 +54,19 @@ var execute = `
 
 var inject = `
 (function javascript () {
-  var ipc = (window.__nightmare ? __nightmare.ipc : window[''].nightmare.ipc);
+  var nightmare = window.__nightmare || window[''].nightmare;
   try {
     var response = (function () { {{!src}} \n})()
-    ipc.send('response', response);
+    nightmare.resolve(response);
   } catch (e) {
-    ipc.send('error', e.message);
+    nightmare.reject(e);
   }
 })()
-`;
+`
 
 /**
  * Export the templates
  */
 
-exports.execute = minstache.compile(execute);
-exports.inject = minstache.compile(inject);
+exports.execute = minstache.compile(execute)
+exports.inject = minstache.compile(inject)

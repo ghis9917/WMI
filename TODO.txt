@@ -20,14 +20,13 @@ Assignements:
     .
     .
     more infos and curiosities
-(From youtube done, there is a file that get video and convert directly in audio to play on browser, we have to add a graphic for homemade mp3 player and link it to the clip)
 
 Optional Features (Browser):
 -Directions to the place if not already there (10 pt.) (Leaflet Routing Machine) (DONE)
 
 -BOH... (Send e-mail to prof asking what the hell he was smoking while writing this one)
     Nel pannello delle preferenze, oltre alla lingua/delle lingue dei clip, si
-    memorizzano anche default per audience e interessi dell'utente (5 pt)
+    memorizzano anche default per audience e interessi dell'utente (5 pt) (DONE)
 
 -Custom directions based on multiple POI with their clips pre loaded (10 pt.) (DONE)
 -Ranking for bloggers, clips and routes (10 pt.) (DONE need to be fixed in review branch, get channel id from google sign in)
@@ -40,15 +39,15 @@ Optional Features (Browser):
   (5 pt.) (AKA creating form to ask those infos + API to get coordinates from them) (DONE)
 
 
--Clip filters based on metadata(language, date, length, audience, etc.) (5 pt.)
--Turist location filters based on opening hours and type of location (5 pt.)
+-Clip filters based on metadata(language, date, length, audience, etc.) (5 pt.) (TODO)
+-Turist location filters based on opening hours and type of location (5 pt.) (Can't do opening hours because we have to pay for the API, but can do type of location)
 
 
--Option to check location as visited (5 pt.) (DONE)
+-Option to check location as visited (5 pt.) (DONE, DA FIXXARE (0 flexxare ;_) )
 -Show content of DBPedia of the location and language requested by user and reproduced with speech synthesis (20 pt.) (DONE)
 -Ratings of each clip and location with feedback visualisation on map (10 pt.) (DONE need graphic)
 
 Optional Features (Editor):
--Clip editing (resizing of clip, merging of multiple clips, volume modulation, etc.) (20 pt.) (DONE, smog has the zip)
+-Clip editing (resizing of clip, merging of multiple clips, volume modulation, etc.) (20 pt.) (DONE)
 -Uploading multiple clips with a single upload on YouTube (the browser must be able to view them separately) (20 pt.) (DONE)
 -List of feedback of users on your clip and views statistics (5 pt.) (Database to save clips infos)
