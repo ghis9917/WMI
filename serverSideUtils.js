@@ -1,3 +1,70 @@
+/* function validator(d) {
+    var list = d.split(":");
+    var check =
+      list.length >= 3 &&
+      list[0].split("-").length == 3 &&
+      type.indexOf(list[1]) != -1 &&
+      language.indexOf(list[2]) != -1;
+    if (check) {
+      console.log(d);
+      if (list[3] != undefined) {
+        if (list[3].charAt(0) != "A" && list[3].charAt(0) != "P") {
+          var contentList = list[3].split("-");
+          for (var content in contentList) {
+            check = check && contents.indexOf(contentList[content]) != -1;
+          }
+          if (list[4] != undefined && list[4].charAt(0) == "A") {
+            var val = list[4].replace("A", "");
+            check = check && audience.indexOf(val) != -1;
+            if (list[5] != undefined && list[5].charAt(0) == "P") {
+              var val = list[5].replace("P", "");
+              try {
+                check = check && parseInt(val, 10) >= 0;
+              } catch (err) {
+                check = false;
+              }
+            }
+          } else if (list[4] != undefined && list[4].charAt(0) == "P") {
+            var val = list[4].replace("P", "");
+            try {
+              check = check && parseInt(val, 10) >= 0;
+            } catch (err) {
+              check = false;
+            }
+          }
+        } else if (list[3] != undefined && list[3].charAt(0) == "A") {
+          var val = list[3].replace("A", "");
+          check = check && audience.indexOf(val) != -1;
+          if (list[4] != undefined && list[4].charAt(0) == "P") {
+            var val = list[4].replace("P", "");
+            try {
+              check = check && parseInt(val, 10) >= 0;
+            } catch (err) {
+              check = false;
+            }
+          }
+        } else if (list[3] != undefined && list[3].charAt(0) == "P") {
+          var val = list[3].replace("P", "");
+          try {
+            check = check && parseInt(val, 10) >= 0;
+          } catch (err) {
+            check = false;
+          }
+        }
+      }
+    }
+    try {
+      if (check) {
+        var ocls = list[0].split("-");
+        return { coords: openLocationCode.decode(ocls[2]), plusCode: ocls[2] };
+      } else {
+        throw check;
+      }
+    } catch (err) {
+      return false;
+    }
+  }*/
+
 const OpenLocationCode = require("open-location-code").OpenLocationCode;
 const openLocationCode = new OpenLocationCode();
 const axios = require("axios");
@@ -90,66 +157,8 @@ function UploadYoutube(myTitle, myDescription, myTags, myFileLocation) {
 module.exports = {
   validator: function validator(d) {
     var list = d.split(":");
-    var check =
-      list.length >= 3 &&
-      list[0].split("-").length == 3 &&
-      type.indexOf(list[1]) != -1 &&
-      language.indexOf(list[2]) != -1;
-    if (check) {
-      console.log(d);
-      if (list[3] != undefined) {
-        if (list[3].charAt(0) != "A" && list[3].charAt(0) != "P") {
-          var contentList = list[3].split("-");
-          for (var content in contentList) {
-            check = check && contents.indexOf(contentList[content]) != -1;
-          }
-          if (list[4] != undefined && list[4].charAt(0) == "A") {
-            var val = list[4].replace("A", "");
-            check = check && audience.indexOf(val) != -1;
-            if (list[5] != undefined && list[5].charAt(0) == "P") {
-              var val = list[5].replace("P", "");
-              try {
-                check = check && parseInt(val, 10) >= 0;
-              } catch (err) {
-                check = false;
-              }
-            }
-          } else if (list[4] != undefined && list[4].charAt(0) == "P") {
-            var val = list[4].replace("P", "");
-            try {
-              check = check && parseInt(val, 10) >= 0;
-            } catch (err) {
-              check = false;
-            }
-          }
-        } else if (list[3] != undefined && list[3].charAt(0) == "A") {
-          var val = list[3].replace("A", "");
-          check = check && audience.indexOf(val) != -1;
-          if (list[4] != undefined && list[4].charAt(0) == "P") {
-            var val = list[4].replace("P", "");
-            try {
-              check = check && parseInt(val, 10) >= 0;
-            } catch (err) {
-              check = false;
-            }
-          }
-        } else if (list[3] != undefined && list[3].charAt(0) == "P") {
-          var val = list[3].replace("P", "");
-          try {
-            check = check && parseInt(val, 10) >= 0;
-          } catch (err) {
-            check = false;
-          }
-        }
-      }
-    }
     try {
-      if (check) {
-        var ocls = list[0].split("-");
-        return { coords: openLocationCode.decode(ocls[2]), plusCode: ocls[2] };
-      } else {
-        throw check;
-      }
+      return { coords: openLocationCode.decode(list[2]), plusCode: list[2] };
     } catch (err) {
       return false;
     }

@@ -198,24 +198,42 @@ app.post("/insertReview", (req, res) => {
   );
 });
 
-app.get("/getPOIs", (req, res) => {
-  var opts = (youtubeSearch.YouTubeSearchOptions = {
-    maxResults: 50,
-    key: guiKey
-  });
-
-  try {
-    //TODO SET LANGUAGE searchQuery
-    var c = req.query.searchQuery;
-    youtubeSearch(c, opts, async (err, results) => {
+async function cerca(c, opts, nextPageToken, r) {
+  return new Promise(async (resolve, reject) => {
+    youtubeSearch(c, opts, async (err, results, pageInfo) => {
       if (err) {
-        console.log(err);
         res.send({ error: err.response.statusText });
       } else {
-        var data = await call(results, res);
-        res.send(data);
+        var boh = await results;
+        for (var val in boh) {
+          r.push(results[val]);
+        }
+        var npt = await pageInfo;
+        nextPageToken = npt.nextPageToken;
+        resolve({ npt: nextPageToken, list: r });
       }
     });
+  });
+}
+
+app.get("/getPOIs", async (req, res) => {
+  try {
+    var c = req.query.searchQuery;
+    var r = [];
+    var nextPageToken = null;
+    console.log(c);
+    do {
+      var opts = (youtubeSearch.YouTubeSearchOptions = {
+        maxResults: 50,
+        key: rickyKey,
+        pageToken: nextPageToken
+      });
+      var ret = await cerca(c, opts, nextPageToken, r);
+      r = ret.list;
+      nextPageToken = ret.npt;
+    } while (nextPageToken != undefined);
+    var data = await call(r, res);
+    res.send(data);
   } catch (error) {}
 });
 
