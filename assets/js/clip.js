@@ -1,17 +1,18 @@
 const maxKey = "AIzaSyAin9iPCpvqsNVWEVtsJhpUemBcoIWFGbo";
 const guiKey = "AIzaSyBFXSS4CBQKDc8yJtAdEruvXgAEHNwg8ko";
 const rickyKey = "AIzaSyBEpETjNZc18OP9L603YkzOvotslkQiBGI";
+const rickykey_second = "AIzaSyB5PLURpl92Ix6gBHvgBMJ9s1JC7m69b2c";
 var first = true;
 var speecIstance = window.speechSynthesis;
 function getVideoId(poi) {
   var search = "";
-  search += OpenLocationCode.encode(
+  /*search += OpenLocationCode.encode(
     poi.coords.latitudeCenter,
     poi.coords.longitudeCenter,
     4
   );
   search += "-";
-  
+
   search += OpenLocationCode.encode(
     poi.coords.latitudeCenter,
     poi.coords.longitudeCenter,
@@ -22,6 +23,7 @@ function getVideoId(poi) {
     poi.coords.latitudeCenter,
     poi.coords.longitudeCenter
   );
+  */
   $("#infoTitolo").text(poi.name.toString());
   if (poi.img !== "NF") {
     $("#imgOnLocation").attr("src", poi.img);
@@ -33,14 +35,14 @@ function getVideoId(poi) {
   if (poi.description.en !== "NOT FOUND") {
     var languageSelector = $("#language");
     var c = languageSelector[0].selectedOptions[0].text.toLowerCase().substring(0,languageSelector[0].selectedOptions[0].text.toLowerCase().length - 1)
-   
+
     for( var s in poi.description){
 		if(s == c){
 			$("#descriptionOnLocation").text(poi.description[s]);
 			$("#descriptionOnLocation").show();
 		}
 	}
-    
+
   } else {
     $("#descriptionOnLocation").text("");
     $("#descriptionOnLocation").hide();
@@ -50,29 +52,30 @@ function getVideoId(poi) {
   } else {
     $("#dividerOnLocation").hide();
   }
-  searchByKeyword(search);
+  for(var el in poi.videoId) searchByKeyword(poi.videoId[el]);
 }
 
 function searchByKeyword(query) {
   $.ajax({
     type: "GET",
-    url: "https://www.googleapis.com/youtube/v3/search",
+    url: "https://www.googleapis.com/youtube/v3/videos",
     data: {
-      key: "AIzaSyBSPJDbM1FMEGLP_FU7HtAEx37O7G1avjg",
-      q: query,
+      key: rickykey_second,
+      id: query,
       part: "snippet",
       maxResults: 50,
       type: "video",
       videoEmbeddable: true
     },
     success: function(data) {
+      console.log(data);
       var item = data["items"];
       var iframe;
       var iCont = document.getElementById("iframeContainer");
       first = true;
       for (video in item) {
         var audio_tag = document.createElement("audio");
-        videoId = item[video].id.videoId;
+        videoId = item[video].id;
         // iframe.src = "https://www.youtube.com/watch?v="+videoId;
         // iframe.controls = true;
         // iframe.width="0";
@@ -83,14 +86,14 @@ function searchByKeyword(query) {
       }
       var div = document.getElementById("clipContainer");
       div.hidden = false;
-      $('#reviewContainer').hide();	
-      $('#iframeContainer').show();	
+      $('#reviewContainer').hide();
+      $('#iframeContainer').show();
       setCSSAttribute("#popupContainer", {
       "z-index": "-1",
       height: "0px"
     });
     $("#upDown").attr("class", "fa fa-angle-up d-flex");
-      infoPopupState = "open";  
+      infoPopupState = "open";
       if(data["items"].length == 0){
 		$("#iframeContainer").append("<p id='cliperror'>Unable to load any clip</p>");
 	  }
@@ -107,7 +110,7 @@ var playerYT;
 function onYouTubeIframeAPIReady(videoId, titolo, descrizione, channelTitle) {
   if (videoId == undefined) {
     return;
-  }  
+  }
   var der = descrizione.split(":");
   var motivo ="";
   for(var n in der){
@@ -121,8 +124,8 @@ function onYouTubeIframeAPIReady(videoId, titolo, descrizione, channelTitle) {
 			motivo = "why";
 		}
 		}
-	
-  if(first == false){	
+
+  if(first == false){
 	  $("#iframeContainer").append(
 	  "<hr style='margin-top: 2em;'id='dividerOnLocation'><div style='margin-top: 1em;'><div  ><p style='margin-bottom:1em!important'><b>Utente: </b>"+channelTitle +" &nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp<b>Categoria: </b>" +motivo+ "</p></div>"+
 		"<div  style='margin:0px!important;width: auto;'>"+
@@ -132,13 +135,13 @@ function onYouTubeIframeAPIReady(videoId, titolo, descrizione, channelTitle) {
 	}else{
 	  first = false;
 	$("#iframeContainer").append(
-	  "<div><div  ><p style='margin-bottom:1em!important'><b>Utente: </b>"+channelTitle +"&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp<b>Categoria: </b>" +motivo+ "</p></div>"+
+	  "<div><div><p style='margin-bottom:1em!important'><div style='margin-top: 1em;'><div  ><p style='margin-bottom:1em!important'><b>Utente: </b>"+channelTitle +"&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp<b>Categoria: </b>" +motivo+ "</p></div>"+
 		"<div  style='margin:0px!important;width: auto;'>"+
 		"<div style='float:left;display: inline-block;width: auto;margin-left:4em;'><i id='controller" + videoId + "'class='fas fa-play' style='font-size: 30px;'></i></div>"+
 	   "<div style='float:right;display: inline-block; width: auto;margin-right:0.5em;'><button class='btn btn-outline-success' id='btn" + videoId + "' onclick='openReviewModal(this.id, "+'"'+channelTitle+'"'+")'>Lascia un recensione</button></div></div>"
 	  );
 	}
-  
+
 
   checkReviewStyle(videoId);
   var iFramer = document.createElement("div");

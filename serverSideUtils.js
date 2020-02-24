@@ -12,12 +12,12 @@
             if (list[4] != undefined && list[4].charAt(0) == 'A'){
               var val = list[4].replace("A", "");
               check = check && (audience.indexOf(val) != -1);
-              
+
               if (list[5] != undefined && list[5].charAt(0) == 'P') {
                 var val = list[5].replace("P", "");
                 try {
                   check = check && (parseInt(val, 10) >= 0);
-                
+
                 } catch (err) {
                   check = false;
                 }
@@ -26,7 +26,7 @@
               var val = list[4].replace("P", "");
               try {
                 check = check && (parseInt(val, 10) >= 0);
-                
+
               } catch (err) {
                 check = false;
               }
@@ -35,7 +35,7 @@
           else if (list[3] != undefined && list[3].charAt(0) == 'A'){
             var val = list[3].replace("A", "");
             check = check && (audience.indexOf(val) != -1);
-          
+
             if (list[4] != undefined && list[4].charAt(0) == 'P') {
               var val = list[4].replace("P", "");
               try {
@@ -48,7 +48,7 @@
             var val = list[3].replace("P", "");
             try {
               check = check && (parseInt(val, 10) >= 0);
-              
+
             } catch (err) {
               check = false;
             }
@@ -56,8 +56,8 @@
         }
     }
     try {
-		
-    
+
+
       if (check){
         var ocls = list[0].split("-");
         return { coords: openLocationCode.decode(ocls[ocls.length -1 ]), plusCode: ocls[ocls.length -1 ] };
@@ -133,7 +133,7 @@ const audience = [
 
 var auth = Youtube.authenticate({
  type: 'key',
-  key: 'AIzaSyBSPJDbM1FMEGLP_FU7HtAEx37O7G1avjg'
+  key: 'AIzaSyAJeTICiFLFNXkdHk5T8cUXyb-h1OF3WLQ'
 });
 
 
@@ -181,24 +181,28 @@ function upload(title,fileName,res,desc,token,refresh) {
 
 }
 module.exports = {
-  validator: function validator(d, res, filtri) {
+  validator: function validator(d, filtri) {
 	d = d.replace(".","");
 	var list = d.split(":");
+
 	//res.send(list);
 	var listFiltri = filtri.split(" ");
 	/*for(var c in listFiltri){
 		if((listFiltri[c].charAt(0) <= '0') && (listFiltri[c].charAt(0) >= '9')) {
-		if(list.includes(listFiltri[c]) == false){ 		
+		if(list.includes(listFiltri[c]) == false){
 			return false;
 		}
 	}
 	}*/
 	try {
+
         return {coords:openLocationCode.decode(list[2]), plusCode: list[2]};
     }catch (err) {
 		try{
+
+
 			var olc = list[0].split("-");
-			return {coords:openLocationCode.decode(olc[2]), plusCode: olc[2] };
+			return {coords:openLocationCode.decode(olc[olc.length-1]), plusCode: olc[olc.length-1] };
 		}catch(err){
 			return false;
 		}
@@ -211,7 +215,7 @@ module.exports = {
         if (err) throw err;
     });
   },
-  
+
   askDBPedia :   function(titolo,res){
     return new Promise((resolve, reject) => {
       var vector = titolo.split(" ");
@@ -224,6 +228,7 @@ module.exports = {
       string = string.replace( /  +/g, ' ' );
       string = string.replace(/ /g, " AND ");
       string = latinize(string);
+      console.log(string)
       var q =
         "select ?s1 as ?c1, (bif:search_excerpt (bif:vector (" +
         vector +
@@ -239,48 +244,53 @@ module.exports = {
     });
   },
 
-  getDescription :   function (nome, mydb,utils,  res){
+  getDescription :   function (nome, mydb = null,utils,  res){
 	return new Promise( (resolve, reject) => {
 		var cont={},img;
-		mydb.collection("descrizioni").find({ nome: nome }).toArray( async function (err, result) {
-			if(result.length != 0){
-				resolve(result);
-			}
-			else {
-				var d =  await utils.askDBPedia(nome,res);
-				try {
-				    nome = entities.decode(nome);
-					d = d.results.bindings[0].c1.value.replace("resource","data"  ) + ".rdf";
-					var e = await utils.get(d);
-					parseString(e.data, function(err, result) {
-						var json = {};
-						var list =
-						result["rdf:RDF"]["rdf:Description"][0]["rdfs:comment"];
-						for (var key in list) {
-							var chiave = list[key]["$"]["xml:lang"];
-							var valore = list[key]["_"];
-							json[chiave] = valore;
-						}
-						var img =
-						result["rdf:RDF"]["rdf:Description"][0]["dbo:thumbnail"][0]["$"]["rdf:resource"];
-						utils.insertDescription(mydb, nome, json, img)
-						cont["descrizione"] = json;
-						cont["urlImg"] = img;
-						resolve(cont)
-					});
-              }
-              catch (error) {
-				nome = entities.decode(nome);
-                var json = {};
-                var img = "NF";
-                json["en"] = "NOT FOUND";
-                cont["descrizione"] = json;
-                cont["urlImg"] = img;
-                utils.insertDescription(mydb, nome, json, img)
-                resolve(cont)
-              }
-			}	
-		});
+		try{
+			mydb.collection("descrizioni").find({ nome: nome }).toArray( async function (err, result) {
+				if(result.length != 0){
+					resolve(result);
+				}
+				else {
+
+					try {
+			  var d =  await utils.askDBPedia(nome,res);
+
+						nome = entities.decode(nome);
+						d = d.results.bindings[0].c1.value.replace("resource","data"  ) + ".rdf";
+						var e = await utils.get(d);
+						parseString(e.data, function(err, result) {
+							var json = {};
+							var list =
+							result["rdf:RDF"]["rdf:Description"][0]["rdfs:comment"];
+							for (var key in list) {
+								var chiave = list[key]["$"]["xml:lang"];
+								var valore = list[key]["_"];
+								json[chiave] = valore;
+							}
+							var img =
+							result["rdf:RDF"]["rdf:Description"][0]["dbo:thumbnail"][0]["$"]["rdf:resource"];
+							utils.insertDescription(mydb, nome, json, img)
+							cont["descrizione"] = json;
+							cont["urlImg"] = img;
+							resolve(cont)
+						});
+				  }
+				  catch (error) {
+					nome = entities.decode(nome);
+					var json = {};
+					var img = "NF";
+					json["en"] = "NOT FOUND";
+					cont["descrizione"] = json;
+					cont["urlImg"] = img;
+					utils.insertDescription(mydb, nome, json, img)
+					resolve(cont)
+				  }
+				}
+			});
+	}
+		catch(e){}
 	});
   },
 
@@ -300,7 +310,7 @@ module.exports = {
   get: function get(search) {
     return new Promise((resolve,reject) => {resolve(axios.get(search))});
   },
-  
+
   dist: function dist(item,lat,lon){
     return new Promise((resolve,reject) => {
 		var url = "https://graphhopper.com/api/1/matrix?from_point=" + lat + "," + lon;
@@ -438,7 +448,7 @@ module.exports = {
 	if (!fs.existsSync(newPath)) {
 		fs.mkdirSync(newPath,{recursive:true,mode:"777"});
 	}
-	
+
 	await fs.writeFileSync(filePath, audio.file.buffer, error => {
 		if (error) {
 		res.send("error");
@@ -498,7 +508,7 @@ module.exports = {
 	  mp3Duration(path, function (err, duration) {
 					if(duration >= 16) res.send(1);
 					else res.send(0);
-					
+
 				});
 }
 //End Modules
