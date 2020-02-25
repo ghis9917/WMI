@@ -60,7 +60,7 @@ function searchByKeyword(query) {
     type: "GET",
     url: "https://www.googleapis.com/youtube/v3/videos",
     data: {
-      key: rickykey_second,
+      key: "AIzaSyCAXQP_4KlAztXqWzAOvjv7Pa7DWIUb42U",
       id: query,
       part: "snippet",
       maxResults: 50,

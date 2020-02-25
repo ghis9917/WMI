@@ -282,7 +282,7 @@ async function searchYoutube(c, req, r){
   do {
     var opts = (youtubeSearch.YouTubeSearchOptions = {
     maxResults: 50,
-    key: "AIzaSyCAXQP_4KlAztXqWzAOvjv7Pa7DWIUb42U",
+    key: "AIzaSyA3_RlKPUPzBipSDf9GjjiOYXetRVSUBtc",
     pageToken: nextPageToken
     });
     var ret = await cerca(c, opts, nextPageToken, r);

@@ -224,12 +224,17 @@ function loadMarker(value) {
       currentLocation.getLatLng().lng,
       4
     );
+    var eigthOLC = OpenLocationCode.encode(
+      currentLocation.getLatLng().lat,
+      currentLocation.getLatLng().lng,
+      8
+    );
     defOLC = defOLC.replace('0000+','');
     customdirectionsButton.state("loading");
     var contOLC = 10;
     var decoded = OpenLocationCode.decode(currentLocationOLC);
     currentLocationOLC = currentLocationOLC.replace("+", "");
-  	var encoded = ''+currentLocationOLC + " " + defOLC + "0000+";
+  	var encoded = ''+eigthOLC + " " +currentLocationOLC + " " + defOLC + "0000";
 
     var x = currentLocationOLC[currentLocationOLC.length-3];
     var y = currentLocationOLC[currentLocationOLC.length-4];
@@ -243,20 +248,36 @@ function loadMarker(value) {
     }
     console.log(encoded);
 
+    var poggio = encoded.split(' ');
+    var ind = 0
+    while(ind < poggio.length){
+      var query = '';
+      if(ind+1 == poggio.length)  query = poggio[ind]
+      else{
+        query = poggio[ind] + ' ' + poggio[ind+1];
 
+      }
+      ind = ind + 2;
+      console.log('STO PASSANDO')
+      console.log(query)
 
-  $.when(getPOIs(encoded, POIs.length)).done(async function () {
-        displayPOIs();
-        customRouting = L.easyButton({
-          states: [
-            newState("custom", "fa fa-magic", "Custom way", function (btn) {
-              $("#customRoutingContainer").modal({
-                backdrop: "static",
-                keyboard: false
-              });
-            })
-          ]
-        }).addTo(mymap);
+      $.when(getPOIs(query, Object.keys(POIs).length)).done(async function () {
+            displayPOIs();
+            mymap.setView(currentLocation.getLatLng(),16)
+            if(ind == 2){
+              customRouting = L.easyButton({
+                states: [
+                  newState("custom", "fa fa-magic", "Custom way", function (btn) {
+                    $("#customRoutingContainer").modal({
+                      backdrop: "static",
+                      keyboard: false
+                    });
+                  })
+                ]
+              }).addTo(mymap);
+          }
+      });
+    }
   /*
 	$.when(getPOIs(encoded, POIs.length)).done(async function () {
         displayPOIs();
@@ -286,7 +307,7 @@ function loadMarker(value) {
     });
 
     */
-  });
+
   } else {
     setTimeout(loadMarker, 1000);
   }
@@ -331,6 +352,24 @@ function getFilters(valori) {
 /**
  * loadMarker Functions
  */
+
+ function extend(obj, src) {
+   console.log(' length ' + Object.keys(obj).length)
+
+     for (var key in src) {
+        var ind = Object.keys(obj).length + Number(key)
+        console.log(' INDICE ' + ind)
+        var index = Object.values(obj).indexOf(src[key].name)
+        console.log('FOUND THIS ')
+        console.log(POIs[index]);
+        if ( index > -1) {
+          console.log('has test1');
+        }
+         obj[ind] = src[key];
+     }
+     return obj;
+ }
+
 function getPOIs(OLC , cont) {
   var valori ='';
   valori = getFilters(valori);
@@ -340,10 +379,12 @@ function getPOIs(OLC , cont) {
     url: "/prova?searchQuery="+ OLC + "&filter=" + valori + "&contPOI=" + cont + "&mode=user",
     success: function (data) {
       if(data != "Finito"){
-            POIs = Object.assign(data, POIs);
+            POIs = extend(POIs, data);
+            console.log('POIS');
            console.log(POIs)
 
       }
+      console.log('DATA');
       //console.log(data)
       console.log(data)
     }
@@ -389,7 +430,7 @@ async function displayPOIs() {
         }
       });
       POIs[place].marker = poi;
-      await sleep(1);
+      await sleep(200);
   } else console.log('gia disegnato')
   }
   updateCustomRoutingModal();
