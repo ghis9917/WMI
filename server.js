@@ -282,7 +282,7 @@ async function searchYoutube(c, req, r){
   do {
     var opts = (youtubeSearch.YouTubeSearchOptions = {
     maxResults: 50,
-    key: "AIzaSyA3_RlKPUPzBipSDf9GjjiOYXetRVSUBtc",
+    key: "AIzaSyDOJ35j12fNivU3kuPrfz8aTRYABh3RRZ8",
     pageToken: nextPageToken
     });
     var ret = await cerca(c, opts, nextPageToken, r);
@@ -424,6 +424,7 @@ function call(results, res, req, filtri) {
         }
 			  }
 			}
+      utils.updateJson(POIs);
 			resolve(POIs);
 		  }
 		);
@@ -487,6 +488,7 @@ function call(results, res, req, filtri) {
 
 
 	}
+  utils.updateJson(POIs);
 	resolve(POIs);
 	}
 	catch(e){
@@ -523,8 +525,13 @@ app.post('/removeDir',function(req,res){
 app.get('*', (req, res) => {
   var ext = path.extname(req.url);
 
-
-  if (ext === ".css" || ext === ".html" || ext === ".js" || ext === ".jpg" || ext === ".png" || ext === ".woff" || ext === ".woff2" || ext === ".ttf" || ext === ".svg" || ext === ".eot" ) {
+  if (ext === ".css" || ext === ".html" || ext === ".json" || ext === ".js" || ext === ".jpg" || ext === ".png" || ext === ".woff" || ext === ".woff2" || ext === ".ttf" || ext === ".svg" || ext === ".eot" ) {
+    // if (ext === '.json'){
+    //   var dict = {
+    //     '0': 'TRUE'
+    //   }
+    //   utils.updateJson(dict)
+    // }
 	res.sendFile(path.join(__dirname, './' + req.url))
   } else if(ext === ".mp3") {
     //audio

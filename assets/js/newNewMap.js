@@ -12,6 +12,7 @@ var control = null;
 var routingMode = "foot";
 var infoPopupState = "open";
 var actualRouting = [];
+var rangeArea = 100;
 var redIcon =
   "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png";
 var greyIcon =
@@ -57,7 +58,7 @@ $(document).ready(async function () {
         currentDestination = actualRouting.length - 1;
         popupIndex = actualRouting[currentDestination];
         greenMarker(popupIndex);
-        populatePopup(popupIndex);
+        populatePopup(popupIndex);distanceFromPlaceToLatLng < 1000
       }
     } else {
       if (popupIndex > 0) {
@@ -206,6 +207,18 @@ function onClick() {
 /**
  * Loads marker with descriptions and images
  */
+ function getJson() {
+   return $.ajax({
+     type: "get",
+     url: "/POIs.json",
+     success: function (data) {
+        POIs = data;
+        //chiama funzione per disegnare con i filtri
+       console.log(data);
+     }
+   });
+}
+
 function loadMarker(value) {
   if (value != undefined && currentLocation == null) {
     return;
@@ -214,6 +227,9 @@ function loadMarker(value) {
     if (infoPopupState == "close") {
       showCloseInfo();
     }
+
+
+
     var currentLocationOLC = OpenLocationCode.encode(
       currentLocation.getLatLng().lat,
       currentLocation.getLatLng().lng,
@@ -234,7 +250,8 @@ function loadMarker(value) {
     var contOLC = 10;
     var decoded = OpenLocationCode.decode(currentLocationOLC);
     currentLocationOLC = currentLocationOLC.replace("+", "");
-  	var encoded = ''+eigthOLC + " " +currentLocationOLC + " " + defOLC + "0000";
+    eigthOLC = eigthOLC.replace("+", "");
+  	var encoded = ''+ eigthOLC + " " +currentLocationOLC;
 
     var x = currentLocationOLC[currentLocationOLC.length-3];
     var y = currentLocationOLC[currentLocationOLC.length-4];
@@ -246,10 +263,34 @@ function loadMarker(value) {
             continue;
         }
     }
+    encoded += " " + defOLC + "0000";
     console.log(encoded);
 
     var poggio = encoded.split(' ');
     var ind = 0
+    $.when(getJson().done(async function () {
+      var zoom = 18;
+      if(rangeArea > 300) zoom = 16;
+      if(rangeArea > 800) zoom = 14;
+      if(rangeArea > 1300) zoom = 13;
+      console.log('OOM'+zoom)
+      displayPOIs();
+      mymap.setView(currentLocation.getLatLng(),zoom)
+    //  if(ind == 2){
+        customRouting = L.easyButton({
+          states: [
+            newState("custom", "fa fa-magic", "Custom way", function (btn) {
+              $("#customRoutingContainer").modal({
+                backdrop: "static",
+                keyboard: false
+              });
+            })
+          ]
+        }).addTo(mymap);
+  //  }
+})
+    )
+    return;
     while(ind < poggio.length){
       var query = '';
       if(ind+1 == poggio.length)  query = poggio[ind]
@@ -262,9 +303,14 @@ function loadMarker(value) {
       console.log(query)
 
       $.when(getPOIs(query, Object.keys(POIs).length)).done(async function () {
+        $.when(getJson().done(async function () {
+          console.log("boh");
+        })
+      );
             displayPOIs();
-            mymap.setView(currentLocation.getLatLng(),16)
-            if(ind == 2){
+
+            mymap.setView(currentLocation.getLatLng(),zoom)
+          //  if(ind == 2){
               customRouting = L.easyButton({
                 states: [
                   newState("custom", "fa fa-magic", "Custom way", function (btn) {
@@ -275,7 +321,7 @@ function loadMarker(value) {
                   })
                 ]
               }).addTo(mymap);
-          }
+        //  }
       });
     }
   /*
@@ -365,7 +411,7 @@ function getFilters(valori) {
         if ( index > -1) {
           console.log('has test1');
         }
-         obj[ind] = src[key];
+         obj[ind] = src[key];onchange
      }
      return obj;
  }
@@ -391,13 +437,24 @@ function getPOIs(OLC , cont) {
   });
 }
 
+function changeArea(id){
+  rangeArea = $('#'+id).val();
+  $("#rangeAreaText").text("Area di Ricerca - "+rangeArea+"m");
+}
+
 async function displayPOIs() {
   try {
     mymap.setView(currentLocation, 12);
   } catch (e) { }
 
   for (let place in POIs) {
-    if(POIs[place].marker == undefined){
+    var distanceFromPlaceToLatLng = currentLocation.getLatLng().distanceTo(
+      L.latLng(
+        POIs[place].coords.latitudeCenter,
+        POIs[place].coords.longitudeCenter
+      )
+    );
+    if(POIs[place].marker == undefined && distanceFromPlaceToLatLng < rangeArea){
       var poi = L.marker(
         [POIs[place].coords.latitudeCenter, POIs[place].coords.longitudeCenter],
         {
@@ -430,7 +487,7 @@ async function displayPOIs() {
         }
       });
       POIs[place].marker = poi;
-      await sleep(200);
+      await sleep(100);
   } else console.log('gia disegnato')
   }
   updateCustomRoutingModal();

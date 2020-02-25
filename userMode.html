@@ -298,6 +298,8 @@
                               <option>5</option>
                           </select>
                         </div></div>
+                        <label for="rangeArea" id="rangeAreaText">Area di Ricerca - 100m</label>
+                        <input type="range" class="custom-range" min="100" max="5000" value="100"  id="rangeArea" oninput="changeArea(this.id)">
                         </div>
           <div class="modal-footer"><button id="sendReview" onclick="loadMarker('fromFilter')" class="btn btn-outline-primary" type="button" data-dismiss="modal">Aggiorna</button></div>
         </div>

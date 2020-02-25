@@ -510,6 +510,33 @@ module.exports = {
 					else res.send(0);
 
 				});
-}
+},
+  updateJson: async function updateJson(poi){
+    if (!fs.existsSync('./POIs.json')) {
+      await fs.writeFileSync('./POIs.json', '{}', error => {
+    		if (error) {
+    		res.send("error");
+    		}
+    	})
+  	}
+    fs.readFile('./POIs.json', function (err, data){
+      if (!err){
+        var myJson = JSON.parse(data);
+        for (var i in  poi){
+          var ind = Object.keys(myJson).length + Number(i);
+          myJson[ind] = poi[i];
+        }
+
+        fs.writeFileSync('./POIs.json', JSON.stringify(myJson),function (err, data){
+        if(err) console.log(err)
+      });
+      }
+    });
+    /*fs.appendFile('./POIs.json', JSON.stringify(poi),function(err,data){
+      console.log('WRITING')
+      console.log(data);
+  });*/
+
+  }
 //End Modules
 }
