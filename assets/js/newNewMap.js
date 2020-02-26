@@ -6,13 +6,14 @@ var currentLocation = null;
 var currentDestination = 0;
 var popupIndex = 0;
 var customdirectionsButton = null;
-var customRouting;
+var customRouting = undefined;
 var POIs = {};
 var control = null;
 var routingMode = "foot";
 var infoPopupState = "open";
 var actualRouting = [];
 var rangeArea = 100;
+var youtubeChecked = true;
 var redIcon =
   "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png";
 var greyIcon =
@@ -45,6 +46,18 @@ $(document).ready(async function () {
   firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
   //Funcioni per la gestione dei bottoni del popup
+  $("#aggiornaYT").click(function (e) {
+    youtubeChecked = false;
+    youtubeSearch();
+  });
+
+  $("#updatePoi").click(function (e) {
+    if(document.getElementById('refresh').checked == true) {
+      youtubeChecked = false;
+      youtubeSearch();
+    }
+    else loadMarker()
+  });
   $("#prev").click(function (e) {
     if (actualRouting.length > 0) {
       if (currentDestination > 0) {
@@ -212,9 +225,22 @@ function onClick() {
      type: "get",
      url: "/POIs.json",
      success: function (data) {
-        POIs = data;
+       try {
+               for (var i in POIs) {
+                 mymap.removeLayer(POIs[i].marker);
+               }
+               currentDestination = 0;
+               popupIndex = 0;
+               mymap.removeControl(control);
+               control = null;
+               showCloseInfo();
+               infoPopupState = "open";
+               actualRouting = [];
+             } catch (e) { }
+        youtubeChecked = false;
+        validatePoi(data);
         //chiama funzione per disegnare con i filtri
-       console.log(data);
+       console.log("HO RICEVUTO JSON");
      }
    });
 }
@@ -235,125 +261,7 @@ function loadMarker(value) {
       currentLocation.getLatLng().lng,
       6
     );
-    var defOLC = OpenLocationCode.encode(
-      currentLocation.getLatLng().lat,
-      currentLocation.getLatLng().lng,
-      4
-    );
-    var eigthOLC = OpenLocationCode.encode(
-      currentLocation.getLatLng().lat,
-      currentLocation.getLatLng().lng,
-      8
-    );
-    defOLC = defOLC.replace('0000+','');
-    customdirectionsButton.state("loading");
-    var contOLC = 10;
-    var decoded = OpenLocationCode.decode(currentLocationOLC);
-    currentLocationOLC = currentLocationOLC.replace("+", "");
-    eigthOLC = eigthOLC.replace("+", "");
-  	var encoded = ''+ eigthOLC + " " +currentLocationOLC;
-
-    var x = currentLocationOLC[currentLocationOLC.length-3];
-    var y = currentLocationOLC[currentLocationOLC.length-4];
-
-    for (var pair in coordVect){
-        try{
-            encoded += " " + defOLC + olcVect[olcVect.indexOf(y)+coordVect[pair][1]] + olcVect[olcVect.indexOf(x)+coordVect[pair][0]] + '00';
-        }catch(err){
-            continue;
-        }
-    }
-    encoded += " " + defOLC + "0000";
-    console.log(encoded);
-
-    var poggio = encoded.split(' ');
-    var ind = 0
-    $.when(getJson().done(async function () {
-      var zoom = 18;
-      if(rangeArea > 300) zoom = 16;
-      if(rangeArea > 800) zoom = 14;
-      if(rangeArea > 1300) zoom = 13;
-      console.log('OOM'+zoom)
-      displayPOIs();
-      mymap.setView(currentLocation.getLatLng(),zoom)
-    //  if(ind == 2){
-        customRouting = L.easyButton({
-          states: [
-            newState("custom", "fa fa-magic", "Custom way", function (btn) {
-              $("#customRoutingContainer").modal({
-                backdrop: "static",
-                keyboard: false
-              });
-            })
-          ]
-        }).addTo(mymap);
-  //  }
-})
-    )
-    return;
-    while(ind < poggio.length){
-      var query = '';
-      if(ind+1 == poggio.length)  query = poggio[ind]
-      else{
-        query = poggio[ind] + ' ' + poggio[ind+1];
-
-      }
-      ind = ind + 2;
-      console.log('STO PASSANDO')
-      console.log(query)
-
-      $.when(getPOIs(query, Object.keys(POIs).length)).done(async function () {
-        $.when(getJson().done(async function () {
-          console.log("boh");
-        })
-      );
-            displayPOIs();
-
-            mymap.setView(currentLocation.getLatLng(),zoom)
-          //  if(ind == 2){
-              customRouting = L.easyButton({
-                states: [
-                  newState("custom", "fa fa-magic", "Custom way", function (btn) {
-                    $("#customRoutingContainer").modal({
-                      backdrop: "static",
-                      keyboard: false
-                    });
-                  })
-                ]
-              }).addTo(mymap);
-        //  }
-      });
-    }
-  /*
-	$.when(getPOIs(encoded, POIs.length)).done(async function () {
-        displayPOIs();
-        customRouting = L.easyButton({
-          states: [
-            newState("custom", "fa fa-magic", "Custom way", function (btn) {
-              $("#customRoutingContainer").modal({
-                backdrop: "static",
-                keyboard: false
-              });
-            })
-          ]
-        }).addTo(mymap);
-
-		while(contOLC > 2 ){
-		  encoded = OpenLocationCode.encode(decoded.latitudeCenter,decoded.longitudeCenter, contOLC);
-		  console.log(encoded)
-
-		  encoded = encoded.replace('+',' ');
-		  console.log(encoded)
-		  $.when(getPOIs(encoded, POIs.length)).done(async function () {
-			     displayPOIs();
-		  });
-		  console.log('contOld' + contOLC)
-		  contOLC = contOLC - 2;
-		}
-    });
-
-    */
-
+    $.when(getJson().done(async function () {}))
   } else {
     setTimeout(loadMarker, 1000);
   }
@@ -419,20 +327,13 @@ function getFilters(valori) {
 function getPOIs(OLC , cont) {
   var valori ='';
   valori = getFilters(valori);
-
+  console.log('FILTRI')
+  console.log(valori);
   return $.ajax({
     type: "get",
     url: "/prova?searchQuery="+ OLC + "&filter=" + valori + "&contPOI=" + cont + "&mode=user",
     success: function (data) {
-      if(data != "Finito"){
-            POIs = extend(POIs, data);
-            console.log('POIS');
-           console.log(POIs)
-
-      }
-      console.log('DATA');
-      //console.log(data)
-      console.log(data)
+      if(data != "Finito")  POIs = extend(POIs, data);
     }
   });
 }
@@ -493,6 +394,175 @@ async function displayPOIs() {
   updateCustomRoutingModal();
   customdirectionsButton.state("start");
 }
+
+
+function youtubeSearch(){
+    if (currentLocation == null) {
+      return;
+    }
+    if (infoPopupState == "close") {
+      showCloseInfo();
+    }
+    var currentLocationOLC = OpenLocationCode.encode(
+      currentLocation.getLatLng().lat,
+      currentLocation.getLatLng().lng,
+      6
+    );
+    var defOLC = OpenLocationCode.encode(
+      currentLocation.getLatLng().lat,
+      currentLocation.getLatLng().lng,
+      4
+    );
+    var eigthOLC = OpenLocationCode.encode(
+      currentLocation.getLatLng().lat,
+      currentLocation.getLatLng().lng,
+      8
+    );
+    defOLC = defOLC.replace('0000+','');
+    customdirectionsButton.state("loading");
+    var contOLC = 10;
+    var decoded = OpenLocationCode.decode(currentLocationOLC);
+    currentLocationOLC = currentLocationOLC.replace("+", "");
+    eigthOLC = eigthOLC.replace("+", "");
+    var encoded = ''+ eigthOLC + " " +currentLocationOLC;
+
+    var x = currentLocationOLC[currentLocationOLC.length-3];
+    var y = currentLocationOLC[currentLocationOLC.length-4];
+
+    for (var pair in coordVect){
+        try{
+            encoded += " " + defOLC + olcVect[olcVect.indexOf(y)+coordVect[pair][1]] + olcVect[olcVect.indexOf(x)+coordVect[pair][0]] + '00';
+        }catch(err){
+            continue;
+        }
+    }
+    encoded += " " + defOLC + "0000";
+    console.log(encoded);
+
+    var poggio = encoded.split(' ');
+      var query1 = poggio[0] + ' ' + poggio[1];
+      var query2 = poggio[2] + ' ' + poggio[3] + ' ' + poggio[4];
+      var query3 = poggio[5] + ' ' + poggio[6] + ' ' + poggio[7];
+      var query4 = poggio[8] + ' ' + poggio[9] + ' ' + poggio[10];
+      console.log(query1);
+      console.log(query2);
+      console.log(query3);
+      console.log(query4);
+      if(youtubeChecked == false){
+        youtubeChecked = true;
+        $.when(getPOIs(query1, Object.keys(POIs).length) ,getPOIs(query2,
+         Object.keys(POIs).length),getPOIs(query3, Object.keys(POIs).length),getPOIs(query4, Object.keys(POIs).length))
+         .done(async function () {
+           try {
+                   for (var i in POIs) {
+                     mymap.removeLayer(POIs[i].marker);
+                   }
+                   currentDestination = 0;
+                   popupIndex = 0;
+                   mymap.removeControl(control);
+                   control = null;
+                   showCloseInfo();
+                   infoPopupState = "open";
+                   actualRouting = [];
+                 } catch (e) { }
+           await validatePoi(POIs);
+           if (Object.keys(POIs).length == 0) alert('Non riusciamo a trovare nessuno POI con le preferenze che hai inserito!');
+        })
+      }
+
+}
+
+
+async function  validatePoi(json){
+  var cont = 0;
+  var temp = {}
+  for(var place in json){
+    var distanceFromPlaceToLatLng = currentLocation.getLatLng().distanceTo(
+      L.latLng(
+        json[place].coords.latitudeCenter,
+        json[place].coords.longitudeCenter
+      )
+    );
+    var filterOrigin = '',check = false;
+    filterOrigin = getFilters(filterOrigin);
+    var filter = filterOrigin.split(' ');
+    for(var i in filter){
+      if(json[place].youtubeDescription.includes(filter[i])) check = true;
+      else {
+        check = false;
+        break;
+      }
+    }
+    if(distanceFromPlaceToLatLng < rangeArea && check == true){
+      temp[cont] = json[place];
+      cont++;
+      var poi = L.marker(
+        [json[place].coords.latitudeCenter, json[place].coords.longitudeCenter],
+        {
+          bounceOnAdd: true,
+          bounceOnAddOptions: {},
+          bounceOnAddCallback: function () { }
+        }
+      ).addTo(mymap);
+      poi.on("click", function () {
+        if (actualRouting.length != -1) {
+          try {
+            blueMarker(popupIndex);
+          } catch (error) {
+            blueMarker(actualRouting[currentDestination]);
+          }
+          popupIndex = place;
+          greenMarker(popupIndex);
+          populatePopup(popupIndex);
+          if (infoPopupState == "open") {
+            showCloseInfo();
+          }
+        } else {
+          blueMarker(popupIndex);
+          popupIndex = place;
+          greenMarker(place);
+          populatePopup(place);
+          if (infoPopupState == "open") {
+            showCloseInfo();
+          }
+        }
+      });
+      json[place].marker = poi;
+      await sleep(100);
+    }
+  }
+  POIs = temp;
+  if(Object.keys(POIs).length == 0) {
+    if(youtubeChecked == false)  if (confirm("Nessun POI trovato con queste richieste. Vuoi cercare su YT?")) youtubeSearch();
+  else{
+    youtubeChecked = true;
+    var zoom = 18;
+    if(rangeArea > 300) zoom = 16;
+    if(rangeArea > 800) zoom = 14;
+    if(rangeArea > 1300) zoom = 13;
+    mymap.setView(currentLocation.getLatLng(),zoom)
+    if(customRouting == undefined){
+      customRouting = L.easyButton({
+        states: [
+          newState("custom", "fa fa-magic", "Custom way", function (btn) {
+            $("#customRoutingContainer").modal({
+              backdrop: "static",
+              keyboard: false
+            });
+          })
+        ]
+      }).addTo(mymap);
+      console.log('CUSTOM ROUTING')
+      console.log(customRouting);
+    }
+      updateCustomRoutingModal();
+      customdirectionsButton.state("start");
+  }
+}
+}
+
+
+
 /**
  * loadMarker Functions
  */

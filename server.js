@@ -222,7 +222,7 @@ try{
 app.get("/getPOIs", async (req, res) => {
   var opts = (youtubeSearch.YouTubeSearchOptions = {
     maxResults: 50,
-    key: guiKey
+    key: rickyKey
   });
 
   try {
@@ -282,7 +282,7 @@ async function searchYoutube(c, req, r){
   do {
     var opts = (youtubeSearch.YouTubeSearchOptions = {
     maxResults: 50,
-    key: "AIzaSyDOJ35j12fNivU3kuPrfz8aTRYABh3RRZ8",
+    key: "AIzaSyDRlOQnTByZRI9hB5PRI0Q5Y9hSK8HRgPY"  ,
     pageToken: nextPageToken
     });
     var ret = await cerca(c, opts, nextPageToken, r);
@@ -386,6 +386,7 @@ function call(results, res, req, filtri) {
 						  coords: val.coords,
               videoId: [item.id],
 						  description: c[0].descrizione,
+              youtubeDescription: item.description,
 						  img: c[0].urlImg,
 						  visited: false
 						};
@@ -395,6 +396,7 @@ function call(results, res, req, filtri) {
 						  coords: val.coords,
               videoId: [item.id],
 						  description: c.descrizione,
+              youtubeDescription: item.description,
 						  img: c.urlImg,
 						  visited: false
 						};
