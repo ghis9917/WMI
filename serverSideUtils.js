@@ -228,7 +228,6 @@ module.exports = {
       string = string.replace( /  +/g, ' ' );
       string = string.replace(/ /g, " AND ");
       string = latinize(string);
-      console.log(string)
       var q =
         "select ?s1 as ?c1, (bif:search_excerpt (bif:vector (" +
         vector +
@@ -511,7 +510,7 @@ module.exports = {
 
 				});
 },
-  updateJson: async function updateJson(poi){
+  updateJson: async function updateJson(POIs,res){
     if (!fs.existsSync('./POIs.json')) {
       await fs.writeFileSync('./POIs.json', '{}', error => {
     		if (error) {
@@ -519,24 +518,29 @@ module.exports = {
     		}
     	})
   	}
+    var check = true;
     fs.readFile('./POIs.json', function (err, data){
       if (!err){
         var myJson = JSON.parse(data);
-        for (var i in  poi){
-          var ind = Object.keys(myJson).length + Number(i);
-          myJson[ind] = poi[i];
+        for (var place in POIs){
+          var esistente = false;
+          for (var key in myJson){
+            if (myJson[key].coords.latitudeCenter === POIs[place].coords.latitudeCenter && myJson[key].coords.longitudeCenter === POIs[place].coords.longitudeCenter){
+                myJson[key].videoId = POIs[place].videoId;
+                esistente = true;
+            }
+          }
+          if(!esistente){
+            myJson[Object.keys(myJson).length] = POIs[place];
+          }
         }
 
         fs.writeFileSync('./POIs.json', JSON.stringify(myJson),function (err, data){
-        if(err) console.log(err)
+          if(err) console.log(err)
       });
+      res.send(myJson)
       }
     });
-    /*fs.appendFile('./POIs.json', JSON.stringify(poi),function(err,data){
-      console.log('WRITING')
-      console.log(data);
-  });*/
-
   }
 //End Modules
 }

@@ -50,7 +50,7 @@ function callGeoLocationApi() {
           $("#noGeo").modal("toggle");
         } else {
           $(".ap-input").css({ backgroundColor: "red" });
-          
+
         }
       },
       error: result => {
@@ -245,22 +245,23 @@ function getNearestTo(lat, lng, currentIndex) {
 }
 
 function populatePopup(indexPOItoDisplay) {
+  console.log(indexPOItoDisplay)
   var POItodisplay = POIs[indexPOItoDisplay];
   $("#popupTitle").text(POItodisplay.name);
   var languageSelector = $("#language");
   $("#popupDescription").text("")
     var c = languageSelector[0].selectedOptions[0].text.toLowerCase().substring(0,languageSelector[0].selectedOptions[0].text.toLowerCase().length - 1)
     for( var s in POItodisplay.description){
-		if(s == c){				
-			$("#popupDescription").text(stringToBeSpoken = POItodisplay.description[s]);		
+		if(s == c){
+			$("#popupDescription").text(stringToBeSpoken = POItodisplay.description[s]);
 		}
 	}
-  
+
   if ($("#popupDescription").text() == "") {
 	$("#popupDescription").text("Description not avaible");
   }
-  
-  
+
+
   if ( POItodisplay.img == "NF") {
     $("#popupImg").css("display","none");
     $("#popupImg").attr("padding","0px");
@@ -347,7 +348,7 @@ function routingTo(destination) {
 function checkDistance(distance, instruction) {
   //versione solo una destinazione alla volta
   var stringToBeSpoken = instruction;
-  
+
   if (distance <= 20) {
     POIs[actualRouting[currentDestination]].marker.setIcon(
       getIconMarkerOfColor(greyIcon)
@@ -381,33 +382,33 @@ async function onClickMarker(toBeSpoken, distance) {
 			for(var i in voice){
 			if(voice[i].voiceURI == "Google US English"){
 				talker.voice = voice[i];
-				break;		
+				break;
 			}
 		}}
 		else if(langue == "fr"){
 			for(var i in voice){
 			if(voice[i].voiceURI == "Google français"){
 				talker.voice = voice[i];
-				break;		
+				break;
 			}
 		}}else if(langue == "it"){
 			for(var i in voice){
 			if(voice[i].voiceURI == "Google italiano"){
 				talker.voice = voice[i];
-				break;		
+				break;
 			}
 		}}else if(langue == "de"){
 			for(var i in voice){
 			if(voice[i].voiceURI == "Google Deutsch"){
 				talker.voice = voice[i];
-				break;		
+				break;
 			}
 		}
 	  }else{
 		for(var i in voice){
 			if(voice[i].voiceURI == "Google italiano"){
 				talker.voice = voice[i];
-				break;		
+				break;
 			}
 		}
 	  }

@@ -229,14 +229,12 @@ app.get("/getPOIs", async (req, res) => {
     var contOlc = 12;
     var c = req.query.searchQuery;
     var data = {};
-    console.log(c)
     var index = c.indexOf(' ')
      c =c.replace('a','+')
     var biggerOlc = c.split(' ');
     biggerOlc = biggerOlc[0];
     c = c.split(' ');
     var decoded = openLocationCode.decode(biggerOlc);
-    console.log(biggerOlc)
   //  while(contOlc > 0){
 
       var encoded = openLocationCode.encode(decoded.latitudeCenter,decoded.longitudeCenter, contOlc);
@@ -244,23 +242,18 @@ app.get("/getPOIs", async (req, res) => {
         encoded = encoded.replace('+','');
 
       }
-      console.log('porcodio')
 
       c[0] = encoded;
       var queryYT = '';
       for(var i in c){
         queryYT += c[i] + ' ';
       }
-      console.log('QUERY YT')
-      console.log(queryYT)
       data = await searchYoutube(queryYT, opts,data,res,req);
 
-      console.log(contOlc)
       if(data.length > 50)
 
         contOlc = contOlc - 12;
   //  }
-    console.log(data)
     res.send(data);
   } catch (error) {}
 
@@ -270,8 +263,6 @@ app.get("/getPOIs", async (req, res) => {
 
 async function searchYoutube(c, req, r){
   c = c + req.query.filter;
-  console.log('INPUT')
-  console.log(c)
 
   var nextPageToken = null;
   var cont = req.query.contPOI;
@@ -282,7 +273,7 @@ async function searchYoutube(c, req, r){
   do {
     var opts = (youtubeSearch.YouTubeSearchOptions = {
     maxResults: 50,
-    key: "AIzaSyDRlOQnTByZRI9hB5PRI0Q5Y9hSK8HRgPY"  ,
+    key: "AIzaSyBHbA5i8v3oJ8Nmi3tZuNHtFfH_fjI4XO8"  ,
     pageToken: nextPageToken
     });
     var ret = await cerca(c, opts, nextPageToken, r);
@@ -318,40 +309,14 @@ app.get("/prova", async (req, res) => {
 	 try {
 		 var c = req.query.searchQuery;
      c = c.split(" ");
-     console.log(c)
      var r = [];
      for (var el in c) {
        if(c[el] != "" || c[el] != " ") r = await searchYoutube(c[el], req, r)
      }
-    console.log(r.length)
 		var data = await call(r, res,req,req.query.filter);
-		res.send(data);
 	  } catch (error) {}
 
 });
-
-
-   /* var opts = (youtubeSearch.YouTubeSearchOptions = {
-      maxResults: 50,
-      key: maxKey
-    });
-    try {
-      var c = req.query.searchQuery;
-      var cont = req.query.contPOI;
-      if(cont > 50){
-        res.send("Finito")
-        return;
-      }
-      youtubeSearch(c, opts, async (err, results) => {
-        if (err) {
-          console.log(err);
-          res.send({ error: err.response.statusText });
-        } else {
-          var data = await call(results, res, req, c);
-          res.send(data);
-        }
-      });
-    } catch (error) {}*/
 
 function call(results, res, req, filtri) {
   return new Promise(async (resolve, reject) => {
@@ -426,7 +391,7 @@ function call(results, res, req, filtri) {
         }
 			  }
 			}
-      utils.updateJson(POIs);
+      await utils.updateJson(POIs,res);
 			resolve(POIs);
 		  }
 		);
@@ -453,7 +418,6 @@ function call(results, res, req, filtri) {
 					  img: c[0].urlImg,
 					  visited: false
 					};
-					console.log('try');
 				  } catch (error) {
 					POIs[counter] = {
 					  name: item.title,
@@ -463,18 +427,15 @@ function call(results, res, req, filtri) {
 					  img: c.urlImg,
 					  visited: false
 					};
-					console.log('catch');
 				  }
 				}else{
 					try {
-						console.log('else try');
 					POIs[counter] = {
 					  name: item.title,
 					  coords: val.coords,
 					  videoId: item.id
 					};
 				  } catch (error) {
-					   console.log('else catch	');
 					POIs[counter] = {
 					  name: item.title,
 					  coords: val.coords,
@@ -494,8 +455,6 @@ function call(results, res, req, filtri) {
 	resolve(POIs);
 	}
 	catch(e){
-		console.log('resolve catch')
-		console.log(POIs);
 		resolve(POIs);}
   }
   });
