@@ -511,36 +511,45 @@ module.exports = {
 				});
 },
   updateJson: async function updateJson(POIs,res){
-    if (!fs.existsSync('./POIs.json')) {
-      await fs.writeFileSync('./POIs.json', '{}', error => {
-    		if (error) {
-    		res.send("error");
-    		}
-    	})
-  	}
-    var check = true;
-    fs.readFile('./POIs.json', function (err, data){
-      if (!err){
-        var myJson = JSON.parse(data);
-        for (var place in POIs){
-          var esistente = false;
-          for (var key in myJson){
-            if (myJson[key].coords.latitudeCenter === POIs[place].coords.latitudeCenter && myJson[key].coords.longitudeCenter === POIs[place].coords.longitudeCenter){
-                myJson[key].videoId = POIs[place].videoId;
-                esistente = true;
-            }
-          }
-          if(!esistente){
-            myJson[Object.keys(myJson).length] = POIs[place];
-          }
-        }
+	  try{
+		if (!fs.existsSync(path.join(__dirname,'POIs.json'))) {
+		  var stream = await fs.createWriteStream(path.join(__dirname,'POIs.json'), { mode: 0o777 });
+		  stream.write("{}");
+		  stream.end();
+		  /*await fs.writeFileSync('./POIs.json', '{}', error => {
+				if (error) {
+				res.send("error");
+				}
+			})*/
+		}
+		var myJson = fs.readFileSync(path.join(__dirname,'POIs.json'));
+		//fs.readFileSync('./POIs.json', function (err, data){
+		//  if (!err){
+			var myJson = JSON.parse(myJson);
+			for (var place in POIs){
+			  var esistente = false;
+			  for (var key in myJson){
+				if (myJson[key].coords.latitudeCenter === POIs[place].coords.latitudeCenter && myJson[key].coords.longitudeCenter === POIs[place].coords.longitudeCenter){
+					myJson[key].videoId = POIs[place].videoId;
+					esistente = true;
+				}
+			  }
+			  if(!esistente){
+				myJson[Object.keys(myJson).length] = POIs[place];
+			  }
+			}
 
-        fs.writeFileSync('./POIs.json', JSON.stringify(myJson),function (err, data){
-          if(err) console.log(err)
-      });
-      res.send(myJson)
-      }
-    });
+			fs.writeFileSync(path.join(__dirname,'POIs.json'), JSON.stringify(myJson),function (err, data){
+			  if(err) console.log(err)
+		  });
+		  res.send(myJson)
+		 // } else res.send(err);
+		//});
+	}
+	catch(e){
+		res.send(e);
+	}
+    
   }
 //End Modules
 }

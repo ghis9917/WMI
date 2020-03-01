@@ -287,6 +287,8 @@ function getPOIs(OLC , cont) {
     type: "get",
     url: "/prova?searchQuery="+ OLC + "&filter=" + valori + "&contPOI=" + cont + "&mode=user",
     success: function (data) {
+	  var el = 'totalResults'
+	  console.log(data.totalResults)
       console.log(data);
       if(data != "Finito")  POIs = data;
     }

@@ -66,8 +66,8 @@ app.get("/askDBPedia", (req, res) => {
 
 app.post("/updateReview", (req, res) => {
   client.connect(
-  //  "mongodb://site181947:ASae0ahr@mongo_site181947:27017/",
-    "mongodb://localhost:27017/",
+    "mongodb://site181947:ASae0ahr@mongo_site181947:27017/",
+  //  "mongodb://localhost:27017/",
     { useUnifiedTopology: true },
     async function(error, db) {
       var myquery = { luogo: req.query.luogo, wr: req.query.wr, clip : req.query.clip }
@@ -102,8 +102,8 @@ app.post("/updateReview", (req, res) => {
 
 app.get("/removeReview", async (req, res) => {
   client.connect(
-  //  "mongodb://site181947:ASae0ahr@mongo_site181947:27017/",
-      "mongodb://localhost:27017/",
+    "mongodb://site181947:ASae0ahr@mongo_site181947:27017/",
+  //    "mongodb://localhost:27017/",
     { useUnifiedTopology: true },async function(error, db) {
   var mydb = db.db("WMIdb");
   var mongodb = require('mongodb');
@@ -120,9 +120,9 @@ app.get("/removeReview", async (req, res) => {
 
 app.get("/getReview", async (req, res) => {
   client.connect(
-    //"mongodb://site181947:ASae0ahr@mongo_site181947:27017/",
+    "mongodb://site181947:ASae0ahr@mongo_site181947:27017/",
 
-      "mongodb://localhost:27017/",
+     // "mongodb://localhost:27017/",
     { useUnifiedTopology: true },async function(error, db) {
       if (req.query.mode == "user") {
         if (error) {
@@ -177,9 +177,9 @@ app.get("/getReview", async (req, res) => {
 
 app.post("/insertReview", (req, res) => {
   client.connect(
-  //  "mongodb://site181947:ASae0ahr@mongo_site181947:27017/",
+    "mongodb://site181947:ASae0ahr@mongo_site181947:27017/",
 
-    "mongodb://localhost:27017/",
+   // "mongodb://localhost:27017/",
     { useUnifiedTopology: true },
     async function(error, db) {
       if (!error) {
@@ -261,60 +261,77 @@ app.get("/getPOIs", async (req, res) => {
 });
 }catch (error) {}
 
-async function searchYoutube(c, req, r){
-  c = c + req.query.filter;
+async function searchYoutube(c, req, r,res){
+	return new Promise(async (resolve, reject) => {
+		 var x = 1;
+		 c = c.split(' ');
+		 var r = [];
+		 var temp = [];
+     var totalResult = 0;
+		 for (var el in c) {
+		   if(c[el] != "" || c[el] != " ") {
+			  var nextPageToken = '';
+			  do {
+				  try{
+					var opts = (youtubeSearch.YouTubeSearchOptions = {
+					maxResults: 50,
+					key: "AIzaSyAqgzgIb6o-E8-2V7gPkflm7ZzmgprvOL4",
+					pageToken: nextPageToken
+					});
+					var ret = await cerca(c[el], opts, nextPageToken, r,res);
+					for (var el in ret.list){
+					  temp.push(ret.list[el]);
+					}
 
-  var nextPageToken = null;
-  var cont = req.query.contPOI;
-    if(cont > 50){
-    res.send("Finito")
-    return;
-    }
-  do {
-    var opts = (youtubeSearch.YouTubeSearchOptions = {
-    maxResults: 50,
-    key: "AIzaSyBHbA5i8v3oJ8Nmi3tZuNHtFfH_fjI4XO8"  ,
-    pageToken: nextPageToken
-    });
-    var ret = await cerca(c, opts, nextPageToken, r);
-    //res.send(ret)
-    for (var el in ret.list){
-      r.push(ret.list[el]);
-    }
-    nextPageToken = ret.npt;
-  } while (nextPageToken != undefined);
-  return r;
+					nextPageToken = ret.npt;
+					if(totalResult == 0) totalResult = ret.total;
+				}
+				catch(e){
+					res.send(e);
+					resolve(e)
+					break;
+				}
+
+			  } while (temp.length < totalResult);
+			  r = r.concat(temp);
+			  temp = [];
+			  totalResult = 0;
+		   }
+		 }
+		 resolve(r);
+  });
 }
 
-async function cerca(c, opts, nextPageToken, r) {
+async function cerca(c, opts, nextPageToken, r,res) {
   return new Promise(async (resolve, reject) => {
+	   try{
     youtubeSearch(c, opts, async (err, results, pageInfo) => {
       if (err) {
 		  console.log(err)
-        //res.send({ error: err.response.statusText });
+        res.send({ error: err.response.statusText });
       } else {
         var boh = await results;
         for (var val in boh) {
           r.push(results[val]);
         }
         var npt = await pageInfo;
+        var tot = pageInfo.totalResults
         nextPageToken = npt.nextPageToken;
-        resolve({ npt: nextPageToken, list: r });
+        resolve({ npt: nextPageToken, list: r, total: tot });
       }
     });
+} catch(e){res.send("mmmmm");resolve(e)}
   });
 }
 
 app.get("/prova", async (req, res) => {
 	 try {
 		 var c = req.query.searchQuery;
-     c = c.split(" ");
-     var r = [];
-     for (var el in c) {
-       if(c[el] != "" || c[el] != " ") r = await searchYoutube(c[el], req, r)
-     }
-		var data = await call(r, res,req,req.query.filter);
-	  } catch (error) {}
+		 var r = [];
+		 r = await searchYoutube(c, req, r,res);
+		 var data = await call(r, res,req,req.query.filter);
+		 utils.updateJson(data,res);
+	  } catch (error) {res.send(error.message)}
 
 });
 
@@ -326,9 +343,9 @@ function call(results, res, req, filtri) {
 
    try{
 		client.connect(
-      //  "mongodb://site181947:ASae0ahr@mongo_site181947:27017/",
+        "mongodb://site181947:ASae0ahr@mongo_site181947:27017/",
 
-        "mongodb://localhost:27017/",
+       // "mongodb://localhost:27017/",
     { useUnifiedTopology: true },
 		  async function(error, db) {
 			var mydb = db.db("WMIdb");
@@ -391,7 +408,7 @@ function call(results, res, req, filtri) {
         }
 			  }
 			}
-      await utils.updateJson(POIs,res);
+      
 			resolve(POIs);
 		  }
 		);
@@ -451,7 +468,6 @@ function call(results, res, req, filtri) {
 
 
 	}
-  utils.updateJson(POIs);
 	resolve(POIs);
 	}
 	catch(e){
@@ -487,13 +503,7 @@ app.get('*', (req, res) => {
   var ext = path.extname(req.url);
 
   if (ext === ".css" || ext === ".html" || ext === ".json" || ext === ".js" || ext === ".jpg" || ext === ".png" || ext === ".woff" || ext === ".woff2" || ext === ".ttf" || ext === ".svg" || ext === ".eot" ) {
-    // if (ext === '.json'){
-    //   var dict = {
-    //     '0': 'TRUE'
-    //   }
-    //   utils.updateJson(dict)
-    // }
-	res.sendFile(path.join(__dirname, './' + req.url))
+     res.sendFile(path.join(__dirname, './' + req.url))
   } else if(ext === ".mp3") {
     //audio
     res.sendFile(path.join(__dirname, './' + req.url));
@@ -505,9 +515,9 @@ app.get('*', (req, res) => {
 });
 
 
-https.createServer({
- key: fs.readFileSync('server.key'),
- cert: fs.readFileSync('server.cert')
-}, app)
-//app
+//https.createServer({
+// key: fs.readFileSync('server.key'),
+// cert: fs.readFileSync('server.cert')
+//}, app)
+app
 .listen(8000, () => console.log('Gator app listening on port 8000!'))
