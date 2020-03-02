@@ -116,6 +116,7 @@ function searchByKeyword(query) {
       $('#iframeContainerWHAT').show();
       $('#iframeContainerHOW').show();
       $('#iframeContainerWHY').show();
+
       setCSSAttribute("#popupContainer", {
         "z-index": "-1",
         height: "0px"
@@ -158,6 +159,12 @@ function onYouTubeIframeAPIReady(videoId, titolo, descrizione, channelTitle) {
     return;
   }
   var motivo = getTypeOfVideo(descrizione);
+  if(motivo == ""){
+    return;
+  }
+  $("#h6"+motivo).show();
+  $("#iframeContainer"+motivo.toUpperCase()).show();
+  $("#iframeContainer"+motivo.toUpperCase() + " + hr").show();
   var der = descrizione.split(":");
   var filterOrigin = '';
   filterOrigin = getFilters(filterOrigin);
@@ -313,25 +320,32 @@ function clearClipModal() {
   $("#iframeContainerHOW").empty();
   $("#iframeContainerWHY").empty();
   $("#reviewContainer").hide();
-  $("#iframeContainerWHAT").show();
-  $("#iframeContainerHOW").show();
-  $("#iframeContainerWHY").show();
+  $("#iframeContainerWHAT" + " + hr").hide();
+  $("#iframeContainerHOW" +" + hr").hide();
+  $("#iframeContainerWHY" +" + hr" ).hide();
+  $("#h6why").hide();
+  $("#h6what").hide();
+  $("#h6how").hide();
   actualRouting.splice(currentDestination, 1);
+
   if (actualRouting.length != 0) {
     routingTo(actualRouting[currentDestination]);
     greenMarker(actualRouting[currentDestination]);
     popupIndex = actualRouting[currentDestination];
   }
+  if (actualRouting.length == 0) {
+
+  }
 }
 
 function stopRoutingFromModal() {
+  actualRouting = [];
   clearClipModal();
   speecIstance.cancel();
   for (poi in POIs) {
     POIs[poi].visited = false;
     blueMarker(poi);
   }
-  actualRouting = [];
   currentDestination = 0;
   popupIndex = 0;
   mymap.removeControl(control);

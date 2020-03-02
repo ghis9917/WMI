@@ -41,7 +41,7 @@ var olcVect = ['2', '3', '4', '5', '6',
 $(document).ready(async function () {
   //Aggiunge agli script quello per la getione degli iframe di youtube
   var tag = document.createElement("script");
-  tag.src = "https://www.youtube.com/iframe_api";
+  tag.src = "https://youtube.com/iframe_api";
   var firstScriptTag = document.getElementsByTagName("script")[0];
   firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
@@ -64,25 +64,13 @@ $(document).ready(async function () {
       loadMarker();
     }
   });
-  $("#prev").click(function (e) {
-    if (actualRouting.length > 0) {
-      if (currentDestination > 0) {
-        blueMarker(popupIndex);
-        currentDestination--;
-        popupIndex = actualRouting[currentDestination];
-        greenMarker(popupIndex);
-        populatePopup(popupIndex);
-      } else if (popupIndex == 0 || currentDestination == 0) {
-        blueMarker(popupIndex);
-        currentDestination = actualRouting.length - 1;
-        popupIndex = actualRouting[currentDestination];
-        greenMarker(popupIndex);
-        populatePopup(popupIndex); distanceFromPlaceToLatLng < 1000
-      }
-    } else {
+  $(".prev").click(function (e) {
+
+if (actualRouting.length == 0) {
       if (popupIndex > 0) {
         blueMarker(popupIndex);
         popupIndex--;
+        getVideoId(POIs[popupIndex])
         greenMarker(popupIndex);
         populatePopup(popupIndex);
       } else if (popupIndex == 0) {
@@ -92,28 +80,16 @@ $(document).ready(async function () {
         greenMarker(popupIndex);
         populatePopup(popupIndex);
       }
-    }
+}
   });
 
-  $("#next").click(function (e) {
-    if (actualRouting.length > 0) {
-      if (currentDestination < actualRouting.length - 1) {
-        blueMarker(popupIndex);
-        currentDestination++;
-        popupIndex = actualRouting[currentDestination];
-        greenMarker(popupIndex);
-        populatePopup(popupIndex);
-      } else {
-        blueMarker(popupIndex);
-        currentDestination = 0;
-        popupIndex = actualRouting[currentDestination];
-        greenMarker(popupIndex);
-        populatePopup(popupIndex);
-      }
-    } else {
+  $(".next").click(function (e) {
+    if (actualRouting.length == 0) {
+      console.log("mmmmm")
       if (popupIndex < Object.keys(POIs).length - 1) {
         blueMarker(popupIndex);
         popupIndex++;
+        getVideoId(POIs[popupIndex])
         greenMarker(popupIndex);
         populatePopup(popupIndex);
       } else if (popupIndex == Object.keys(POIs).length - 1) {
@@ -190,6 +166,20 @@ function createMap() {
  */
 function onLocationFound(position) {
   updateCurrentLocation(position.coords.latitude, position.coords.longitude);
+  console.log("ciao, sono nel a")
+  if (actualRouting.length == 0) {
+    /*try {
+      currentDestination = 0;
+      popupIndex = 0;
+      mymap.removeControl(control);
+      control = null;
+      showCloseInfo();
+      infoPopupState = "open";
+      actualRouting = [];
+    } catch (e) { }*/
+
+    getJson();
+  }
 }
 
 function onError(err) {
@@ -207,10 +197,25 @@ function onClick() {
       L.DomEvent.on(fakePositionBtn, "click", function () {
         mymap.closePopup();
         currentLocation.setLatLng(e.latlng);
-        if (control !== null) {
-          control.spliceWaypoints(0, 1, e.latlng);
-        }
+        try{
+          if (control !== null) {
+            control.spliceWaypoints(0, 1, e.latlng);
+          }
+        }catch(e){}
         updateCustomRoutingModal();
+        if (actualRouting.length == 0) {
+          /*try {
+            currentDestination = 0;
+            popupIndex = 0;
+            mymap.removeControl(control);
+            control = null;
+            showCloseInfo();
+            infoPopupState = "open";
+            actualRouting = [];
+          } catch (e) { }*/
+          getJson();
+        }
+        console.log("invece sono qua, click");
       });
       L.popup("#ffffff")
         .setContent(fakePositionBtn)
@@ -231,6 +236,8 @@ function getJson() {
     type: "get",
     url: "/POIs.json",
     success: function (data) {
+      youtubeChecked = false;
+      console.log(data)
       try {
         currentDestination = 0;
         popupIndex = 0;
@@ -240,8 +247,6 @@ function getJson() {
         infoPopupState = "open";
         actualRouting = [];
       } catch (e) { }
-      youtubeChecked = false;
-      console.log(data)
       validatePoi(data);
       //chiama funzione per disegnare con i filtri
       console.log("HO RICEVUTO JSON");
@@ -264,6 +269,17 @@ function loadMarker(value) {
       currentLocation.getLatLng().lng,
       6
     );
+    if (actualRouting.length == 0) {
+      try {
+        currentDestination = 0;
+        popupIndex = 0;
+        mymap.removeControl(control);
+        control = null;
+        showCloseInfo();
+        infoPopupState = "open";
+        actualRouting = [];
+      } catch (e) { }
+    }
     $.when(getJson().done(async function () { }))
   } else {
     console.log(' current location non null loadMarker');
@@ -468,9 +484,9 @@ async function validatePoi(json) {
           }
           greenMarker(popupIndex);
           populatePopup(popupIndex);
-          if (infoPopupState == "open") {
-            showCloseInfo();
-          }
+          //TODOCIAO
+          getVideoId(POIs[popupIndex]);
+
         } else {
           blueMarker(popupIndex);
           for (var key in POIs) {
@@ -478,9 +494,8 @@ async function validatePoi(json) {
           }
           greenMarker(popupIndex);
           populatePopup(popupIndex);
-          if (infoPopupState == "open") {
-            showCloseInfo();
-          }
+          //TODOCIAO
+          getVideoId(POIs[popupIndex]);
         }
       });
 
@@ -489,12 +504,14 @@ async function validatePoi(json) {
       if (Object.keys(POIs).length == 0) await sleep(1);
     }
   }
-  try {
-    for (var i in POIs) {
-      mymap.removeLayer(POIs[i].marker);
+    try {
+      for (var i in POIs) {
+        mymap.removeLayer(POIs[i].marker);
+      }
     }
-  }
-  catch (e) { }
+    catch (e) { }
+
+
   POIs = temp;
   if (Object.keys(POIs).length == 0) {
     if (youtubeChecked == true) {
