@@ -1,341 +1,392 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <script src="assets/js/jquery.min.js"></script>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
-    <title>WMI</title>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-    <meta name="google-signin-scope" content="profile email">
-    <meta name="google-signin-client_id"
-        content="668542132317-c9an23v8dkkeotliabjoh16m1k37778n.apps.googleusercontent.com">
-    <script src="assets/js/googleSignIn.js"></script>
-    <script src="https://cdn.rawgit.com/labnol/files/master/yt.js"></script>
+<head>
+  <script src="assets/js/jquery.min.js"></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+  <title>WMI</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <meta name="google-signin-scope" content="profile email">
+  <meta name="google-signin-client_id"
+    content="668542132317-c9an23v8dkkeotliabjoh16m1k37778n.apps.googleusercontent.com">
+  <script src="assets/js/googleSignIn.js"></script>
+  <script src="https://cdn.rawgit.com/labnol/files/master/yt.js"></script>
 
 
-    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:300,400,600" />
-    <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css" />
-    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css" />
-    <link rel="stylesheet" href="assets/fonts/fontawesome5-overrides.min.css" />
-    <link rel="stylesheet" href="assets/css/Animation-Cards-1.css" />
-    <link rel="stylesheet" href="assets/css/Animation-Cards.css" />
-    <link rel="stylesheet" href="assets/css/Footer-Basic.css" />
-    <link rel="stylesheet" href="assets/css/Footer-Clean.css" />
-    <link rel="stylesheet" href="assets/css/Footer-Dark.css" />
-    <link href="https://www.solodev.com/core/fileparse.php/131/urlt/google-translate.css" rel="stylesheet">
+  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:300,400,600" />
+  <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css" />
+  <link rel="stylesheet" href="assets/fonts/font-awesome.min.css" />
+  <link rel="stylesheet" href="assets/fonts/fontawesome5-overrides.min.css" />
+  <link rel="stylesheet" href="assets/css/Animation-Cards-1.css" />
+  <link rel="stylesheet" href="assets/css/Animation-Cards.css" />
+  <link rel="stylesheet" href="assets/css/Footer-Basic.css" />
+  <link rel="stylesheet" href="assets/css/Footer-Clean.css" />
+  <link rel="stylesheet" href="assets/css/Footer-Dark.css" />
+  <link href="https://www.solodev.com/core/fileparse.php/131/urlt/google-translate.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="assets/css/Google-Style-Login.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-geosearch@latest/assets/css/leaflet.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" />
-    <link rel="stylesheet" href="assets/css/Map-Clean.css" />
-    <link rel="stylesheet" href="assets/css/Navigation-Clean.css" />
-    <link rel="stylesheet" href="assets/css/Navigation-with-Button.css" />
-    <link rel="stylesheet" href="assets/css/Profile-Card.css" />
-    <link rel="stylesheet" href="https://unpkg.com/@bootstrapstudio/bootstrap-better-nav/dist/bootstrap-better-nav.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.1.1/aos.css" />
-    <link rel="stylesheet" href="assets/css/styles.css" />
-    <script src="assets/js/clip.js"></script>
-    <script type="text/javascript" id="www-widgetapi-script" src="https://s.ytimg.com/yts/jsbin/www-widgetapi-vflS50iB-/www-widgetapi.js" async=""></script>
-    <script src="assets/js/review.js"> </script>
-    <script src="https://raw.githack.com/SortableJS/Sortable/master/Sortable.js"></script>
-    <script src="assets/js/OpenLayers.js"></script>
-    <script src="assets/js/redirect.js"></script>
-    <script src="assets/js/main.js"></script>
-    <script src="assets/js/bs-animation.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.1.1/aos.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
-    <script src="https://apis.google.com/js/platform.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/openlocationcode/1.0.3/openlocationcode.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/@bootstrapstudio/bootstrap-better-nav/dist/bootstrap-better-nav.min.js"></script>
-    <script src="https://unpkg.com/leaflet-geosearch@latest/dist/bundle.min.js"></script>
-    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
-    <script src="assets/js/bouncemarker.js"></script>
-    <script src="assets/js/lrm-graphhopper.js"></script>
-    <script src="assets/js/newUserModeUtils.js"></script>
-    <script src="assets/js/newNewMap.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/places.js@1.16.6"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/css/bootstrap-select.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="assets/css/Google-Style-Login.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-geosearch@latest/assets/css/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" />
+  <link rel="stylesheet" href="assets/css/Map-Clean.css" />
+  <link rel="stylesheet" href="assets/css/Navigation-Clean.css" />
+  <link rel="stylesheet" href="assets/css/Navigation-with-Button.css" />
+  <link rel="stylesheet" href="assets/css/Profile-Card.css" />
+  <link rel="stylesheet"
+    href="https://unpkg.com/@bootstrapstudio/bootstrap-better-nav/dist/bootstrap-better-nav.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.1.1/aos.css" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <script src="assets/js/clip.js"></script>
+  <script type="text/javascript" id="www-widgetapi-script"
+    src="https://s.ytimg.com/yts/jsbin/www-widgetapi-vflS50iB-/www-widgetapi.js" async=""></script>
+  <script src="assets/js/review.js"> </script>
+  <script src="https://raw.githack.com/SortableJS/Sortable/master/Sortable.js"></script>
+  <script src="assets/js/OpenLayers.js"></script>
+  <script src="assets/js/redirect.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/bs-animation.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.1.1/aos.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <script src="https://apis.google.com/js/platform.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/openlocationcode/1.0.3/openlocationcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/@bootstrapstudio/bootstrap-better-nav/dist/bootstrap-better-nav.min.js"></script>
+  <script src="https://unpkg.com/leaflet-geosearch@latest/dist/bundle.min.js"></script>
+  <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
+  <script src="assets/js/bouncemarker.js"></script>
+  <script src="assets/js/lrm-graphhopper.js"></script>
+  <script src="assets/js/newUserModeUtils.js"></script>
+  <script src="assets/js/newNewMap.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/places.js@1.16.6"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/css/bootstrap-select.min.css">
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/js/bootstrap-select.min.js"></script>
-  </head>
-  <body style="overflow:hidden" class="d-flex flex-column justify-content-between">
-    <nav class="navbar navbar-light navbar-expand-md text-uppercase shadow navigation-clean">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="/">Where Am I?</a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1">
-          <span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navcol-1">
-          <ul class="nav navbar-nav ml-auto">
-            <li class="nav-item" role="presentation">
-              <a class="nav-link" href="/editorMode.html">Editor</a>
-            </li>
-            <li style="display: none;" id="profile" class="nav-item" role="presentation">
-              <a class="nav-link" href="/profile.html">Profilo</a>
-            </li>
-            <li style="" id="help" class="nav-item" role="presentation" onclick="$('#userGuide').show();">
-                  <a class="nav-link" >Guida</a>
-            </li>
-          </ul>
-        </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/js/bootstrap-select.min.js"></script>
+</head>
+
+<body style="overflow:hidden" class="d-flex flex-column justify-content-between">
+  <nav class="navbar navbar-light navbar-expand-md text-uppercase shadow navigation-clean">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">Where Am I?</a><button data-toggle="collapse" class="navbar-toggler"
+        data-target="#navcol-1">
+        <span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navcol-1">
+        <ul class="nav navbar-nav ml-auto">
+          <li class="nav-item" role="presentation">
+            <a class="nav-link" href="/editorMode.html">Editor</a>
+          </li>
+          <li style="display: none;" id="profile" class="nav-item" role="presentation">
+            <a class="nav-link" href="/profile.html">Profilo</a>
+          </li>
+          <li style="" id="help" class="nav-item" role="presentation" onclick="$('#userGuide').show();">
+            <a class="nav-link">Guida</a>
+          </li>
+        </ul>
       </div>
-    </nav>
-    <div id="mapid" style="height: 100%; z-index: 1">
     </div>
-    <div id="clipContainer" hidden role="dialog" tabindex="-1" class="modal fade show" style="display: block;"</div>
-      <div class="modal-dialog" role="document" align="center" style="padding-bottom: 10%;padding-top: 10%;">
-        <div id="modalContent" class="modal-content" style="">
-          <div class="modal-header">
-            <h4 id="infoTitolo" style ="width:100%;"class="modal-title"></h4>
-          </div>
-          <div class="modal-body" style="overflow-y:scroll; height:300px;">
-            <div id="LoginRequired" style="display:none">
-              <p>Clicca qui per loggarti col tuo profilo google</p>
-              <div>
-                <div id="google-signin2">
-                </div>
-                <button onclick="showInfo()" style="margin-top: 1em;"type="button" class="btn btn-outline-dark">Chiudi</button>
-            </div>
-            </div>
-            <div id="bodyClip">
-                <div style="width:100%; height: 25%;">
-                  <img id="imgOnLocation" style="width:25%; height:25%">
-                  <p id="descriptionOnLocation">
-                  </p>
-                  <hr id="dividerOnLocation">
-                </div>
-                <div id="iframeContainer" >
-                </div>
-          </div>
-            <div id="spinnerReview" class="spinner-grow" role="status" style="display:none">
-              <span class="sr-only">Loading...</span>
-            </div>
-            <div id="reviewContainer" style="display:none; margin-top: 2em">
-              <div class="d-flex flex-row"><label style="margin: 0px;font-size: 20px;">Voto:&nbsp;</label>
-                <div class="d-flex align-items-center"><i class="fa fa-star starReview" id="star1" style="color: rgb(100,100,100);font-size: 25px;margin-right: 2px;margin-left: 2px;"></i><i class="fa fa-star starReview" id="star2"
-                    style="color: rgb(100,100,100);font-size: 25px;margin-right: 2px;margin-left: 2px;"></i><i class="fa fa-star starReview" id="star3" style="color: rgb(100,100,100);font-size: 25px;margin-right: 2px;margin-left: 2px;"></i><i
-                    class="fa fa-star starReview" id="star4" style="color: rgb(100,100,100);font-size: 25px;margin-right: 2px;margin-left: 2px;"></i><i class="fa fa-star starReview" id="star5"
-                    style="color: rgb(100,100,100);font-size: 25px;margin-right: 2px;margin-left: 2px;"></i></div>
+  </nav>
+  <div id="mapid" style="height: 100%; z-index: 1">
+  </div>
+  <div id="clipContainer" hidden role="dialog" tabindex="-1" class="modal fade show" style="display: block;" </div>
+    <div class="modal-dialog" role="document" align="center" style="padding-bottom: 10%;padding-top: 10%;">
+      <div id="modalContent" class="modal-content" style="">
+        <div class="modal-header">
+          <h4 id="infoTitolo" style="width:100%;overflow-wrap: break-word;" class="modal-title"></h4>
+        </div>
+        <div class="modal-body" style="overflow-y:scroll; height:300px;">
+          <div id="LoginRequired" style="display:none">
+            <p>Clicca qui per loggarti col tuo profilo google</p>
+            <div>
+              <div id="google-signin2">
               </div>
-              <div class="d-flex flex-column"><label style="margin: 0px;font-size: 20px;margin-top: 1em;">Recensione:&nbsp;</label><textarea id="txtReview" wrap="soft" style="margin-bottom: 2em;"></textarea></div>
-              <button id="sendReview" onclick="sendReview()" class="btn btn-outline-primary" disabled type="button">Salva</button>
-              <button id="cancelReview" onclick="cancelReview()" class="btn btn-outline-danger" type="button">Annulla</button>
+              <button onclick="showInfo()" style="margin-top: 1em;" type="button"
+                class="btn btn-outline-dark">Chiudi</button>
             </div>
           </div>
-		  <div class="modal-footer">
-			  <button type="button" class="btn btn-outline-danger" data-dismiss="modal" onclick="stopRoutingFromModal();">Stop</button>
-			<button type="button" class="btn btn-outline-primary" data-dismiss="modal" onclick="clearClipModal();">Next</button>
-			</div>
-        </div>
-      </div>
-    </div>
-    <div class="d-flex shadow" id="popupContainer" style="width: calc(100% - 2em);height: 16em; z-index: -1; position: absolute; bottom: 0; left: 0; background: white; margin: 1em;">
-      <div id="prev" class="shadow-lg d-flex justify-content-center align-items-center" style="font-size: 25px;width: 5%;background-color: #ffffff;">
-        <i class="fas fa-chevron-left d-flex justify-content-center align-items-center" id="prev"></i>
-      </div>
-      <div class="d-flex flex-column" style="width: 90%;padding: 1em; overflow-y: scroll;display:inline-block!important">
-            <div style= "width: 100%;text-align: center;">
-				<h4 id="popupTitle"></h4>
+          <div id="bodyClip">
+            <div style="width:100%; height: 25%;">
+              <img id="imgOnLocation" style="width:25%; height:25%">
+              <p id="descriptionOnLocation">
+              </p>
+              <hr id="dividerOnLocation">
             </div>
-        <div style="padding-top: 1em;display:inline-block!important;width:100%">
-		  <img id="popupImg" style="width: 10em;float:left; padding-right:2em;"/>
-          <label id="popupDescription" style="margin: 0px;display:inline;    text-align: justify;"></label>
-        </div>
-      </div>
-      <div id="next" class="shadow-lg d-flex justify-content-center align-items-center" style="font-size: 25px; width: 5%;background-color: #ffffff;">
-        <i class="fas fa-chevron-right d-flex justify-content-center align-items-center" style="width: 10%;"></i>
-      </div>
-    </div>
-
-    <div class="modal" id="noGeo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-body">
-            <h5 class="modal-title" style="margin-bottom:1em!important" id="exampleModalLabel">Inserisci la tua posizione:</h5>
-            <input type="search"   id="addressInput" class="form-control" placeholder="" />
-          </div>
-          <div class="modal-footer" style="margin-top:1em!important">
-            <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Chiudi</button>
-            <button type="button" class="btn btn-outline-primary" id="btn-load">Cerca</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="customRoutingContainer" class="modal" tabindex="-1" role="dialog">
-      <div class="modal-dialog modal-dialog-scrollable" role="document">
-        <script src="https://raw.githack.com/SortableJS/Sortable/master/Sortable.js"></script>
-        <style media="screen">
-          .list-group-item {
-            cursor: move;
-            cursor: -webkit-grabbing;
-          }
-        </style>
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Modal title</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <p class="title">Trascina qui i punti da aggiungere al tuo percorso personalizzato</p>
-            <div id="A" class="list-group">
+            <h6>WHAT</h6>
+            <div id="iframeContainerWHAT">
             </div>
             <hr>
-            <div id="B" class="list-group">
+            <h6>HOW</h6>
+            <div id="iframeContainerHOW">
+            </div>
+            <hr>
+            <h6>WHY</h6>
+            <div id="iframeContainerWHY">
             </div>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-outline-primary" onclick="customRoutingFunction()">Inizia il percorso personalizzato</button>
-            <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Chiudi</button>
+          <div id="spinnerReview" class="spinner-grow" role="status" style="display:none">
+            <span class="sr-only">Loading...</span>
           </div>
-        </div>
-      </div>
-    </div>
-
-    <script type="text/javascript">
-      Sortable.create(A, {
-        animation: 200,
-        group: {
-          name: "shared",
-          revertClone: true,
-        },
-        sort: true
-      });
-
-      Sortable.create(B, {
-        group: "shared",
-        sort: false
-      });
-    </script>
-    </div>
-    <div class="modal fade" role="dialog" tabindex="-1" id="signInModal">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title">Sign In with Google</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-          </div>
-          <div class="modal-body">
-            <div>
-              <p>Click the button to log in with your google account</p>
-
-                            <div class="g-signin2" data-onsuccess="onSignIn" ></div>
+          <div id="reviewContainer" style="display:none; margin-top: 2em">
+            <div class="d-flex flex-row"><label style="margin: 0px;font-size: 20px;">Voto:&nbsp;</label>
+              <div class="d-flex align-items-center"><i class="fa fa-star starReview" id="star1"
+                  style="color: rgb(100,100,100);font-size: 25px;margin-right: 2px;margin-left: 2px;"></i><i
+                  class="fa fa-star starReview" id="star2"
+                  style="color: rgb(100,100,100);font-size: 25px;margin-right: 2px;margin-left: 2px;"></i><i
+                  class="fa fa-star starReview" id="star3"
+                  style="color: rgb(100,100,100);font-size: 25px;margin-right: 2px;margin-left: 2px;"></i><i
+                  class="fa fa-star starReview" id="star4"
+                  style="color: rgb(100,100,100);font-size: 25px;margin-right: 2px;margin-left: 2px;"></i><i
+                  class="fa fa-star starReview" id="star5"
+                  style="color: rgb(100,100,100);font-size: 25px;margin-right: 2px;margin-left: 2px;"></i></div>
             </div>
+            <div class="d-flex flex-column"><label
+                style="margin: 0px;font-size: 20px;margin-top: 1em;">Recensione:&nbsp;</label><textarea id="txtReview"
+                wrap="soft" style="margin-bottom: 2em;"></textarea></div>
+            <button id="sendReview" onclick="sendReview()" class="btn btn-outline-primary" disabled
+              type="button">Salva</button>
+            <button id="cancelReview" onclick="cancelReview()" class="btn btn-outline-danger"
+              type="button">Annulla</button>
           </div>
-          <div class="modal-footer"><button class="btn btn-light" type="button" data-dismiss="modal">Close</button></div>
         </div>
-      </div>
-    </div>
-
-
-
-    <div id="filterModal" class="modal" role="dialog" tabindex="-1">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title" id="reviewLuogo">Filtri</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-          </div>
-          <div class="modal-body">
-            <div class="d-flex justify-content-between" >
-              <label>Seleziona lingua: </label>
-              <select id="language" class="selectpicker" data-width="fit">
-                <option>Default</option>
-                <option>ITA</option>
-                <option>ENG</option>
-                <option>DEU</option>
-                <option>FRA</option>
-                <option>ESP</option>
-            </select>
-            </div>
-            <hr/>
-                    <div class="d-flex justify-content-between" style="padding-bottom: 1em;">
-                      <label>Contenuto: </label>
-                      <select id="content" class="selectpicker" data-width="160"  multiple data-selected-text-format="count" >
-                      <option value="nat"> natura</option>
-                      <option value="art"> arte</option>
-                      <option value="his"> storia</option>
-                      <option value="flk"> folklore</option>
-                      <option value="mod"> cultura moderna</option>
-                      <option value="rel"> religione</option>
-                     <option value="cui"> cucina e drink</option>
-                     <option value="spo"> sport</option>
-                     <option value="mus"> musica</option>
-                     <option value="mov"> film</option>
-                     <option value="fas"> moda</option>
-                     <option value="skp"> shopping</option>
-                     <option value="tec"> tecnologia</option>
-                     <option value="pop"> cult. pop. e gossip</option>
-                     <option value="prs"> esperienze personali</option>
-                     <option value="oth"> altro</option>
-                    </select>
-                    </div>
-                    <div class="d-flex justify-content-between" style="padding-bottom: 1em;">
-                        <label>Audience: </label><select id="audience" class="selectpicker"data-width="160"  multiple data-selected-text-format="count">
-                          <option value="pre">pre-scuola</option>
-                          <option value="elm">scuola primaria</option>
-                          <option value="mid">scuola media</option>
-                          <option value="scl">specialisti del settore</option>
-                      </select>
-                    </div>
-                    <div class="d-flex justify-content-between"
-                        style="padding-bottom: 1em;"><label>Dettaglio: </label>
-                        <div class="d-flex justify-content-between"
-                            style="padding-bottom: 1em;"><select id="detail" class="selectpicker" data-width="fit">
-							                <option>Default</option>
-                              <option>1</option>
-                              <option>2</option>
-                              <option>3</option>
-                              <option>4</option>
-                              <option>5</option>
-                          </select>
-                        </div></div>
-                        <label for="rangeArea" id="rangeAreaText">Area di Ricerca - 100m</label>
-                        <input type="range" class="custom-range" min="100" max="60000" value="100"  id="rangeArea" oninput="changeArea(this.id)">
-                        </div>
-                        <div class="custom-control custom-checkbox" style='text-align: right!important; padding-right:1em!important;'>
-
-                  		<input type="checkbox" class="my-class custom-control-input" style="float: right;" id="refresh" checked="false">
-                  		<label class="custom-control-label" style="margin-top:1em!important; float: right; bottom:0%!important;"  for="refresh">Cerca su YT</label>
-                        </div>
-          <div class="modal-footer"><button id="updatePoi" class="btn btn-outline-primary" type="button" data-dismiss="modal">Aggiorna</button></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-danger" data-dismiss="modal"
+            onclick="stopRoutingFromModal();">Stop</button>
+          <button type="button" class="btn btn-outline-primary" data-dismiss="modal"
+            onclick="clearClipModal();">Next</button>
         </div>
-      </div>
-    </div>
-    </div>
-    <div  id="userGuide" class="modal" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Guida User</h5>
-        <button type="button" class="close" aria-label="Close"onclick="$('#userGuide').hide()">
-          <span aria-hidden="true"  >&times;</span>
-        </button>
-      </div>
-      <div> </div>
-      <div class="modal-body" style="overflow-y: scroll; height:300px;">
-        <b><p>Ciao Viaggiatore!<br>Questa guida serve per preparare i nuovi utenti all'utilizzo del servizio Browser che il nostro sito offre.</p></b>
-              <p>Per iniziare a cercare i punti di interesse vicino a te puoi attivare il GPS o inserire l'indirizzo desiderato.</p>
-              <p>Tramite il tasto Filter (l'imbuto a sinistra della mappa) &#232; possibile scegliere i tipi di POI ai quali si &#232; interessati tramite le input box fornite.</p>
-              <p>Una volta caricati i POI (Point Of Interest) si pu&#242; essere guidati all'attrazione pi&#249; vicina tramite il tasto play situato sulla parte sinistra della mappa. Una volta partito il routing pu&#242; essere stoppato tramite lo stesso pulsante.</p>
-              <p>Si pu&#242; anche scegliere un percorso personalizzato dei POI tramite l'icona della bacchetta sotto a filter.</p>
-              <p>Quando si arriva nei pressi del POI selezionato parte in automatico, se esistente, la descrizione relativa al luogo e si apre un popup contente la descrizione e le clip trovate per luogo.</p>
-              <br><b><p>Grazie per utilizzare il nostro sito e Buon Viaggio!</p></b>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" onclick="$('#userGuide').hide()" >Chiudi</button>
       </div>
     </div>
   </div>
-</div>
-  </body>
-   <script src="https://apis.google.com/js/api.js"></script>
-    <script src="https://apis.google.com/js/platform.js?onload=renderButton" sync defer></script>
+  <div class="d-flex shadow" id="popupContainer"
+    style="width: calc(100% - 2em);height: 16em; z-index: -1; position: absolute; bottom: 0; left: 0; background: white; margin: 1em;">
+    <div id="prev" class="shadow-lg d-flex justify-content-center align-items-center"
+      style="font-size: 25px;width: 5%;background-color: #ffffff;">
+      <i class="fas fa-chevron-left d-flex justify-content-center align-items-center" id="prev"></i>
+    </div>
+    <div class="d-flex flex-column" style="width: 90%;padding: 1em; overflow-y: scroll;display:inline-block!important">
+      <div style="width: 100%;text-align: center;">
+        <h4 id="popupTitle"></h4>
+      </div>
+      <div style="padding-top: 1em;display:inline-block!important;width:100%">
+        <img id="popupImg" style="width: 10em;float:left; padding-right:2em;" />
+        <label id="popupDescription" style="margin: 0px;display:inline;    text-align: justify;"></label>
+      </div>
+    </div>
+    <div id="next" class="shadow-lg d-flex justify-content-center align-items-center"
+      style="font-size: 25px; width: 5%;background-color: #ffffff;">
+      <i class="fas fa-chevron-right d-flex justify-content-center align-items-center" style="width: 10%;"></i>
+    </div>
+  </div>
+
+  <div class="modal" id="noGeo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
+    data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <h5 class="modal-title" style="margin-bottom:1em!important" id="exampleModalLabel">Inserisci la tua posizione:
+          </h5>
+          <input type="search" id="addressInput" class="form-control" placeholder="" />
+        </div>
+        <div class="modal-footer" style="margin-top:1em!important">
+          <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Chiudi</button>
+          <button type="button" class="btn btn-outline-primary" id="btn-load">Cerca</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="customRoutingContainer" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
+      <script src="https://raw.githack.com/SortableJS/Sortable/master/Sortable.js"></script>
+      <style media="screen">
+        .list-group-item {
+          cursor: move;
+          cursor: -webkit-grabbing;
+        }
+      </style>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Modal title</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p class="title">Trascina qui i punti da aggiungere al tuo percorso personalizzato</p>
+          <div id="A" class="list-group">
+          </div>
+          <hr>
+          <div id="B" class="list-group">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-primary" onclick="customRoutingFunction()">Inizia il percorso
+            personalizzato</button>
+          <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Chiudi</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    Sortable.create(A, {
+      animation: 200,
+      group: {
+        name: "shared",
+        revertClone: true,
+      },
+      sort: true
+    });
+
+    Sortable.create(B, {
+      group: "shared",
+      sort: false
+    });
+  </script>
+  </div>
+  <div class="modal fade" role="dialog" tabindex="-1" id="signInModal">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Sign In with Google</h4><button type="button" class="close" data-dismiss="modal"
+            aria-label="Close"><span aria-hidden="true">×</span></button>
+        </div>
+        <div class="modal-body">
+          <div>
+            <p>Click the button to log in with your google account</p>
+
+            <div class="g-signin2" data-onsuccess="onSignIn"></div>
+          </div>
+        </div>
+        <div class="modal-footer"><button class="btn btn-light" type="button" data-dismiss="modal">Close</button></div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div id="filterModal" class="modal" role="dialog" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="reviewLuogo">Filtri</h4><button type="button" class="close" data-dismiss="modal"
+            aria-label="Close"><span aria-hidden="true">×</span></button>
+        </div>
+        <div class="modal-body">
+          <div class="d-flex justify-content-between">
+            <label>Seleziona lingua: </label>
+            <select id="language" class="selectpicker" data-width="fit">
+              <option>Default</option>
+              <option>ITA</option>
+              <option>ENG</option>
+              <option>DEU</option>
+              <option>FRA</option>
+              <option>ESP</option>
+            </select>
+          </div>
+          <hr />
+          <div class="d-flex justify-content-between" style="padding-bottom: 1em;">
+            <label>Contenuto: </label>
+            <select id="content" class="selectpicker" data-width="160" multiple data-selected-text-format="count">
+              <option value="nat"> natura</option>
+              <option value="art"> arte</option>
+              <option value="his"> storia</option>
+              <option value="flk"> folklore</option>
+              <option value="mod"> cultura moderna</option>
+              <option value="rel"> religione</option>
+              <option value="cui"> cucina e drink</option>
+              <option value="spo"> sport</option>
+              <option value="mus"> musica</option>
+              <option value="mov"> film</option>
+              <option value="fas"> moda</option>
+              <option value="skp"> shopping</option>
+              <option value="tec"> tecnologia</option>
+              <option value="pop"> cult. pop. e gossip</option>
+              <option value="prs"> esperienze personali</option>
+              <option value="oth"> altro</option>
+            </select>
+          </div>
+          <div class="d-flex justify-content-between" style="padding-bottom: 1em;">
+            <label>Audience: </label><select id="audience" class="selectpicker" data-width="160" multiple
+              data-selected-text-format="count">
+              <option value="pre">pre-scuola</option>
+              <option value="elm">scuola primaria</option>
+              <option value="mid">scuola media</option>
+              <option value="scl">specialisti del settore</option>
+            </select>
+          </div>
+          <div class="d-flex justify-content-between" style="padding-bottom: 1em;"><label>Dettaglio: </label>
+            <div class="d-flex justify-content-between" style="padding-bottom: 1em;"><select id="detail"
+                class="selectpicker" data-width="fit">
+                <option>Default</option>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+              </select>
+            </div>
+          </div>
+          <label for="rangeArea" id="rangeAreaText">Area di Ricerca - Tutti i POI disponibili</label>
+          <input type="range" class="custom-range" min="1" max="11" value="11" id="rangeArea"
+            oninput="changeArea(this.id)">
+        </div>
+        <div class="custom-control custom-checkbox" style='text-align: right!important; padding-right:1em!important;'>
+
+          <input type="checkbox" class="my-class custom-control-input" style="float: right;" id="refresh">
+          <label class="custom-control-label" style="margin-top:1em!important; float: right; bottom:0%!important;"
+            for="refresh">Cerca su YT</label>
+        </div>
+        <div class="modal-footer"><button id="updatePoi" class="btn btn-outline-primary" type="button"
+            data-dismiss="modal">Aggiorna</button></div>
+      </div>
+    </div>
+  </div>
+  </div>
+  <div id="userGuide" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Guida User</h5>
+          <button type="button" class="close" aria-label="Close" onclick="$('#userGuide').hide()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div> </div>
+        <div class="modal-body" style="overflow-y: scroll; height:300px;">
+          <b>
+            <p>Ciao Viaggiatore!<br>Questa guida serve per preparare i nuovi utenti all'utilizzo del servizio Browser
+              che il nostro sito offre.</p>
+          </b>
+          <p>Per iniziare a cercare i punti di interesse vicino a te puoi attivare il GPS o inserire l'indirizzo
+            desiderato.</p>
+          <p>Tramite il tasto Filter (l'imbuto a sinistra della mappa) &#232; possibile scegliere i tipi di POI ai quali
+            si &#232; interessati tramite le input box fornite.</p>
+          <p>Una volta caricati i POI (Point Of Interest) si pu&#242; essere guidati all'attrazione pi&#249; vicina
+            tramite il tasto play situato sulla parte sinistra della mappa. Una volta partito il routing pu&#242; essere
+            stoppato tramite lo stesso pulsante.</p>
+          <p>Si pu&#242; anche scegliere un percorso personalizzato dei POI tramite l'icona della bacchetta sotto a
+            filter.</p>
+          <p>Quando si arriva nei pressi del POI selezionato parte in automatico, se esistente, la descrizione relativa
+            al luogo e si apre un popup contente la descrizione e le clip trovate per luogo.</p>
+          <br><b>
+            <p>Grazie per utilizzare il nostro sito e Buon Viaggio!</p>
+          </b>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="$('#userGuide').hide()">Chiudi</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+<script src="https://apis.google.com/js/api.js"></script>
+<script src="https://apis.google.com/js/platform.js?onload=renderButton" sync defer></script>
+
 </html>

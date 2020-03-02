@@ -12,7 +12,7 @@ var control = null;
 var routingMode = "foot";
 var infoPopupState = "open";
 var actualRouting = [];
-var rangeArea = 100;
+var rangeArea = 40075 * 1000;
 var youtubeChecked = true;
 var redIcon =
   "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png";
@@ -23,8 +23,8 @@ var greenIcon =
 var blueIcon =
   "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png";
 
-var olcVect = ['2','3','4','5','6',
-  '7','8','9','C','F','G','H','J','M','P','Q','R','V','W','X'],
+var olcVect = ['2', '3', '4', '5', '6',
+  '7', '8', '9', 'C', 'F', 'G', 'H', 'J', 'M', 'P', 'Q', 'R', 'V', 'W', 'X'],
   coordVect = [
     [-1, 1],
     [-1, 0],
@@ -34,7 +34,7 @@ var olcVect = ['2','3','4','5','6',
     [1, 1],
     [1, 0],
     [1, -1],
-];
+  ];
 /**
  * Funzione che gestisce l'avvio dell'applicazione
  */
@@ -52,17 +52,17 @@ $(document).ready(async function () {
   });
 
   $("#updatePoi").click(function (e) {
-      if(document.getElementById('refresh').checked == true) {
-        youtubeChecked = false;
-        if(currentLocation == null) $("#noGeo").modal();
-        loadMarker();
-        youtubeSearch();
-      }
-      else {
-        youtubeChecked = true;
-        if(currentLocation == null) $("#noGeo").modal();
-        loadMarker();
-      }
+    if (document.getElementById('refresh').checked == true) {
+      youtubeChecked = false;
+      if (currentLocation == null) $("#noGeo").modal();
+      loadMarker();
+      youtubeSearch();
+    }
+    else {
+      youtubeChecked = true;
+      if (currentLocation == null) $("#noGeo").modal();
+      loadMarker();
+    }
   });
   $("#prev").click(function (e) {
     if (actualRouting.length > 0) {
@@ -77,7 +77,7 @@ $(document).ready(async function () {
         currentDestination = actualRouting.length - 1;
         popupIndex = actualRouting[currentDestination];
         greenMarker(popupIndex);
-        populatePopup(popupIndex);distanceFromPlaceToLatLng < 1000
+        populatePopup(popupIndex); distanceFromPlaceToLatLng < 1000
       }
     } else {
       if (popupIndex > 0) {
@@ -226,26 +226,27 @@ function onClick() {
 /**
  * Loads marker with descriptions and images
  */
- function getJson() {
-   return $.ajax({
-     type: "get",
-     url: "/POIs.json",
-     success: function (data) {
-       try {
-               currentDestination = 0;
-               popupIndex = 0;
-               mymap.removeControl(control);
-               control = null;
-               showCloseInfo();
-               infoPopupState = "open";
-               actualRouting = [];
-             } catch (e) { }
-        youtubeChecked = false;
-        validatePoi(data);
-        //chiama funzione per disegnare con i filtri
-       console.log("HO RICEVUTO JSON");
-     }
-   });
+function getJson() {
+  return $.ajax({
+    type: "get",
+    url: "/POIs.json",
+    success: function (data) {
+      try {
+        currentDestination = 0;
+        popupIndex = 0;
+        mymap.removeControl(control);
+        control = null;
+        showCloseInfo();
+        infoPopupState = "open";
+        actualRouting = [];
+      } catch (e) { }
+      youtubeChecked = false;
+      console.log(data)
+      validatePoi(data);
+      //chiama funzione per disegnare con i filtri
+      console.log("HO RICEVUTO JSON");
+    }
+  });
 }
 
 function loadMarker(value) {
@@ -263,7 +264,7 @@ function loadMarker(value) {
       currentLocation.getLatLng().lng,
       6
     );
-    $.when(getJson().done(async function () {}))
+    $.when(getJson().done(async function () { }))
   } else {
     console.log(' current location non null loadMarker');
 
@@ -278,26 +279,32 @@ function loadMarker(value) {
  */
 
 
-function getPOIs(OLC , cont) {
-  var valori ='';
+function getPOIs(OLC, cont) {
+  var valori = '';
   valori = getFilters(valori);
   console.log('FILTRI')
   console.log(valori);
   return $.ajax({
     type: "get",
-    url: "/prova?searchQuery="+ OLC + "&filter=" + valori + "&contPOI=" + cont + "&mode=user",
+    url: "/prova?searchQuery=" + OLC + "&filter=" + valori + "&contPOI=" + cont + "&mode=user",
     success: function (data) {
-	  var el = 'totalResults'
-	  console.log(data.totalResults)
+      var el = 'totalResults'
+      console.log(data.totalResults)
       console.log(data);
-      if(data != "Finito")  POIs = data;
+      if (data != "Finito") POIs = data;
     }
   });
 }
 
-function changeArea(id){
-  rangeArea = $('#'+id).val();
-  $("#rangeAreaText").text("Area di Ricerca - "+rangeArea+"m");
+function changeArea(id) {
+  var temp = $('#' + id).val();
+  if (temp != 11) {
+    $("#rangeAreaText").text("Area di Ricerca - " + temp + " Km");
+    rangeArea = temp * 1000;
+  } else {
+    $("#rangeAreaText").text("Area di Ricerca - Tutto");
+    rangeArea = 40075 * 1000;
+  }
 }
 
 async function displayPOIs() {
@@ -312,7 +319,7 @@ async function displayPOIs() {
         POIs[place].coords.longitudeCenter
       )
     );
-    if(POIs[place].marker == undefined && distanceFromPlaceToLatLng < rangeArea){
+    if (POIs[place].marker == undefined && distanceFromPlaceToLatLng < rangeArea) {
       var poi = L.marker(
         [POIs[place].coords.latitudeCenter, POIs[place].coords.longitudeCenter],
         {
@@ -346,13 +353,13 @@ async function displayPOIs() {
       });
       POIs[place].marker = poi;
       await sleep(100);
-  } else console.log('gia disegnato')
+    } else console.log('gia disegnato')
   }
   updateCustomRoutingModal();
   customdirectionsButton.state("start");
 }
 
-function getOLCWithPrecision(p){
+function getOLCWithPrecision(p) {
   return OpenLocationCode.encode(
     currentLocation.getLatLng().lat,
     currentLocation.getLatLng().lng,
@@ -360,51 +367,51 @@ function getOLCWithPrecision(p){
   );
 }
 
-function youtubeSearch(){
-    if (currentLocation !== null) {
-      console.log(' current location non null yoputube search');
-      if (infoPopupState == "close") {
-        showCloseInfo();
+function youtubeSearch() {
+  if (currentLocation !== null) {
+    console.log(' current location non null yoputube search');
+    if (infoPopupState == "close") {
+      showCloseInfo();
+    }
+    var defOLC = getOLCWithPrecision(4);
+    var currentLocationOLC = getOLCWithPrecision(6);
+
+    defOLC = defOLC.replace('0000+', '');
+    customdirectionsButton.state("loading");
+    var contOLC = 10;
+    var decoded = OpenLocationCode.decode(currentLocationOLC);
+    currentLocationOLC = currentLocationOLC.replace("+", "");
+    var encoded = '' + currentLocationOLC;
+
+    var x = currentLocationOLC[currentLocationOLC.length - 3];
+    var y = currentLocationOLC[currentLocationOLC.length - 4];
+
+    for (var pair in coordVect) {
+      try {
+        encoded += " " + defOLC + olcVect[olcVect.indexOf(y) + coordVect[pair][1]] + olcVect[olcVect.indexOf(x) + coordVect[pair][0]] + '00';
+      } catch (err) {
+        continue;
       }
-      var defOLC = getOLCWithPrecision(4);
-      var currentLocationOLC = getOLCWithPrecision(6);
-
-      defOLC = defOLC.replace('0000+','');
-      customdirectionsButton.state("loading");
-      var contOLC = 10;
-      var decoded = OpenLocationCode.decode(currentLocationOLC);
-      currentLocationOLC = currentLocationOLC.replace("+", "");
-      var encoded = '' +  currentLocationOLC;
-
-      var x = currentLocationOLC[currentLocationOLC.length-3];
-      var y = currentLocationOLC[currentLocationOLC.length-4];
-
-      for (var pair in coordVect){
-          try{
-              encoded += " " + defOLC + olcVect[olcVect.indexOf(y)+coordVect[pair][1]] + olcVect[olcVect.indexOf(x)+coordVect[pair][0]] + '00';
-          }catch(err){
-              continue;
-          }
-      }
-      encoded += " " + defOLC + "0000";
-        if(youtubeChecked == false){
-          youtubeChecked = true;
-          console.log('STO CHIAMANDO GETPOIS');
-          $.when(getPOIs(encoded, Object.keys(POIs).length))
-           .done(async function () {
-             try {
-                     currentDestination = 0;
-                     popupIndex = 0;
-                     mymap.removeControl(control);
-                     control = null;
-                     showCloseInfo();
-                     infoPopupState = "open";
-                     actualRouting = [];
-                   } catch (e) { }
-             await validatePoi(POIs);
-             if (Object.keys(POIs).length == 0) alert('Non riusciamo a trovare nessuno POI con le preferenze che hai inserito!');
-          })
-        }
+    }
+    encoded += " " + defOLC + "0000";
+    if (youtubeChecked == false) {
+      youtubeChecked = true;
+      console.log('STO CHIAMANDO GETPOIS');
+      $.when(getPOIs(encoded, Object.keys(POIs).length))
+        .done(async function () {
+          try {
+            currentDestination = 0;
+            popupIndex = 0;
+            mymap.removeControl(control);
+            control = null;
+            showCloseInfo();
+            infoPopupState = "open";
+            actualRouting = [];
+          } catch (e) { }
+          await validatePoi(POIs);
+          if (Object.keys(POIs).length == 0) alert('Non riusciamo a trovare nessuno POI con le preferenze che hai inserito!');
+        })
+    }
   }
   else {
     console.log(' current location null yoputube search');
@@ -417,21 +424,22 @@ function youtubeSearch(){
 
 
 
-async function  validatePoi(json){
+async function validatePoi(json) {
+  console.log("entro")
   var cont = 0;
   var temp = {}
-  for(var place in json){
+  for (var place in json) {
     var distanceFromPlaceToLatLng = currentLocation.getLatLng().distanceTo(
       L.latLng(
         json[place].coords.latitudeCenter,
         json[place].coords.longitudeCenter
       )
     );
-    var filterOrigin = '',check = false;
+    var filterOrigin = '', check = false;
     filterOrigin = getFilters(filterOrigin);
     var filter = filterOrigin.split(' ');
 
-    if(distanceFromPlaceToLatLng < rangeArea && checkFiltersPOI(filter, json[place].youtubeDescription)){
+    if (distanceFromPlaceToLatLng < rangeArea && checkFiltersPOI(filter, json[place].youtubeDescription)) {
       temp[cont] = json[place];
 
       var poi = L.marker(
@@ -443,9 +451,9 @@ async function  validatePoi(json){
         //   bounceOnAddCallback: function () { }
         // }
       )
-      .addTo(mymap);
+        .addTo(mymap);
 
-    
+
 
       poi.on("click", function (mark) {
         console.log(mark);
@@ -455,8 +463,8 @@ async function  validatePoi(json){
           } catch (error) {
             blueMarker(actualRouting[currentDestination]);
           }
-          for(var key in POIs){
-            if(POIs[key].marker.getLatLng().lat == mark.latlng.lat && POIs[key].marker.getLatLng().lng == mark.latlng.lng) popupIndex = key;
+          for (var key in POIs) {
+            if (POIs[key].marker.getLatLng().lat == mark.latlng.lat && POIs[key].marker.getLatLng().lng == mark.latlng.lng) popupIndex = key;
           }
           greenMarker(popupIndex);
           populatePopup(popupIndex);
@@ -465,8 +473,8 @@ async function  validatePoi(json){
           }
         } else {
           blueMarker(popupIndex);
-          for(var key in POIs){
-            if(POIs[key].marker.getLatLng().lat == mark.latlng.lat && POIs[key].marker.getLatLng().lng == mark.latlng.lng) popupIndex = key;
+          for (var key in POIs) {
+            if (POIs[key].marker.getLatLng().lat == mark.latlng.lat && POIs[key].marker.getLatLng().lng == mark.latlng.lng) popupIndex = key;
           }
           greenMarker(popupIndex);
           populatePopup(popupIndex);
@@ -478,29 +486,25 @@ async function  validatePoi(json){
 
       temp[cont].marker = poi;
       cont++;
-      if(Object.keys(POIs).length == 0) await sleep(100);
+      if (Object.keys(POIs).length == 0) await sleep(1);
     }
   }
-  try{
+  try {
     for (var i in POIs) {
       mymap.removeLayer(POIs[i].marker);
     }
   }
-  catch(e){}
+  catch (e) { }
   POIs = temp;
-  if(Object.keys(POIs).length == 0) {
-    if(youtubeChecked == true)  {
+  if (Object.keys(POIs).length == 0) {
+    if (youtubeChecked == true) {
       if (confirm("Nessun POI trovato con queste richieste. Vuoi cercare su YT?")) youtubeSearch();
     }
   }
-  else{
+  else {
     youtubeChecked = true;
-    var zoom = 18;
-    if(rangeArea > 300) zoom = 16;
-    if(rangeArea > 800) zoom = 14;
-    if(rangeArea > 1300) zoom = 13;
-    mymap.setView(currentLocation.getLatLng(),zoom)
-    if(customRouting == undefined){
+    mymap.setView(currentLocation.getLatLng(), 14)
+    if (customRouting == undefined) {
       customRouting = L.easyButton({
         states: [
           newState("custom", "fa fa-magic", "Custom way", function (btn) {
@@ -514,8 +518,8 @@ async function  validatePoi(json){
       console.log('CUSTOM ROUTING')
       console.log(customRouting);
     }
-      updateCustomRoutingModal();
-      customdirectionsButton.state("start");
+    updateCustomRoutingModal();
+    customdirectionsButton.state("start");
   }
 }
 

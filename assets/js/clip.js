@@ -5,9 +5,9 @@ const rickykey_second = "AIzaSyB5PLURpl92Ix6gBHvgBMJ9s1JC7m69b2c";
 var first = true;
 var speecIstance = window.speechSynthesis;
 
-function checkFiltersPOI(filter, description){
-  for(var i in filter){
-    if(!description.includes(filter[i])) return false;
+function checkFiltersPOI(filter, description) {
+  for (var i in filter) {
+    if (!description.includes(filter[i])) return false;
   }
   return true;
 }
@@ -50,24 +50,6 @@ function getFilters(valori) {
 
 function getVideoId(poi) {
   var search = "";
-  /*search += OpenLocationCode.encode(
-    poi.coords.latitudeCenter,
-    poi.coords.longitudeCenter,
-    4
-  );
-  search += "-";
-
-  search += OpenLocationCode.encode(
-    poi.coords.latitudeCenter,
-    poi.coords.longitudeCenter,
-    6
-  );
-  search += "-";
-  search += OpenLocationCode.encode(
-    poi.coords.latitudeCenter,
-    poi.coords.longitudeCenter
-  );
-  */
   $("#infoTitolo").text(poi.name.toString());
   if (poi.img !== "NF") {
     $("#imgOnLocation").attr("src", poi.img);
@@ -78,14 +60,14 @@ function getVideoId(poi) {
   }
   if (poi.description.en !== "NOT FOUND") {
     var languageSelector = $("#language");
-    var c = languageSelector[0].selectedOptions[0].text.toLowerCase().substring(0,languageSelector[0].selectedOptions[0].text.toLowerCase().length - 1)
+    var c = languageSelector[0].selectedOptions[0].text.toLowerCase().substring(0, languageSelector[0].selectedOptions[0].text.toLowerCase().length - 1)
 
-    for( var s in poi.description){
-		if(s == c){
-			$("#descriptionOnLocation").text(poi.description[s]);
-			$("#descriptionOnLocation").show();
-		}
-	}
+    for (var s in poi.description) {
+      if (s == c) {
+        $("#descriptionOnLocation").text(poi.description[s]);
+        $("#descriptionOnLocation").show();
+      }
+    }
 
   } else {
     $("#descriptionOnLocation").text("");
@@ -96,7 +78,7 @@ function getVideoId(poi) {
   } else {
     $("#dividerOnLocation").hide();
   }
-  for(var el in poi.videoId) searchByKeyword(poi.videoId[el]);
+  for (var el in poi.videoId) searchByKeyword(poi.videoId[el]);
 }
 
 function searchByKeyword(query) {
@@ -111,11 +93,11 @@ function searchByKeyword(query) {
       type: "video",
       videoEmbeddable: true
     },
-    success: function(data) {
+    success: function (data) {
       console.log(data);
       var item = data["items"];
       var iframe;
-      var iCont = document.getElementById("iframeContainer");
+      //var iCont = document.getElementById("iframeContainer");
       first = true;
       for (video in item) {
         var audio_tag = document.createElement("audio");
@@ -131,21 +113,41 @@ function searchByKeyword(query) {
       var div = document.getElementById("clipContainer");
       div.hidden = false;
       $('#reviewContainer').hide();
-      $('#iframeContainer').show();
+      $('#iframeContainerWHAT').show();
+      $('#iframeContainerHOW').show();
+      $('#iframeContainerWHY').show();
       setCSSAttribute("#popupContainer", {
-      "z-index": "-1",
-      height: "0px"
-    });
-    $("#upDown").attr("class", "fa fa-angle-up d-flex");
+        "z-index": "-1",
+        height: "0px"
+      });
+      $("#upDown").attr("class", "fa fa-angle-up d-flex");
       infoPopupState = "open";
-      if(data["items"].length == 0){
-		$("#iframeContainer").append("<p id='cliperror'>Unable to load any clip</p>");
-	  }
+      if (data["items"].length == 0) {
+        console.log("nessunvideo")
+        //$("#iframeContainer").append("<p id='cliperror'>Unable to load any clip</p>");
+      }
     },
-    error: function(response) {
+    error: function (response) {
       console.log("Request Failed");
     }
   });
+}
+
+function getTypeOfVideo(d) {
+  var der = d.split(":");
+  var motivo = "";
+  for (var n in der) {
+    if (der[n] == "why") {
+      motivo = "why";
+    } else if (der[n] == "how") {
+      motivo = "how";
+    } else if (der[n] == "what") {
+      motivo = "what";
+    } else if (der[n] == "who") {
+      motivo = "why";
+    }
+  }
+  return motivo
 }
 
 // 3. This function creates an <iframe> (and YouTube player)
@@ -155,46 +157,82 @@ function onYouTubeIframeAPIReady(videoId, titolo, descrizione, channelTitle) {
   if (videoId == undefined) {
     return;
   }
+  var motivo = getTypeOfVideo(descrizione);
   var der = descrizione.split(":");
-  var motivo ="";
   var filterOrigin = '';
   filterOrigin = getFilters(filterOrigin);
   var filter = filterOrigin.split(' ');
-  if(checkFiltersPOI(filter, descrizione)){
-    for(var n in der){
-  		if(der[n] == "why"){
-  			motivo = "why";
-  		}else if(der[n] == "how"){
-  			motivo = "how";
-  		}else if(der[n] == "what"){
-  			motivo = "what";
-  		}else if(der[n] == "who"){
-  			motivo = "why";
-  		}
-  		}
+  if (checkFiltersPOI(filter, descrizione)) {
 
-    if(first == false){
-  	  $("#iframeContainer").append(
-  	  "<hr style='margin-top: 2em;'id='dividerOnLocation'><div style='margin-top: 1em;'><div  ><p style='margin-bottom:1em!important'><b>Utente: </b>"+channelTitle +" &nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp<b>Categoria: </b>" +motivo+ "</p></div>"+
-  		"<div  style='margin:0px!important;width: auto;'>"+
-  		"<div style='float:left;display: inline-block;width: auto;margin-left:4em;'><i id='controller" + videoId + "'class='fas fa-play' style='font-size: 30px;'></i></div>"+
-  	   "<div style='float:right;display: inline-block; width: auto;margin-right:0.5em;'><button class='btn btn-outline-success' id='btn" + videoId + "' onclick='openReviewModal(this.id, "+'"'+channelTitle+'"'+")'>Lascia un recensione</button></div></div>"
-  	  );
-  	}else{
-  	  first = false;
-  	$("#iframeContainer").append(
-  	  "<div><div><p style='margin-bottom:1em!important'><div style='margin-top: 1em;'><div  ><p style='margin-bottom:1em!important'><b>Utente: </b>"+channelTitle +"&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp<b>Categoria: </b>" +motivo+ "</p></div>"+
-  		"<div  style='margin:0px!important;width: auto;'>"+
-  		"<div style='float:left;display: inline-block;width: auto;margin-left:4em;'><i id='controller" + videoId + "'class='fas fa-play' style='font-size: 30px;'></i></div>"+
-  	   "<div style='float:right;display: inline-block; width: auto;margin-right:0.5em;'><button class='btn btn-outline-success' id='btn" + videoId + "' onclick='openReviewModal(this.id, "+'"'+channelTitle+'"'+")'>Lascia un recensione</button></div></div>"
-  	  );
-  	}
+    if (first == false) {
+      $("#iframeContainer" + motivo.toUpperCase()).append(
+        "<hr style='margin-top: 2em;'id='dividerOnLocation'>" +
+        "<div style='margin-top: 1em;'>" +
+        "<div>" +
+        "<p style='margin-bottom:1em!important'>" +
+        "<b>Utente: </b>" +
+        channelTitle +
+        " &nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp<b>Categoria: </b>" +
+        motivo +
+        "</p>" +
+        "</div>" +
+        "<div style='margin:0px!important;width: auto;'>" +
+        "<div style='float:left;display: inline-block;width: auto;margin-left:4em;'>" +
+        "<i id='controller" +
+        videoId +
+        "'class='fas fa-play' style='font-size: 30px;'>" +
+        "</i>" +
+        "</div>" +
+        "<div style='float:right;display: inline-block; width: auto;margin-right:0.5em;'>" +
+        "<button class='btn btn-outline-success' id='btn" +
+        videoId +
+        "' onclick='openReviewModal(this.id, " +
+        '"' +
+        channelTitle +
+        '"' +
+        ")'>Lascia un recensione</button>" +
+        "</div>" +
+        "</div>"
+      );
+    } else {
+      first = false;
+      $("#iframeContainer" + motivo.toUpperCase()).append(
+        "<div>" +
+        "<div>" +
+        "<p style='margin-bottom:1em!important'>" +
+        "<div style='margin-top: 1em;'>" +
+        "<div>" +
+        "<p style='margin-bottom:1em!important'>" +
+        "<b>Utente: </b>" +
+        channelTitle +
+        "&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp<b>Categoria: </b>" +
+        motivo +
+        "</p>" +
+        "</div>" +
+        "<div style='margin:0px!important;width: auto;'>" +
+        "<div style='float:left;display: inline-block;width: auto;margin-left:4em;'>" +
+        "<i id='controller" +
+        videoId + "'class='fas fa-play' style='font-size: 30px;'>" +
+        "</i>" +
+        "</div>" +
+        "<div style='float:right;display: inline-block; width: auto;margin-right:0.5em;'>" +
+        "<button class='btn btn-outline-success' id='btn" +
+        videoId +
+        "' onclick='openReviewModal(this.id, " +
+        '"' +
+        channelTitle +
+        '"'
+        + ")'>Lascia un recensione</button>" +
+        "</div>" +
+        "</div>"
+      );
+    }
 
 
     checkReviewStyle(videoId);
     var iFramer = document.createElement("div");
     iFramer.setAttribute("id", "player" + videoId);
-    $("#controller" + videoId).on("click", function() {
+    $("#controller" + videoId).on("click", function () {
       $("#controller" + videoId).attr("class", "fas fa-pause");
 
       var player = YT.get("player" + videoId);
@@ -204,7 +242,7 @@ function onYouTubeIframeAPIReady(videoId, titolo, descrizione, channelTitle) {
         player.getPlayerState() == -1 ||
         player.getPlayerState() == YT.PlayerState.CUED
       ) {
-  	  speecIstance.cancel();
+        speecIstance.cancel();
         stopOtherVideos(videoId);
         player.playVideo();
       } else {
@@ -214,7 +252,7 @@ function onYouTubeIframeAPIReady(videoId, titolo, descrizione, channelTitle) {
       }
     });
 
-    document.getElementById("iframeContainer").appendChild(iFramer);
+    document.getElementById("iframeContainer" + motivo.toUpperCase()).appendChild(iFramer);
 
     playerYT = new YT.Player("player" + videoId, {
       height: "0",
@@ -225,7 +263,7 @@ function onYouTubeIframeAPIReady(videoId, titolo, descrizione, channelTitle) {
         onStateChange: onPlayerStateChange
       }
     });
-}
+  }
 }
 
 function stopOtherVideos(id) {
@@ -267,32 +305,36 @@ function stopVideo() {
 }
 
 function clearClipModal() {
-	speecIstance.cancel();
-	try{$("#cliperror").remove();}catch(e){}
+  speecIstance.cancel();
+  try { $("#cliperror").remove(); } catch (e) { }
   var div = document.getElementById("clipContainer");
   div.hidden = true;
-  $("#iframeContainer").empty();
+  $("#iframeContainerWHAT").empty();
+  $("#iframeContainerHOW").empty();
+  $("#iframeContainerWHY").empty();
   $("#reviewContainer").hide();
-  $("#iframeContainer").show();
+  $("#iframeContainerWHAT").show();
+  $("#iframeContainerHOW").show();
+  $("#iframeContainerWHY").show();
   actualRouting.splice(currentDestination, 1);
-    if (actualRouting.length != 0) {
-      routingTo(actualRouting[currentDestination]);
-      greenMarker(actualRouting[currentDestination]);
-      popupIndex = actualRouting[currentDestination];
-    }
+  if (actualRouting.length != 0) {
+    routingTo(actualRouting[currentDestination]);
+    greenMarker(actualRouting[currentDestination]);
+    popupIndex = actualRouting[currentDestination];
+  }
 }
 
-function stopRoutingFromModal(){
-	clearClipModal();
-	speecIstance.cancel();
-        for (poi in POIs) {
-          POIs[poi].visited = false;
-          blueMarker(poi);
-        }
-        actualRouting = [];
-        currentDestination = 0;
-        popupIndex = 0;
-        mymap.removeControl(control);
-        control = null;
-        customdirectionsButton.state("start");
+function stopRoutingFromModal() {
+  clearClipModal();
+  speecIstance.cancel();
+  for (poi in POIs) {
+    POIs[poi].visited = false;
+    blueMarker(poi);
+  }
+  actualRouting = [];
+  currentDestination = 0;
+  popupIndex = 0;
+  mymap.removeControl(control);
+  control = null;
+  customdirectionsButton.state("start");
 }

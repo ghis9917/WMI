@@ -66,11 +66,11 @@ app.get("/askDBPedia", (req, res) => {
 
 app.post("/updateReview", (req, res) => {
   client.connect(
-    "mongodb://site181947:ASae0ahr@mongo_site181947:27017/",
-  //  "mongodb://localhost:27017/",
+    //"mongodb://site181947:ASae0ahr@mongo_site181947:27017/",
+    "mongodb://localhost:27017/",
     { useUnifiedTopology: true },
-    async function(error, db) {
-      var myquery = { luogo: req.query.luogo, wr: req.query.wr, clip : req.query.clip }
+    async function (error, db) {
+      var myquery = { luogo: req.query.luogo, wr: req.query.wr, clip: req.query.clip }
       var newvalues = {
         $set: {
           luogo: req.query.luogo,
@@ -78,7 +78,7 @@ app.post("/updateReview", (req, res) => {
             voto: req.query.voto,
             descrizione: req.query.descrizione
           },
-          clip : req.query.clip,
+          clip: req.query.clip,
           wr: req.query.wr,
           rd: req.query.rd
         }
@@ -86,7 +86,7 @@ app.post("/updateReview", (req, res) => {
       var mydb = db.db("WMIdb");
       mydb
         .collection("review")
-        .updateOne(myquery, newvalues, function(err, result) {
+        .updateOne(myquery, newvalues, function (err, result) {
           if (err) {
             res.status(400).send({
               message: "DB error"
@@ -102,17 +102,18 @@ app.post("/updateReview", (req, res) => {
 
 app.get("/removeReview", async (req, res) => {
   client.connect(
-    "mongodb://site181947:ASae0ahr@mongo_site181947:27017/",
-  //    "mongodb://localhost:27017/",
-    { useUnifiedTopology: true },async function(error, db) {
-  var mydb = db.db("WMIdb");
-  var mongodb = require('mongodb');
-  mydb.collection("review").deleteOne({_id :new mongodb.ObjectID(req.query.id)}, function(err, obj) {
-    if (err) {
-		res.send( err)};
-    res.send("eliminato");
-  });
-});
+    //"mongodb://site181947:ASae0ahr@mongo_site181947:27017/",
+    "mongodb://localhost:27017/",
+    { useUnifiedTopology: true }, async function (error, db) {
+      var mydb = db.db("WMIdb");
+      var mongodb = require('mongodb');
+      mydb.collection("review").deleteOne({ _id: new mongodb.ObjectID(req.query.id) }, function (err, obj) {
+        if (err) {
+          res.send(err)
+        };
+        res.send("eliminato");
+      });
+    });
 });
 
 
@@ -120,10 +121,10 @@ app.get("/removeReview", async (req, res) => {
 
 app.get("/getReview", async (req, res) => {
   client.connect(
-    "mongodb://site181947:ASae0ahr@mongo_site181947:27017/",
+    //"mongodb://site181947:ASae0ahr@mongo_site181947:27017/",
 
-     // "mongodb://localhost:27017/",
-    { useUnifiedTopology: true },async function(error, db) {
+    "mongodb://localhost:27017/",
+    { useUnifiedTopology: true }, async function (error, db) {
       if (req.query.mode == "user") {
         if (error) {
           res.status(400).send({
@@ -134,7 +135,7 @@ app.get("/getReview", async (req, res) => {
           mydb
             .collection("review")
             .find({ wr: req.query.wr })
-            .toArray(function(err, result) {
+            .toArray(function (err, result) {
               if (err) {
                 res.status(400).send({
                   message: "DB error"
@@ -157,7 +158,7 @@ app.get("/getReview", async (req, res) => {
         mydb
           .collection("review")
           .find({ rd: req.query.rd })
-          .toArray(function(err, result) {
+          .toArray(function (err, result) {
             if (err) {
               res.status(400).send({
                 message: "DB error"
@@ -177,11 +178,11 @@ app.get("/getReview", async (req, res) => {
 
 app.post("/insertReview", (req, res) => {
   client.connect(
-    "mongodb://site181947:ASae0ahr@mongo_site181947:27017/",
+    //"mongodb://site181947:ASae0ahr@mongo_site181947:27017/",
 
-   // "mongodb://localhost:27017/",
+    "mongodb://localhost:27017/",
     { useUnifiedTopology: true },
-    async function(error, db) {
+    async function (error, db) {
       if (!error) {
         var mydb = db.db("WMIdb");
 
@@ -202,7 +203,7 @@ app.post("/insertReview", (req, res) => {
             wr: req.query.wr,
             rd: req.query.rd
           };
-          mydb.collection("review").insertOne(myobj, function(err, result) {
+          mydb.collection("review").insertOne(myobj, function (err, result) {
             if (err) {
               res.send(err.message);
             } else {
@@ -218,120 +219,120 @@ app.post("/insertReview", (req, res) => {
   );
 });
 
-try{
-app.get("/getPOIs", async (req, res) => {
-  var opts = (youtubeSearch.YouTubeSearchOptions = {
-    maxResults: 50,
-    key: rickyKey
-  });
+try {
+  app.get("/getPOIs", async (req, res) => {
+    var opts = (youtubeSearch.YouTubeSearchOptions = {
+      maxResults: 50,
+      key: rickyKey
+    });
 
-  try {
-    var contOlc = 12;
-    var c = req.query.searchQuery;
-    var data = {};
-    var index = c.indexOf(' ')
-     c =c.replace('a','+')
-    var biggerOlc = c.split(' ');
-    biggerOlc = biggerOlc[0];
-    c = c.split(' ');
-    var decoded = openLocationCode.decode(biggerOlc);
-  //  while(contOlc > 0){
+    try {
+      var contOlc = 12;
+      var c = req.query.searchQuery;
+      var data = {};
+      var index = c.indexOf(' ')
+      c = c.replace('a', '+')
+      var biggerOlc = c.split(' ');
+      biggerOlc = biggerOlc[0];
+      c = c.split(' ');
+      var decoded = openLocationCode.decode(biggerOlc);
+      //  while(contOlc > 0){
 
-      var encoded = openLocationCode.encode(decoded.latitudeCenter,decoded.longitudeCenter, contOlc);
-      if(encoded.indexOf('+') ==  encoded.length - 1){
-        encoded = encoded.replace('+','');
+      var encoded = openLocationCode.encode(decoded.latitudeCenter, decoded.longitudeCenter, contOlc);
+      if (encoded.indexOf('+') == encoded.length - 1) {
+        encoded = encoded.replace('+', '');
 
       }
 
       c[0] = encoded;
       var queryYT = '';
-      for(var i in c){
+      for (var i in c) {
         queryYT += c[i] + ' ';
       }
-      data = await searchYoutube(queryYT, opts,data,res,req);
+      data = await searchYoutube(queryYT, opts, data, res, req);
 
-      if(data.length > 50)
+      if (data.length > 50)
 
         contOlc = contOlc - 12;
-  //  }
-    res.send(data);
-  } catch (error) {}
+      //  }
+      res.send(data);
+    } catch (error) { }
 
 
-});
-}catch (error) {}
+  });
+} catch (error) { }
 
-async function searchYoutube(c, req, r,res){
-	return new Promise(async (resolve, reject) => {
-		 var x = 1;
-		 c = c.split(' ');
-		 var r = [];
-		 var temp = [];
-     var totalResult = 0;
-		 for (var el in c) {
-		   if(c[el] != "" || c[el] != " ") {
-			  var nextPageToken = '';
-			  do {
-				  try{
-					var opts = (youtubeSearch.YouTubeSearchOptions = {
-					maxResults: 50,
-					key: "AIzaSyAqgzgIb6o-E8-2V7gPkflm7ZzmgprvOL4",
-					pageToken: nextPageToken
-					});
-					var ret = await cerca(c[el], opts, nextPageToken, r,res);
-					for (var el in ret.list){
-					  temp.push(ret.list[el]);
-					}
+async function searchYoutube(c, req, r, res) {
+  return new Promise(async (resolve, reject) => {
+    var x = 1;
+    c = c.split(' ');
+    var r = [];
+    var temp = [];
+    var totalResult = 0;
+    for (var el in c) {
+      if (c[el] != "" || c[el] != " ") {
+        var nextPageToken = '';
+        do {
+          try {
+            var opts = (youtubeSearch.YouTubeSearchOptions = {
+              maxResults: 50,
+              key: "AIzaSyAqgzgIb6o-E8-2V7gPkflm7ZzmgprvOL4",
+              pageToken: nextPageToken
+            });
+            var ret = await cerca(c[el], opts, nextPageToken, r, res);
+            for (var el in ret.list) {
+              temp.push(ret.list[el]);
+            }
 
-					nextPageToken = ret.npt;
-					if(totalResult == 0) totalResult = ret.total;
-				}
-				catch(e){
-					res.send(e);
-					resolve(e)
-					break;
-				}
+            nextPageToken = ret.npt;
+            if (totalResult == 0) totalResult = ret.total;
+          }
+          catch (e) {
+            res.send(e);
+            resolve(e)
+            break;
+          }
 
-			  } while (temp.length < totalResult);
-			  r = r.concat(temp);
-			  temp = [];
-			  totalResult = 0;
-		   }
-		 }
-		 resolve(r);
+        } while (temp.length < totalResult);
+        r = r.concat(temp);
+        temp = [];
+        totalResult = 0;
+      }
+    }
+    resolve(r);
   });
 }
 
-async function cerca(c, opts, nextPageToken, r,res) {
+async function cerca(c, opts, nextPageToken, r, res) {
   return new Promise(async (resolve, reject) => {
-	   try{
-    youtubeSearch(c, opts, async (err, results, pageInfo) => {
-      if (err) {
-		  console.log(err)
-        res.send({ error: err.response.statusText });
-      } else {
-        var boh = await results;
-        for (var val in boh) {
-          r.push(results[val]);
+    try {
+      youtubeSearch(c, opts, async (err, results, pageInfo) => {
+        if (err) {
+          console.log(err)
+          res.send({ error: err.response.statusText });
+        } else {
+          var boh = await results;
+          for (var val in boh) {
+            r.push(results[val]);
+          }
+          var npt = await pageInfo;
+          var tot = pageInfo.totalResults
+          nextPageToken = npt.nextPageToken;
+          resolve({ npt: nextPageToken, list: r, total: tot });
         }
-        var npt = await pageInfo;
-        var tot = pageInfo.totalResults
-        nextPageToken = npt.nextPageToken;
-        resolve({ npt: nextPageToken, list: r, total: tot });
-      }
-    });
-} catch(e){res.send("mmmmm");resolve(e)}
+      });
+    } catch (e) { res.send("mmmmm"); resolve(e) }
   });
 }
 
 app.get("/prova", async (req, res) => {
-	 try {
-		 var c = req.query.searchQuery;
-		 var r = [];
-		 r = await searchYoutube(c, req, r,res);
-		 var data = await call(r, res,req,req.query.filter);
-		 utils.updateJson(data,res);
-	  } catch (error) {res.send(error.message)}
+  try {
+    var c = req.query.searchQuery;
+    var r = [];
+    r = await searchYoutube(c, req, r, res);
+    var data = await call(r, res, req, req.query.filter);
+    utils.updateJson(data, res);
+  } catch (error) { res.send(error.message) }
 
 });
 
@@ -341,183 +342,184 @@ function call(results, res, req, filtri) {
     var list = {};
     var counter = 0;
 
-   try{
-		client.connect(
-        "mongodb://site181947:ASae0ahr@mongo_site181947:27017/",
+    try {
+      client.connect(
+        //"mongodb://site181947:ASae0ahr@mongo_site181947:27017/",
 
-       // "mongodb://localhost:27017/",
-    { useUnifiedTopology: true },
-		  async function(error, db) {
-			var mydb = db.db("WMIdb");
-			for (var key in results) {
-			  var item = results[key];
+        "mongodb://localhost:27017/",
+        { useUnifiedTopology: true },
+        async function (error, db) {
+          var mydb = db.db("WMIdb");
+          for (var key in results) {
+            var item = results[key];
 
-			  if ((val = utils.validator(item.description, filtri)) !== false) {
+            if ((val = utils.validator(item.description, filtri)) !== false) {
 
-				if (list[val.plusCode] === undefined) {
+              if (list[val.plusCode] === undefined) {
 
-				  list[val.plusCode] = counter;
-				  var c;
-				  if(req.query.mode != "editor"){
-					 c = await utils.getDescription(item.title, mydb, utils, res);
+                list[val.plusCode] = counter;
+                var c;
+                if (req.query.mode != "editor") {
+                  c = await utils.getDescription(item.title, mydb, utils, res);
 
-					item.title = entities.decode(item.title);
-					  try {
-						POIs[counter] = {
-						  name: item.title,
-						  coords: val.coords,
-              videoId: [item.id],
-						  description: c[0].descrizione,
-              youtubeDescription: item.description,
-						  img: c[0].urlImg,
-						  visited: false
-						};
-					  } catch (error) {
-						POIs[counter] = {
-						  name: item.title,
-						  coords: val.coords,
-              videoId: [item.id],
-						  description: c.descrizione,
-              youtubeDescription: item.description,
-						  img: c.urlImg,
-						  visited: false
-						};
-					  }
+                  item.title = entities.decode(item.title);
+                  try {
+                    POIs[counter] = {
+                      name: item.title,
+                      coords: val.coords,
+                      videoId: [item.id],
+                      description: c[0].descrizione,
+                      youtubeDescription: item.description,
+                      img: c[0].urlImg,
+                      visited: false
+                    };
+                  } catch (error) {
+                    POIs[counter] = {
+                      name: item.title,
+                      coords: val.coords,
+                      videoId: [item.id],
+                      description: c.descrizione,
+                      youtubeDescription: item.description,
+                      img: c.urlImg,
+                      visited: false
+                    };
+                  }
 
-					}else{
-						try {
-						POIs[counter] = {
-						  name: item.title,
-						  coords: val.coords,
-						  videoId: [item.id],
-						};
-					  } catch (error) {
-						POIs[counter] = {
-						  name: item.title,
-						  coords: val.coords,
-						  videoId: [item.id],
-						  };
-					  }
-				  }
+                } else {
+                  try {
+                    POIs[counter] = {
+                      name: item.title,
+                      coords: val.coords,
+                      videoId: [item.id],
+                    };
+                  } catch (error) {
+                    POIs[counter] = {
+                      name: item.title,
+                      coords: val.coords,
+                      videoId: [item.id],
+                    };
+                  }
+                }
 
-				  counter++;
-				}
-        else {
-          if(POIs[list[val.plusCode]].videoId.indexOf(item.id) === -1)
-          POIs[list[val.plusCode]].videoId.push(item.id)
+                counter++;
+              }
+              else {
+                if (POIs[list[val.plusCode]].videoId.indexOf(item.id) === -1)
+                  POIs[list[val.plusCode]].videoId.push(item.id)
+              }
+            }
+          }
+
+          resolve(POIs);
         }
-			  }
-			}
-      
-			resolve(POIs);
-		  }
-		);
-	}
-	catch(e){
+      );
+    }
+    catch (e) {
 
-		try{
-		for (var key in results) {
+      try {
+        for (var key in results) {
           var item = results[key];
           if ((val = utils.validator(item.description, res, filtri)) !== false) {
             if (list.indexOf(val.plusCode) === -1) {
 
               list.push(val.plusCode);
               var c;
-              if(req.query.mode != "editor"){
-				c = await utils.getDescription(item.title, mydb, utils, res);
-				item.title = entities.decode(item.title);
-				  try {
-					POIs[counter] = {
-					  name: item.title,
-					  coords: val.coords,
-					  videoId: item.id,
-					  description: c[0].descrizione,
-					  img: c[0].urlImg,
-					  visited: false
-					};
-				  } catch (error) {
-					POIs[counter] = {
-					  name: item.title,
-					  coords: val.coords,
-					  videoId: item.id,
-					  description: c.descrizione,
-					  img: c.urlImg,
-					  visited: false
-					};
-				  }
-				}else{
-					try {
-					POIs[counter] = {
-					  name: item.title,
-					  coords: val.coords,
-					  videoId: item.id
-					};
-				  } catch (error) {
-					POIs[counter] = {
-					  name: item.title,
-					  coords: val.coords,
-					  videoId: item.id
-					  };
-				  }
-			  }
+              if (req.query.mode != "editor") {
+                c = await utils.getDescription(item.title, mydb, utils, res);
+                item.title = entities.decode(item.title);
+                try {
+                  POIs[counter] = {
+                    name: item.title,
+                    coords: val.coords,
+                    videoId: item.id,
+                    description: c[0].descrizione,
+                    img: c[0].urlImg,
+                    visited: false
+                  };
+                } catch (error) {
+                  POIs[counter] = {
+                    name: item.title,
+                    coords: val.coords,
+                    videoId: item.id,
+                    description: c.descrizione,
+                    img: c.urlImg,
+                    visited: false
+                  };
+                }
+              } else {
+                try {
+                  POIs[counter] = {
+                    name: item.title,
+                    coords: val.coords,
+                    videoId: item.id
+                  };
+                } catch (error) {
+                  POIs[counter] = {
+                    name: item.title,
+                    coords: val.coords,
+                    videoId: item.id
+                  };
+                }
+              }
 
               counter++;
             }
           }
-        //}
+          //}
 
 
-	}
-	resolve(POIs);
-	}
-	catch(e){
-		resolve(POIs);}
-  }
+        }
+        resolve(POIs);
+      }
+      catch (e) {
+        resolve(POIs);
+      }
+    }
   });
 }
 
 app.get("/getDuration", (req, res) => {
-	utils.getDuration(req,res);
+  utils.getDuration(req, res);
 });
 
-app.post('/saveOriginAudio',upload.single('file'),(req, res) => {
-	utils.saveOrigin(req,res);
+app.post('/saveOriginAudio', upload.single('file'), (req, res) => {
+  utils.saveOrigin(req, res);
 });
 
-app.post('/uploadFile',upload.single('file'),function(req,res){
-	utils.createVideo(req,res);
+app.post('/uploadFile', upload.single('file'), function (req, res) {
+  utils.createVideo(req, res);
 });
 
 app.post('/cutAudio', upload.single('file'), function (req, res) {
-	utils.cutAudio(req,res);
+  utils.cutAudio(req, res);
 });
-app.post('/saveToken',function(req,res){
-	utils.reload(req,res);
+app.post('/saveToken', function (req, res) {
+  utils.reload(req, res);
 });
-app.post('/removeDir',function(req,res){
-  utils.remove(res,req.query.id);
+app.post('/removeDir', function (req, res) {
+  utils.remove(res, req.query.id);
   res.send("deleted")
 });
 
 app.get('*', (req, res) => {
   var ext = path.extname(req.url);
 
-  if (ext === ".css" || ext === ".html" || ext === ".json" || ext === ".js" || ext === ".jpg" || ext === ".png" || ext === ".woff" || ext === ".woff2" || ext === ".ttf" || ext === ".svg" || ext === ".eot" ) {
-     res.sendFile(path.join(__dirname, './' + req.url))
-  } else if(ext === ".mp3") {
+  if (ext === ".css" || ext === ".html" || ext === ".json" || ext === ".js" || ext === ".jpg" || ext === ".png" || ext === ".woff" || ext === ".woff2" || ext === ".ttf" || ext === ".svg" || ext === ".eot") {
+    res.sendFile(path.join(__dirname, './' + req.url))
+  } else if (ext === ".mp3") {
     //audio
     res.sendFile(path.join(__dirname, './' + req.url));
   }
-   else{
+  else {
     res.status(204).json({ nope: true });
   }
 
 });
 
 
-//https.createServer({
-// key: fs.readFileSync('server.key'),
-// cert: fs.readFileSync('server.cert')
-//}, app)
-app
-.listen(8000, () => console.log('Gator app listening on port 8000!'))
+https.createServer({
+  key: fs.readFileSync('server.key'),
+  cert: fs.readFileSync('server.cert')
+}, app).listen(8000, () => console.log('Gator app listening on port 8000!'))
+
+//app.listen(8000, () => console.log('Gator app listening on port 8000!'))
