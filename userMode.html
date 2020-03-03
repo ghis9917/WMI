@@ -96,9 +96,13 @@
   </div>
   <div id="clipContainer" hidden role="dialog" tabindex="-1" class="modal fade show" style="display: block;" </div>
     <div class="modal-dialog" role="document" align="center" style="padding-bottom: 10%;padding-top: 10%;">
-      <div id="modalContent" class="modal-content" style="">
+      <div id="modalContent" class="modal-content" style="height:600px;">
         <div class="modal-header">
-          <h4 id="infoTitolo" style="width:100%;overflow-wrap: break-word;" class="modal-title"></h4>
+          <h6 id="infoTitolo" style="width:100%;overflow-wrap: break-word;" class="modal-title"></h6>
+          <button type="button" class="close" aria-label="Close" onclick="$('#clipContainer').hide(); if(popupIndex != currentPOI) blueMarker(popupIndex); if(actualRouting != []) orangeMarker(currentPOI)">
+            <span aria-hidden="true">&times;</span>
+          </button>
+
         </div>
         <div class="modal-body" style="overflow-y:scroll; height:300px;">
           <div id="LoginRequired" style="display:none">
@@ -110,6 +114,20 @@
                 class="btn btn-outline-dark">Chiudi</button>
             </div>
           </div>
+          <div id="popupContainer"
+            style="display:none;" >
+            <div class="d-flex flex-column" style="width: 90%;padding: 1em; overflow-y: scroll;display:inline-block!important">
+              <div style="width: 100%;text-align: center;">
+                <h4 id="popupTitle"></h4>
+              </div>
+              <div style="padding-top: 1em;display:inline-block!important;width:100%">
+                <img id="popupImg" style="width: 10em;float:left; padding-right:2em;" />
+                <label id="popupDescription" style="margin: 0px;display:inline;    text-align: justify;"></label>
+              </div>
+            </div>
+          </div>
+
+
           <div id="bodyClip">
             <div style="width:100%; height: 25%;">
               <img id="imgOnLocation" style="width:25%; height:25%">
@@ -154,18 +172,18 @@
               type="button">Annulla</button>
           </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="prev btn btn-outline-primary" data-dismiss="modal"
-            onclick="clearClipModal();">Prev</button>
-          <button type="button" class="btn btn-outline-danger" data-dismiss="modal"
-            onclick="stopRoutingFromModal();">Stop</button>
-          <button type="button" class="next   btn btn-outline-primary" data-dismiss="modal"
-            onclick="clearClipModal();">Next</button>
+        <div class="modal-footer" style="">
+          <button type="button" class="prev btn btn-outline-primary" style="float:left!important;"
+            onclick="clearClipModal(0);">Precedente</button>
+          <button type="button" class="btn btn-outline-dark" class="close" aria-label="Close" onclick="$('#clipContainer').hide(); startRoutingFromModal();" style="float:none!important;"
+           >Portami qui</button>
+          <button type="button" class="next   btn btn-outline-primary" style="float:right!important;"
+            onclick="clearClipModal(0);">Successivo</button>
         </div>
       </div>
     </div>
   </div>
-  <div class="d-flex shadow" id="popupContainer"
+  <!-- <div class="d-flex shadow" id="popupContainer"
     style="width: calc(100% - 2em);height: 16em; z-index: -1; position: absolute; bottom: 0; left: 0; background: white; margin: 1em;">
     <div id="prev" class="shadow-lg d-flex justify-content-center align-items-center"
       style="font-size: 25px;width: 5%;background-color: #ffffff;">
@@ -184,7 +202,7 @@
       style="font-size: 25px; width: 5%;background-color: #ffffff;">
       <i class="fas fa-chevron-right d-flex justify-content-center align-items-center" style="width: 10%;"></i>
     </div>
-  </div>
+  </div> -->
 
   <div class="modal" id="noGeo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
     data-keyboard="false" data-backdrop="static">

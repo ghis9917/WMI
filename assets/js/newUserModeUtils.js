@@ -157,7 +157,6 @@ function updateList(id) {
   var cont = 0,
     place = "";
   for (var poi in POIs) {
-    console.log(!POIs[poi].visited);
     if (
       (actualRouting.indexOf(poi) != -1) == (id == "A") &&
       !POIs[poi].visited
@@ -191,6 +190,7 @@ function updateList(id) {
 }
 
 function calculateRouting() {
+  console.log('in calculate routingW');
   actualRouting = [];
   currentDestination = 0;
   blueMarker(popupIndex);
@@ -330,6 +330,8 @@ function newRouting() {
 }
 
 function routingTo(destination) {
+  currentPOI = destination;
+  orangeMarker(currentPOI);
   control.spliceWaypoints(
     0,
     1,
@@ -363,7 +365,8 @@ function checkDistance(distance, instruction) {
 			console.log(stringToBeSpoken)
 		}
 	}
-    getVideoId(POIs[actualRouting[currentDestination]]);
+    $('#clipContainer').show();
+    getVideoId(POIs[actualRouting[currentDestination]],1);
     onClickMarker(stringToBeSpoken, distance);
   }
   else if(stringToBeSpoken != direction){
@@ -475,10 +478,26 @@ function customRoutingFunction() {
   routingTo(actualRouting[currentDestination]);
   $("#customRoutingContainer").modal("hide");
   customdirectionsButton.state("started");
-  populatePopup(popupIndex);
-  greenMarker(popupIndex);
-  showCloseInfo();
+  // populatePopup(popupIndex);
+  // greenMarker(popupIndex);
+  // showCloseInfo();
 }
+
+// function showVideoInfo(){
+//   var mode = document.getElementById('changeMode')
+//   if(mode.innerHTML == 'Descrizione'){
+//     $('#bodyClip').hide();
+//     $('#popupContainer').show();
+//     populatePopup(popupIndex);
+//     mode.innerHTML = 'Video';
+//   }
+//   else{
+//     $('#popupContainer').hide();
+//     $('#bodyClip').show();
+//     getVideoId(POIs[popupIndex],0)
+//     mode.innerHTML = 'Descrizione';
+//   }
+// }
 
 function isNumber(n) {
   return typeof n != "boolean" && !isNaN(n);
@@ -499,6 +518,14 @@ function blueMarker(indexPOI) {
 function greenMarker(indexPOI) {
   try {
     POIs[indexPOI].marker.setIcon(getIconMarkerOfColor(greenIcon));
+  } catch (error) {
+    console.log(indexPOI);
+  }
+}
+
+function orangeMarker(indexPOI) {
+  try {
+    POIs[indexPOI].marker.setIcon(getIconMarkerOfColor(orangeIcon));
   } catch (error) {
     console.log(indexPOI);
   }

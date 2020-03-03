@@ -14,6 +14,7 @@ var infoPopupState = "open";
 var actualRouting = [];
 var rangeArea = 40075 * 1000;
 var youtubeChecked = true;
+var currentPOI = 0;
 var redIcon =
   "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png";
 var greyIcon =
@@ -22,6 +23,9 @@ var greenIcon =
   "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png";
 var blueIcon =
   "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png";
+
+var orangeIcon =
+  "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png";
 
 var olcVect = ['2', '3', '4', '5', '6',
   '7', '8', '9', 'C', 'F', 'G', 'H', 'J', 'M', 'P', 'Q', 'R', 'V', 'W', 'X'],
@@ -70,16 +74,45 @@ if (actualRouting.length == 0) {
       if (popupIndex > 0) {
         blueMarker(popupIndex);
         popupIndex--;
-        getVideoId(POIs[popupIndex])
+        getVideoId(POIs[popupIndex],0)
         greenMarker(popupIndex);
         populatePopup(popupIndex);
       } else if (popupIndex == 0) {
         blueMarker(popupIndex);
         popupIndex = Object.keys(POIs).length - 1;
-        popupIndex;
         greenMarker(popupIndex);
         populatePopup(popupIndex);
       }
+}
+else{
+  if (popupIndex > 0) {
+    try{
+      console.log('.options.iconUrl');
+      if(!(POIs[popupIndex].marker.options.iconUrl.includes('orange'))) blueMarker(popupIndex);
+      orangeMarker(currentPOI);
+    }catch(e){
+      console.log('.options.icon.iconUrl');
+      if(!(POIs[popupIndex].marker.options.icon.options.iconUrl.includes('orange'))) blueMarker(popupIndex);
+      orangeMarker(currentPOI);
+    }
+    popupIndex--;
+    getVideoId(POIs[popupIndex],0)
+    greenMarker(popupIndex);
+    populatePopup(popupIndex);
+  } else if (popupIndex == 0) {
+    try{
+      console.log('.options.iconUrl');
+      if(!(POIs[popupIndex].marker.options.iconUrl.includes('orange'))) blueMarker(popupIndex);
+      orangeMarker(currentPOI);
+    }catch(e){
+      console.log('.options.icon.iconUrl');
+      if(!(POIs[popupIndex].marker.options.icon.options.iconUrl.includes('orange'))) blueMarker(popupIndex);
+      orangeMarker(currentPOI);
+    }
+    popupIndex = Object.keys(POIs).length - 1;
+    greenMarker(popupIndex);
+    populatePopup(popupIndex);
+  }
 }
   });
 
@@ -89,11 +122,43 @@ if (actualRouting.length == 0) {
       if (popupIndex < Object.keys(POIs).length - 1) {
         blueMarker(popupIndex);
         popupIndex++;
-        getVideoId(POIs[popupIndex])
+        getVideoId(POIs[popupIndex],0)
         greenMarker(popupIndex);
         populatePopup(popupIndex);
       } else if (popupIndex == Object.keys(POIs).length - 1) {
         blueMarker(popupIndex);
+        popupIndex = 0;
+        greenMarker(popupIndex);
+        populatePopup(popupIndex);
+      }
+    }
+    else{
+      if (popupIndex < Object.keys(POIs).length - 1) {
+        console.log(POIs[popupIndex].marker.options.iconUrl);
+        console.log(POIs[popupIndex]);
+        try{
+          console.log('.options.iconUrl');
+          if(!(POIs[popupIndex].marker.options.iconUrl.includes('orange'))) blueMarker(popupIndex);
+          orangeMarker(currentPOI);
+        }catch(e){
+          console.log('.options.icon.iconUrl');
+          if(!(POIs[popupIndex].marker.options.icon.options.iconUrl.includes('orange'))) blueMarker(popupIndex);
+          orangeMarker(currentPOI);
+        }
+        popupIndex++;
+        getVideoId(POIs[popupIndex],0)
+        greenMarker(popupIndex);
+        populatePopup(popupIndex);
+      } else if (popupIndex == Object.keys(POIs).length - 1) {
+        try{
+          console.log('.options.iconUrl');
+          if(!(POIs[popupIndex].marker.options.iconUrl.includes('orange'))) blueMarker(popupIndex);
+          orangeMarker(currentPOI);
+        }catch(e){
+          console.log('.options.icon.iconUrl');
+          if(!(POIs[popupIndex].marker.options.icon.options.iconUrl.includes('orange'))) blueMarker(popupIndex);
+          orangeMarker(currentPOI);
+        }
         popupIndex = 0;
         greenMarker(popupIndex);
         populatePopup(popupIndex);
@@ -197,11 +262,12 @@ function onClick() {
       L.DomEvent.on(fakePositionBtn, "click", function () {
         mymap.closePopup();
         currentLocation.setLatLng(e.latlng);
-        try{
-          if (control !== null) {
+
+          if (control !== null ) {
+            console.log(control.getWaypoints());
             control.spliceWaypoints(0, 1, e.latlng);
           }
-        }catch(e){}
+
         updateCustomRoutingModal();
         if (actualRouting.length == 0) {
           /*try {
@@ -329,7 +395,7 @@ async function displayPOIs() {
   } catch (e) { }
 
   for (let place in POIs) {
-    var distanceFromPlaceToLatLng = currentLocation.getLatLng().distanceTo(
+    var distanceFromPlaceToLatLng = currgreenentLocation.getLatLng().distanceTo(
       L.latLng(
         POIs[place].coords.latitudeCenter,
         POIs[place].coords.longitudeCenter
@@ -474,29 +540,30 @@ async function validatePoi(json) {
       poi.on("click", function (mark) {
         console.log(mark);
         if (actualRouting.length != -1) {
-          try {
-            blueMarker(popupIndex);
-          } catch (error) {
-            blueMarker(actualRouting[currentDestination]);
-          }
+          // try {
+          //   blueMarker(popupIndex);
+          // } catch (error) {
+          //   blueMarker(actualRouting[currentDestination]);
+          // }
           for (var key in POIs) {
             if (POIs[key].marker.getLatLng().lat == mark.latlng.lat && POIs[key].marker.getLatLng().lng == mark.latlng.lng) popupIndex = key;
           }
           greenMarker(popupIndex);
           populatePopup(popupIndex);
           //TODOCIAO
-          getVideoId(POIs[popupIndex]);
+          getVideoId(POIs[popupIndex],0);
 
         } else {
-          blueMarker(popupIndex);
+          // blueMarker(popupIndex);
           for (var key in POIs) {
             if (POIs[key].marker.getLatLng().lat == mark.latlng.lat && POIs[key].marker.getLatLng().lng == mark.latlng.lng) popupIndex = key;
           }
           greenMarker(popupIndex);
           populatePopup(popupIndex);
           //TODOCIAO
-          getVideoId(POIs[popupIndex]);
+          getVideoId(POIs[popupIndex],0);
         }
+        $('#clipContainer').show()
       });
 
       temp[cont].marker = poi;

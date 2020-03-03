@@ -48,7 +48,7 @@ function getFilters(valori) {
   return valori;
 }
 
-function getVideoId(poi) {
+function getVideoId(poi,mode) {
   var search = "";
   $("#infoTitolo").text(poi.name.toString());
   if (poi.img !== "NF") {
@@ -78,6 +78,7 @@ function getVideoId(poi) {
   } else {
     $("#dividerOnLocation").hide();
   }
+  clearClipModal(mode);
   for (var el in poi.videoId) searchByKeyword(poi.videoId[el]);
 }
 
@@ -311,11 +312,11 @@ function stopVideo() {
   playerYT.stopVideo();
 }
 
-function clearClipModal() {
+function clearClipModal(mode) {
   speecIstance.cancel();
   try { $("#cliperror").remove(); } catch (e) { }
   var div = document.getElementById("clipContainer");
-  div.hidden = true;
+  //div.hidden = true;
   $("#iframeContainerWHAT").empty();
   $("#iframeContainerHOW").empty();
   $("#iframeContainerWHY").empty();
@@ -326,29 +327,34 @@ function clearClipModal() {
   $("#h6why").hide();
   $("#h6what").hide();
   $("#h6how").hide();
-  actualRouting.splice(currentDestination, 1);
+  if(mode == 1){
+    actualRouting.splice(currentDestination, 1);
 
-  if (actualRouting.length != 0) {
-    routingTo(actualRouting[currentDestination]);
-    greenMarker(actualRouting[currentDestination]);
-    popupIndex = actualRouting[currentDestination];
-  }
-  if (actualRouting.length == 0) {
+    if (actualRouting.length != 0) {
+      routingTo(actualRouting[currentDestination]);
+      greenMarker(actualRouting[currentDestination]);
+      popupIndex = actualRouting[currentDestination];
+    } else{
 
+      customdirectionsButton.state("start");
+      currentDestination = 0;
+      calculateRouting();
+      mymap.removeControl(control);
+      control = null;
+      showCloseInfo();
+      infoPopupState = "open";
+      actualRouting = [];
+    }
   }
 }
 
-function stopRoutingFromModal() {
-  actualRouting = [];
-  clearClipModal();
-  speecIstance.cancel();
-  for (poi in POIs) {
-    POIs[poi].visited = false;
-    blueMarker(poi);
-  }
-  currentDestination = 0;
-  popupIndex = 0;
-  mymap.removeControl(control);
+function startRoutingFromModal() {
   control = null;
-  customdirectionsButton.state("start");
+  addRouting();
+  actualRouting = [];
+  actualRouting.push(popupIndex)
+  currentPOI = popupIndex;
+  console.log(control.getWaypoints());
+  routingTo(popupIndex);
+  customdirectionsButton.state("started");
 }
